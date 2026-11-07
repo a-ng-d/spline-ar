@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/affiche-demo_luminance.jpg",
+  "metadata": null,
+  "name": "affiche-demo",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1500,
+    "height": 2000,
+    "isRotated": false,
+    "originalWidth": 1500,
+    "originalHeight": 2000
+  },
+  "resources": {
+    "originalImage": "affiche-demo_original.jpg",
+    "croppedImage": "affiche-demo_cropped.jpg",
+    "thumbnailImage": "affiche-demo_thumbnail.jpg",
+    "luminanceImage": "affiche-demo_luminance.jpg"
+  },
+  "created": 1794049989305,
+  "updated": 1794049989305
+}

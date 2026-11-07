@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Le CDN Spline ne renvoie pas d'en-têtes CORS : proxy même origine.
+[[redirects]]
+  from = "/spline-proxy/*"
+  to = "https://prod.spline.design/:splat"
+  status = 200
+  force = true
+
+# Cibles et assets lisibles depuis d'autres sites (cibles hébergées ailleurs).
+[[headers]]
+  for = "/image-targets/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
