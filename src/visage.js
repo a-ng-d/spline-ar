@@ -142,6 +142,7 @@ function faceModule() {
       startEl.classList.add('out')
       stopBackground()
       hintEl.classList.add('visible')
+      showQuit()
       debug('moteur', `three r${THREE.REVISION} · ${kind} · point ${cfg.p}`)
     },
     onUpdate: () => { mixer?.update(clock.getDelta()) },
@@ -227,6 +228,12 @@ function start() {
   } catch (err) {
     fail('Le lancement de la caméra a échoué.', err)
   }
+}
+
+function showQuit() {
+  const quit = $('quit')
+  quit.classList.add('visible')
+  quit.onclick = () => location.reload()
 }
 
 prepare()

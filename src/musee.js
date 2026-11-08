@@ -4,6 +4,7 @@ import QRCode from 'qrcode'
 import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget } from './target-maker.js'
 import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
 import { startBackground } from './background.js'
+import './nav.js'
 
 startBackground(document.getElementById('bg-canvas'))
 

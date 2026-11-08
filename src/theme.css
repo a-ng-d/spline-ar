@@ -109,3 +109,21 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 100px;
   padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--text);
 }
+
+/* --- Navigation (fil d'Ariane + retour) --- */
+.topnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 12px; color: var(--muted) }
+.topnav .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); font: 600 12px var(--font);
+  cursor: pointer; text-decoration: none; transition: border-color .15s, color .15s }
+.topnav .back-btn:hover { border-color: var(--accent); color: var(--accent) }
+.crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap }
+.crumbs a { color: var(--muted); text-decoration: none }
+.crumbs a:hover { color: var(--text) }
+.crumbs span[aria-current] { color: var(--text); font-weight: 600 }
+.crumbs i { font-style: normal; opacity: .5 }
+
+/* --- Bouton Quitter pendant l'AR --- */
+.quit { position: fixed; top: 14px; right: 14px; z-index: 25; display: none; cursor: pointer }
+.quit.visible { display: inline-flex }
+.quit:hover { border-color: var(--danger); color: var(--danger) }

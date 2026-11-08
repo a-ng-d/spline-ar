@@ -28,6 +28,7 @@
 <body>
 <canvas id="bg-canvas"></canvas>
 <main>
+  <nav class="topnav" data-trail="creer"></nav>
   <div class="card">
     <div class="logo"><span class="logo-dot"></span>Spline AR</div>
     <div>
@@ -51,6 +52,7 @@
   </div>
 </main>
 <script type="module">
+  import '/src/nav.js'
   import { startBackground } from '/src/background.js'
   startBackground(document.getElementById('bg-canvas'))
 </script>

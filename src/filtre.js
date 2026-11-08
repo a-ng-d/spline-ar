@@ -4,6 +4,7 @@ import QRCode from 'qrcode'
 import { sceneIssue } from './shared.js'
 import { POINTS, FACE_DEFAULTS, EXPRESSIONS, filterLink, readFilter } from './face-shared.js'
 import { startBackground } from './background.js'
+import './nav.js'
 
 startBackground(document.getElementById('bg-canvas'))
 

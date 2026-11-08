@@ -26,6 +26,7 @@
 <body>
   <canvas id="bg-canvas"></canvas>
   <main>
+    <nav class="topnav" data-trail="creer,musee,affiches"></nav>
     <header>
       <div class="logo"><span class="logo-dot"></span>Spline AR</div>
       <h1 id="title">Les <span>affiches</span></h1>
@@ -33,41 +34,39 @@
     </header>
     <div id="grid" class="grid"></div>
   </main>
-  <div id="full"><img alt="Affiche" /><div class="pill">Touche ou clique pour revenir · ← → pour changer</div></div>
+  <div id="full"><img alt="Affiche" /><div class="pill">Clique pour revenir · ← → pour changer · Échap</div></div>
 
   <!-- ?a=<id>&a=<id>… (galerie) ou ?target=<id> (une seule affiche, plein écran direct) ; sans paramètre : affiche de démo -->
   <script type="module">
     import { posterUrl } from '/src/shared.js'
     import { startBackground } from '/src/background.js'
+    import '/src/nav.js'
     const p = new URLSearchParams(location.search)
     const ids = p.getAll('a').length ? p.getAll('a') : [p.get('target')]
     const srcs = ids.map(posterUrl)
     const full = document.getElementById('full'), fullImg = full.querySelector('img')
     let current = 0
     const open = i => { current = (i + srcs.length) % srcs.length; fullImg.src = srcs[current]; full.classList.add('visible') }
-    full.onclick = () => { if (srcs.length > 1) full.classList.remove('visible') }
+    full.onclick = () => full.classList.remove('visible')
     addEventListener('keydown', e => {
       if (!full.classList.contains('visible')) return
       if (e.key === 'ArrowRight') open(current + 1)
       if (e.key === 'ArrowLeft') open(current - 1)
-      if (e.key === 'Escape' && srcs.length > 1) full.classList.remove('visible')
+      if (e.key === 'Escape') full.classList.remove('visible')
     })
     if (p.get('t')) document.getElementById('title').textContent = p.get('t')
-    if (srcs.length === 1) {
-      open(0)
-    } else {
-      startBackground(document.getElementById('bg-canvas'))
-      const grid = document.getElementById('grid')
-      srcs.forEach((src, i) => {
-        const tile = document.createElement('div')
-        tile.className = 'tile'
-        const img = document.createElement('img'); img.alt = ''; img.src = src
-        const label = document.createElement('span'); label.textContent = `Affiche ${i + 1}`
-        tile.append(img, label)
-        tile.onclick = () => open(i)
-        grid.appendChild(tile)
-      })
-    }
+    startBackground(document.getElementById('bg-canvas'))
+    const grid = document.getElementById('grid')
+    srcs.forEach((src, i) => {
+      const tile = document.createElement('div')
+      tile.className = 'tile'
+      const img = document.createElement('img'); img.alt = ''; img.src = src
+      const label = document.createElement('span'); label.textContent = `Affiche ${i + 1}`
+      tile.append(img, label)
+      tile.onclick = () => open(i)
+      grid.appendChild(tile)
+    })
+    if (srcs.length === 1) open(0)
   </script>
 </body>
 </html>

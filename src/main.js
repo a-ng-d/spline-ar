@@ -282,6 +282,7 @@ function arModule() {
       startEl.classList.add('out')
       stopBackground()
       updateHint()
+      showQuit()
       debug('moteur', `three r${THREE.REVISION} · ${ENGINE}`)
     },
     onUpdate: () => {
@@ -345,6 +346,12 @@ function start(ready) {
   } catch (err) {
     fail('Le lancement de l\'AR a échoué.', err)
   }
+}
+
+function showQuit() {
+  const quit = $('quit')
+  quit.classList.add('visible')
+  quit.onclick = () => location.reload()
 }
 
 prepare()
