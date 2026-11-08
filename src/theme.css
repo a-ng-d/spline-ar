@@ -127,3 +127,39 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 .quit { position: fixed; top: 14px; right: 14px; z-index: 25; display: none; cursor: pointer }
 .quit.visible { display: inline-flex }
 .quit:hover { border-color: var(--danger); color: var(--danger) }
+
+/* --- Mes créations --- */
+.topnav .works-btn { margin-left: auto; padding: 6px 12px; border-radius: 100px; cursor: pointer;
+  background: rgba(123,110,246,.12); border: 1px solid rgba(123,110,246,.35); color: var(--accent);
+  font: 600 12px var(--font) }
+.topnav .works-btn:hover { background: rgba(123,110,246,.2) }
+.works { display: flex; flex-direction: column; gap: 8px }
+.work { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center;
+  padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface) }
+.work.current { border-color: rgba(123,110,246,.5); background: rgba(123,110,246,.08) }
+.work-thumb { width: 44px; height: 58px; border-radius: 6px; overflow: hidden; background: rgba(255,255,255,.04);
+  display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 20px }
+.work-thumb.face { color: var(--accent2); background: rgba(62,207,207,.08) }
+.work-thumb img { width: 100%; height: 100%; object-fit: cover }
+.work-info { min-width: 0 }
+.work-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.work-meta { font-size: 11px; color: var(--muted); margin-top: 2px }
+.work-actions { display: flex; gap: 6px }
+.work-actions .is-current { pointer-events: none; opacity: .5 }
+@media (max-width: 480px) {
+  .work { grid-template-columns: 44px 1fr }
+  .work-actions { grid-column: 1 / -1 }
+}
+.drawer-veil { position: fixed; inset: 0; z-index: 90; background: rgba(6,6,15,.6); opacity: 0; pointer-events: none;
+  transition: opacity .25s }
+.drawer-veil.open { opacity: 1; pointer-events: auto }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 91; width: min(420px, 100vw); padding: 20px;
+  display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+  background: rgba(10,10,22,.96); border-left: 1px solid var(--border);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  transform: translateX(100%); transition: transform .25s ease }
+.drawer.open { transform: none }
+.drawer-head { display: flex; align-items: center; justify-content: space-between }
+.drawer-head .section-label { margin: 0 }
+.drawer-foot { display: flex; gap: 8px; flex-wrap: wrap }
+.saved-state { font-size: 12px; color: var(--ok); min-height: 16px }

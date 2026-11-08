@@ -6,7 +6,7 @@
   <title>Spline AR — Créer</title>
   <link rel="stylesheet" href="/src/theme.css" />
   <style>
-    body { min-height: 100vh; padding: 32px 16px; display: flex; align-items: center; justify-content: center }
+    body { min-height: 100vh; padding: 32px 16px; display: flex; justify-content: center }
     main { position: relative; z-index: 1; width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 16px }
     main > .card { max-width: none }
     .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
@@ -50,9 +50,16 @@
       </a>
     </div>
   </div>
+  <div class="card" id="creations">
+    <div class="section-label" style="margin:0">Mes créations</div>
+    <div id="works" class="works"></div>
+    <p class="help" style="margin-top:0">Enregistrées dans ce navigateur. Le lien d'une création sert aussi de sauvegarde : ouvre-le, puis « Modifier ».</p>
+  </div>
 </main>
 <script type="module">
   import '/src/nav.js'
+  import { renderWorks } from '/src/works-ui.js'
+  renderWorks(document.getElementById('works'))
   import { startBackground } from '/src/background.js'
   startBackground(document.getElementById('bg-canvas'))
 </script>

@@ -54,6 +54,8 @@ https://<site>/visage.html?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.1
 - Moteur 8th Wall `FaceController` (chunk `face`), caméra selfie, affichage en miroir, un visage.
 - `p` : point d'ancrage du moteur — `forehead` (défaut), `noseBridge`, `noseTip`, `mouth`, `chin`, `leftEar`, `rightEar`, ou `face` (centre). `s`, `x`, `y`, `z` en largeur de visage.
 - **Expressions → variables Spline** : si la scène déclare une variable booléenne `bouche`, `clinGauche`, `clinDroit` ou `sourcils`, elle passe à vrai pendant l'expression (`app.setVariable`). Dans Spline, un événement « Variable Change » déclenche l'animation ou le son.
+- Taille : la largeur de visage est mesurée dans le repère des points d'ancrage (coins extérieurs des yeux × 1,6) ; repli sur `scaledWidth / scale` du moteur.
+- **Réglage en direct** : « Ouvrir » depuis l'éditeur ajoute `&reglage=1&w=<id>` → panneau de curseurs sur le filtre en cours + repère cyan au point d'ancrage ; « Enregistrer » met à jour la création (et l'éditeur ouvert dans l'autre onglet).
 - Pas d'occultation par la tête : un objet derrière la tête (branches de lunettes, arrière d'un chapeau) reste visible.
 
 ## Comment le runtime Spline est piloté
@@ -77,6 +79,16 @@ Une cible = un JSON + son image de luminance (niveaux de gris, 640 px de haut, r
 - Caméra Spline orthographique : à passer en perspective (signalé en mode debug).
 - Post-processing Spline : non garanti sur fond transparent.
 - `POST /api/cibles` est ouvert (pas de compte) : taille des images limitée côté serveur.
+
+## Mes créations
+
+Musées et filtres sont enregistrés dans le navigateur (`localStorage`, clé `spline-ar-creations`, `src/works.js`). Le **lien de partage est la seule source de vérité** : une création = `{ id, type, search }`, où `search` est la query string du lien ; titre, nombre d'affiches et vignette s'en déduisent. Pas de compte, pas de base pour la collection (les images d'affiches sont sur Netlify Blobs, référencées par identifiant).
+
+- Chaque lien créé ou mis à jour dans un éditeur est enregistré automatiquement ; l'éditeur passe sur `?w=<id>`.
+- Liste sur `/creer.html`, tiroir « Mes créations » sur `/musee.html` et `/filtre.html` (Modifier, Jouer, Supprimer, Nouveau).
+- Sur un lien joué, « Modifier » rouvre l'éditeur avec ce lien (reprend la création si elle est déjà dans la liste, sinon l'ajoute).
+- Le lien sert de sauvegarde d'un appareil à l'autre : l'ouvrir puis « Modifier ».
+- Synchronisation entre onglets (événement `storage`) : le réglage en direct du filtre met à jour l'éditeur ouvert.
 
 ## Titre et aperçu des liens
 

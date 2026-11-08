@@ -5,6 +5,8 @@ import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget } from '.
 import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
 import { startBackground } from './background.js'
 import './nav.js'
+import { saveWork, getWork, findWorkBySearch, timeAgo } from './works.js'
+import { mountWorksDrawer } from './works-ui.js'
 
 startBackground(document.getElementById('bg-canvas'))
 
@@ -18,6 +20,7 @@ const LS_KEY = 'spline-ar-expo'
 /** @type {{ el: HTMLElement, bitmap?: ImageBitmap, id?: string, scene: string, s, x, y, z, ry }[]} */
 let items = []
 let linkReady = false
+let workId = null // création « Mes créations » ouverte dans l'éditeur
 
 const say = (el, text, kind = '') => { el.textContent = text; el.className = `msg ${kind} ${el.dataset.base || ''}`.trim() }
 
@@ -114,7 +117,7 @@ function expo() {
 function save() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
-      title: titleIn.value,
+      workId, title: titleIn.value,
       items: items.map(({ id, scene, s, x, y, z, ry }) => ({ id, scene, s, x, y, z, ry })),
     }))
   } catch {}
@@ -125,6 +128,7 @@ function restore() {
     const v = JSON.parse(localStorage.getItem(LS_KEY) || 'null')
     if (!v?.items?.length) return false
     titleIn.value = v.title || ''
+    if (v.workId && getWork(v.workId)) workId = v.workId
     v.items.forEach(addItem)
     return true
   } catch { return false }
@@ -139,6 +143,19 @@ async function renderLink() {
   await QRCode.toCanvas(qr, link, { width: 220, margin: 1 })
   $('qr-dl').href = qr.toDataURL('image/png')
   result.classList.add('visible')
+  remember(new URL(link).search)
+}
+
+// Chaque lien créé ou mis à jour est enregistré dans « Mes créations ».
+function remember(search) {
+  const id = saveWork({ id: workId, type: 'musee', search })
+  if (id !== workId) {
+    workId = id
+    window.dispatchEvent(new CustomEvent('works-changed')) // le tiroir marque la création ouverte
+    history.replaceState(null, '', `?w=${encodeURIComponent(id)}`)
+    save()
+  }
+  $('saved-state').textContent = `✓ Enregistré dans Mes créations · ${timeAgo(getWork(id)?.updatedAt || Date.now())}`
 }
 
 createBtn.onclick = async () => {
@@ -167,25 +184,52 @@ $('copy').onclick = async () => {
 }
 
 // ── Modifier une expo existante à partir de son lien ──────────────────────────
-$('import-btn').onclick = () => {
-  const msg = $('import-msg')
-  let url
-  try { url = new URL($('import').value.trim()) } catch { say(msg, 'Ce n\'est pas un lien valide.', 'err'); return }
-  const { title, items: defs } = readItems(url.search)
+// Charge une expo depuis la query string de son lien ; renvoie le nombre d'affiches reprises.
+function loadSearch(search) {
+  const { title, items: defs } = readItems(search)
   const usable = defs.filter(d => ID_RE.test(d.target || ''))
-  if (!usable.length) { say(msg, 'Aucune affiche créée ici dans ce lien.', 'err'); return }
+  if (!usable.length) return 0
   items.forEach(i => i.el.remove())
   items = []
   titleIn.value = title
   usable.forEach(d => addItem({ id: d.target, scene: d.scene, s: d.s, x: d.x, y: d.y, z: d.z, ry: d.ry }))
   linkReady = true
+  return usable.length
+}
+
+$('import-btn').onclick = () => {
+  const msg = $('import-msg')
+  let url
+  try { url = new URL($('import').value.trim()) } catch { say(msg, 'Ce n\'est pas un lien valide.', 'err'); return }
+  const existing = findWorkBySearch('musee', url.search)
+  workId = existing?.id || null
+  const n = loadSearch(url.search)
+  if (!n) { say(msg, 'Aucune affiche créée ici dans ce lien.', 'err'); return }
   changed()
-  say(msg, `${usable.length} affiche${usable.length > 1 ? 's' : ''} chargée${usable.length > 1 ? 's' : ''}.`, 'ok')
+  say(msg, `${n} affiche${n > 1 ? 's' : ''} chargée${n > 1 ? 's' : ''}.`, 'ok')
 }
 
 addBtn.onclick = () => { addItem(); items[items.length - 1].el.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
 titleIn.oninput = changed
 
-if (restore()) linkReady = items.every(i => i.id)
-else addItem()
+// Ouverture : ?w=<création> | lien d'expo (?o=… depuis « Modifier » sur le player) | ?nouveau=1 | brouillon.
+const q = new URLSearchParams(location.search)
+const fromWork = q.get('w') && getWork(q.get('w'))
+if (fromWork) {
+  workId = fromWork.id
+  loadSearch('?' + fromWork.search)
+} else if (q.has('o') || q.has('target')) {
+  workId = findWorkBySearch('musee', location.search)?.id || null
+  if (!loadSearch(location.search)) addItem()
+} else if (q.has('nouveau')) {
+  try { localStorage.removeItem(LS_KEY) } catch {}
+  history.replaceState(null, '', location.pathname)
+  addItem()
+} else if (restore()) {
+  linkReady = items.every(i => i.id)
+} else {
+  addItem()
+}
+if (!items.length) addItem()
 changed()
+mountWorksDrawer({ currentId: () => workId })

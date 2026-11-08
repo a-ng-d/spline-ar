@@ -36,6 +36,16 @@ $('title').innerHTML = title
 $('subtitle').textContent = itemDefs.length > 1
   ? `${itemDefs.length} affiches. Autorise la caméra, puis vise une affiche : sa 3D apparaît dessus.`
   : 'Autorise la caméra, puis vise l\'affiche en entier. La 3D apparaît dessus.'
+// Lien d'une création (pas la démo) : « Modifier » rouvre l'éditeur avec ce lien.
+{
+  const q = new URLSearchParams(location.search)
+  if (q.has('o') || q.has('target')) {
+    const edit = $('edit-link')
+    edit.href = `/musee.html${location.search}`
+    edit.textContent = itemDefs.length > 1 ? 'Modifier ce musée' : 'Modifier cette affiche'
+    edit.hidden = false
+  }
+}
 hintEl.textContent = itemDefs.length > 1 ? 'Vise une affiche' : 'Vise l\'affiche'
 
 function escapeHtml(s) {

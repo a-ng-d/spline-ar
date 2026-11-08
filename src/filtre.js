@@ -4,6 +4,8 @@ import QRCode from 'qrcode'
 import { sceneIssue } from './shared.js'
 import { POINTS, FACE_DEFAULTS, EXPRESSIONS, filterLink, readFilter } from './face-shared.js'
 import { startBackground } from './background.js'
+import { saveWork, getWork, findWorkBySearch, onWorksChanged, timeAgo } from './works.js'
+import { mountWorksDrawer } from './works-ui.js'
 import './nav.js'
 
 startBackground(document.getElementById('bg-canvas'))
@@ -16,6 +18,7 @@ const KEYS = ['s', 'x', 'y', 'z', 'ry']
 const LS_KEY = 'spline-ar-filtre'
 const sliders = Object.fromEntries(KEYS.map(k => [k, document.querySelector(`[data-k=${k}]`)]))
 let linkReady = false
+let workId = null // création « Mes créations » ouverte dans l'éditeur
 
 const say = (el, text, kind = '') => { el.textContent = text; el.className = `msg ${kind}` }
 
@@ -43,7 +46,9 @@ function load(f) {
 async function renderLink() {
   const link = filterLink(location.origin, state())
   linkIn.value = link
-  $('open').href = link
+  remember(new URL(link).search)
+  // « Ouvrir » lance le filtre avec le panneau de réglage en direct, relié à cette création.
+  $('open').href = `${link}&reglage=1&w=${encodeURIComponent(workId)}`
   await QRCode.toCanvas(qr, link, { width: 220, margin: 1 })
   $('qr-dl').href = qr.toDataURL('image/png')
   result.classList.add('visible')
@@ -56,7 +61,18 @@ function changed() {
   createBtn.disabled = !!issue
   createBtn.textContent = linkReady ? 'Mettre à jour mon lien →' : 'Créer mon lien →'
   if (linkReady && !issue) renderLink()
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ ...state(), linkReady })) } catch {}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ ...state(), linkReady, workId })) } catch {}
+}
+
+// Chaque lien créé ou mis à jour est enregistré dans « Mes créations ».
+function remember(search) {
+  const id = saveWork({ id: workId, type: 'filtre', search })
+  if (id !== workId) {
+    workId = id
+    window.dispatchEvent(new CustomEvent('works-changed')) // le tiroir marque la création ouverte
+    history.replaceState(null, '', `?w=${encodeURIComponent(id)}`)
+  }
+  $('saved-state').textContent = `✓ Enregistré dans Mes créations · ${timeAgo(getWork(id)?.updatedAt || Date.now())}`
 }
 
 createBtn.onclick = async () => {
@@ -71,12 +87,35 @@ $('copy').onclick = async () => {
   catch { linkIn.select(); say(createMsg, 'Sélectionne le lien et copie-le.') }
 }
 
-// Ouvert depuis un lien de filtre (…/filtre.html?scene=…) : on reprend ses réglages.
-const fromUrl = new URLSearchParams(location.search).has('scene') ? readFilter(location.search) : null
+// Ouverture : ?w=<création> | lien de filtre (?scene=… depuis « Modifier ») | ?nouveau=1 | brouillon.
+const q = new URLSearchParams(location.search)
+const fromWork = q.get('w') && getWork(q.get('w'))
 let saved = null
 try { saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null') } catch {}
-load(fromUrl || saved || FACE_DEFAULTS)
-linkReady = !!(fromUrl || saved?.linkReady)
+if (fromWork) {
+  workId = fromWork.id
+  load(readFilter('?' + fromWork.search)); linkReady = true
+} else if (q.has('scene')) {
+  workId = findWorkBySearch('filtre', location.search)?.id || null
+  load(readFilter(location.search)); linkReady = true
+} else if (q.has('nouveau')) {
+  history.replaceState(null, '', location.pathname)
+  load(FACE_DEFAULTS)
+} else if (saved) {
+  if (saved.workId && getWork(saved.workId)) workId = saved.workId
+  load(saved); linkReady = !!saved.linkReady
+} else {
+  load(FACE_DEFAULTS)
+}
+
+// Réglage en direct sur visage.html (autre onglet) → on recharge les valeurs ici.
+onWorksChanged(() => {
+  const w = workId && getWork(workId)
+  if (!w) return
+  const cur = new URL(filterLink(location.origin, state())).search.slice(1)
+  if (w.search !== cur) { load(readFilter('?' + w.search)); changed(); say(createMsg, 'Réglages mis à jour depuis le filtre.', 'ok') }
+})
+mountWorksDrawer({ currentId: () => workId })
 
 sceneIn.oninput = changed
 titleIn.oninput = changed
