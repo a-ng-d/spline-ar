@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 // Adresses sans barre finale (/musee, /creer/filtre…) → leur index.html, comme les
 // règles 200 de public/_redirects sur Netlify. Pour `vite` et `vite preview`.
-const PAGES = ['/musee', '/visage', '/creer', '/creer/musee', '/creer/filtre', '/affiches']
+const PAGES = ['/musee', '/musee/affiches', '/filtre', '/creer', '/creer/musee', '/creer/filtre']
 const prettyUrls = {
   name: 'pretty-urls',
   configureServer(server) { server.middlewares.use(rewrite) },
@@ -26,11 +26,11 @@ export default defineConfig({
       input: {
         accueil: resolve(__dirname, 'index.html'),
         musee: resolve(__dirname, 'musee/index.html'),
-        visage: resolve(__dirname, 'visage/index.html'),
+        filtre: resolve(__dirname, 'filtre/index.html'),
         creer: resolve(__dirname, 'creer/index.html'),
         creerMusee: resolve(__dirname, 'creer/musee/index.html'),
         creerFiltre: resolve(__dirname, 'creer/filtre/index.html'),
-        affiches: resolve(__dirname, 'affiches/index.html'),
+        affiches: resolve(__dirname, 'musee/affiches/index.html'),
       },
     },
   },

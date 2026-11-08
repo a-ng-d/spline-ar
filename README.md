@@ -15,13 +15,13 @@ Deux usages, dans le navigateur du téléphone, avec un simple lien :
 |---|---|
 | `/` | Accueil : créer un musée ou un filtre, « Mes créations » (ou deux exemples si la liste est vide) |
 | `/musee?…` | Jouer un musée d'affiches (caméra arrière) |
-| `/visage?…` | Jouer un filtre visage (caméra selfie) |
+| `/filtre?…` | Jouer un filtre visage (caméra selfie) |
 | `/creer` | Choix du parcours |
 | `/creer/musee` | Éditeur de musée : affiches + scènes + réglages → lien + QR |
 | `/creer/filtre` | Éditeur de filtre : scène + point d'ancrage + réglages → lien + QR |
-| `/affiches?a=<id>&a=…` | Galerie des affiches d'un musée, plein écran au clic |
+| `/musee/affiches?a=<id>&a=…` | Les affiches d'un musée, à afficher sur un écran (ou imprimer) pour les viser : galerie, plein écran au clic |
 
-Les pages sont des dossiers (`musee/index.html`…) ; `public/_redirects` sert les adresses sans barre finale (règles 200) et redirige les anciennes (`/visage.html`, `/musee.html`, `/filtre.html`, `/affiche.html`, `/creer.html`). Les anciens liens de musée `/?o=…` sont renvoyés vers `/musee?o=…` par l'accueil. Le plugin `pretty-urls` de `vite.config.js` reproduit les règles 200 en local.
+Les pages sont des dossiers (`musee/index.html`…) ; `public/_redirects` sert les adresses sans barre finale (règles 200) et redirige les anciennes (`/visage`, `/affiches`, `/visage.html`, `/musee.html`, `/filtre.html`, `/affiche.html`, `/creer.html`). Les anciens liens de musée `/?o=…` sont renvoyés vers `/musee?o=…` par l'accueil. Le plugin `pretty-urls` de `vite.config.js` reproduit les règles 200 en local.
 
 Exemples de l'accueil : `EXAMPLES` dans `src/shared.js`.
 
@@ -53,7 +53,7 @@ Repère de l'affiche (moteur 8th Wall) : plan XY, +Z vers le spectateur, le gran
 ## Filtre visage
 
 ```
-https://<site>/visage?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.15&z=0&ry=0&t=<titre>
+https://<site>/filtre?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.15&z=0&ry=0&t=<titre>
 ```
 
 - Moteur 8th Wall `FaceController` (chunk `face`), caméra selfie, affichage en miroir, un visage.

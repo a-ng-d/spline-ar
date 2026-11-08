@@ -1,17 +1,21 @@
 # Proxy du CDN Spline (pas d'en-têtes CORS côté Spline)
-/spline-proxy/*  https://prod.spline.design/:splat  200!
+/spline-proxy/*    https://prod.spline.design/:splat  200!
 
 # Adresses sans barre finale → pages
-/musee          /musee/index.html          200
-/visage         /visage/index.html         200
-/creer          /creer/index.html          200
-/creer/musee    /creer/musee/index.html    200
-/creer/filtre   /creer/filtre/index.html   200
-/affiches       /affiches/index.html       200
+/musee             /musee/index.html            200
+/musee/affiches    /musee/affiches/index.html   200
+/filtre            /filtre/index.html           200
+/creer             /creer/index.html            200
+/creer/musee       /creer/musee/index.html      200
+/creer/filtre      /creer/filtre/index.html     200
 
 # Anciennes adresses (la query string est conservée)
-/visage.html    /visage         301
-/creer.html     /creer          301
-/musee.html     /creer/musee    301
-/filtre.html    /creer/filtre   301
-/affiche.html   /affiches       301
+/visage            /filtre             301
+/visage/           /filtre             301
+/visage.html       /filtre             301
+/affiches          /musee/affiches     301
+/affiches/         /musee/affiches     301
+/affiche.html      /musee/affiches     301
+/creer.html        /creer              301
+/musee.html        /creer/musee        301
+/filtre.html       /creer/filtre       301

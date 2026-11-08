@@ -8,9 +8,10 @@
 //   - réglages en fin de chaîne omis quand ils valent leur défaut
 // Les anciens liens ?scene=…&target=…&s=… restent lisibles.
 //
-// Adresses : /  accueil · /musee  jouer un musée · /visage  jouer un filtre ·
-// /creer  choisir · /creer/musee et /creer/filtre  éditeurs · /affiches  galerie d'affiches.
-// Les anciennes (/?o=…, /visage.html, /musee.html, /filtre.html, /affiche.html) redirigent.
+// Adresses : /  accueil · /musee  jouer un musée · /musee/affiches  les affiches à viser ·
+// /filtre  jouer un filtre · /creer  choisir · /creer/musee et /creer/filtre  éditeurs.
+// Les anciennes (/?o=…, /visage, /affiches, /visage.html, /musee.html, /filtre.html,
+// /affiche.html, /creer.html) redirigent.
 
 // Exemples montrés sur l'accueil quand on n'a encore aucune création.
 export const EXAMPLES = [
@@ -104,7 +105,7 @@ export function galleryLink(origin, { title, items }) {
   const p = new URLSearchParams()
   if (title) p.set('t', title)
   items.forEach(i => p.append('a', i.target))
-  return `${origin}/affiches?${p.toString()}`
+  return `${origin}/musee/affiches?${p.toString()}`
 }
 
 // Message d'erreur pour une URL de scène saisie, ou '' si elle est valide.

@@ -108,7 +108,7 @@ if (fromWork) {
   load(FACE_DEFAULTS)
 }
 
-// Réglage en direct sur /visage (autre onglet) → on recharge les valeurs ici.
+// Réglage en direct sur /filtre (autre onglet) → on recharge les valeurs ici.
 onWorksChanged(() => {
   const w = workId && getWork(workId)
   if (!w) return

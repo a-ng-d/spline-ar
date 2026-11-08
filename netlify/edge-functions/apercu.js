@@ -11,7 +11,7 @@ export default async (request, context) => {
 
   const q = url.searchParams
   const title = (q.get('t') || '').slice(0, 80)
-  const isFace = url.pathname.startsWith('/visage')  // sinon /musee
+  const isFace = url.pathname.startsWith('/filtre')  // sinon /musee
   const count = q.getAll('o').length || (q.has('target') || q.has('scene') ? 1 : 0)
 
   let kind, desc
@@ -44,4 +44,4 @@ export default async (request, context) => {
   return new Response(html, { status: res.status, headers })
 }
 
-export const config = { path: ['/musee', '/musee/', '/visage', '/visage/'] }
+export const config = { path: ['/musee', '/musee/', '/filtre', '/filtre/'] }

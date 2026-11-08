@@ -1,6 +1,6 @@
 // Filtre visage : format du lien et points d'ancrage, communs au player et au créateur.
 //
-//   /visage?scene=<id Spline ou URL .glb>&p=<point>&s=…&x=…&y=…&z=…&ry=…&t=<titre>
+//   /filtre?scene=<id Spline ou URL .glb>&p=<point>&s=…&x=…&y=…&z=…&ry=…&t=<titre>
 //   s, x, y, z en largeur de visage ; ry en degrés.
 
 import { sceneRef } from './shared.js'
@@ -41,5 +41,5 @@ export function filterLink(origin, f) {
   q.set('scene', sceneRef(f.scene))
   if (f.p !== FACE_DEFAULTS.p) q.set('p', f.p)
   NUMS.forEach(k => { if (Number.isFinite(f[k]) && f[k] !== FACE_DEFAULTS[k]) q.set(k, String(+f[k].toFixed(3))) })
-  return `${origin}/visage?${q.toString()}`
+  return `${origin}/filtre?${q.toString()}`
 }
