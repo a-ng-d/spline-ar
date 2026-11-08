@@ -15,7 +15,7 @@
 
 // Modèles montrés sur l'accueil (section « Pour commencer »).
 export const EXAMPLES = [
-  { type: 'musee', search: 't=Affiche+myst%C3%A8re&o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
+  { type: 'musee', search: 't=Affiches+myst%C3%A8res&o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
   { type: 'filtre', search: 't=Filtre+myst%C3%A8re&scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
 ]
 

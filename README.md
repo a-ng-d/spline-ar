@@ -13,7 +13,7 @@ Deux usages, dans le navigateur du téléphone, avec un simple lien :
 
 | Adresse | Rôle |
 |---|---|
-| `/` | Accueil : créer un musée ou un filtre, « Pour commencer » (deux modèles : Affiche mystère, Filtre mystère) et « Mes créations » |
+| `/` | Accueil : créer un musée ou un filtre, « Pour commencer » (deux modèles : Affiches mystères, Filtre mystère) et « Mes créations » |
 | `/musee?…` | Jouer un musée d'affiches (caméra arrière) |
 | `/filtre?…` | Jouer un filtre visage (caméra selfie) |
 | `/creer` | Choix du parcours |
