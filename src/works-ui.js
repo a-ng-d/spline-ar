@@ -9,11 +9,13 @@ function el(tag, cls, text) {
 }
 
 // Remplit `container` avec la liste ; `currentId` = création ouverte dans l'éditeur.
-export function renderWorks(container, { currentId = null, emptyText } = {}) {
+export function renderWorks(container, { currentId = null, emptyText, onEmpty, onDraw } = {}) {
   const draw = () => {
     const cur = typeof currentId === 'function' ? currentId() : currentId
     const works = listWorks()
     container.replaceChildren()
+    onDraw?.(works.length)
+    if (!works.length && onEmpty) { onEmpty(container); return }
     if (!works.length) {
       container.append(el('p', 'help works-empty', emptyText ||
         'Rien pour l\'instant. Tes musées et filtres apparaîtront ici dès que tu crées leur lien.'))
@@ -64,8 +66,8 @@ export function mountWorksDrawer({ currentId = null } = {}) {
   head.append(close)
   const list = el('div', 'works')
   const foot = el('div', 'drawer-foot')
-  const nm = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau musée'); nm.href = '/musee.html?nouveau=1'
-  const nf = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau filtre'); nf.href = '/filtre.html?nouveau=1'
+  const nm = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau musée'); nm.href = '/creer/musee?nouveau=1'
+  const nf = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau filtre'); nf.href = '/creer/filtre?nouveau=1'
   foot.append(nm, nf)
   const note = el('p', 'help', 'Enregistrées dans ce navigateur. Le lien d\'une création sert aussi de sauvegarde : ouvre-le puis « Modifier ».')
   drawer.append(head, list, foot, note)

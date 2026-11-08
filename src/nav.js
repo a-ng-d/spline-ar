@@ -2,9 +2,9 @@
 // <nav class="topnav" data-trail="creer,musee"></nav> ; la dernière étape est la page courante.
 const STEPS = {
   accueil: { label: 'Accueil', href: '/' },
-  creer: { label: 'Créer', href: '/creer.html' },
-  musee: { label: 'Musée', href: '/musee.html' },
-  filtre: { label: 'Filtre visage', href: '/filtre.html' },
+  creer: { label: 'Créer', href: '/creer' },
+  musee: { label: 'Musée', href: '/creer/musee' },
+  filtre: { label: 'Filtre visage', href: '/creer/filtre' },
   affiches: { label: 'Affiches', href: null },
 }
 

@@ -34,8 +34,8 @@ document.title = `${cfg.title || 'Filtre visage'} · Spline AR`
 if (params.has('scene')) {
   const edit = $('edit-link')
   edit.href = workId && getWork(workId)
-    ? `/filtre.html?w=${encodeURIComponent(workId)}`
-    : `/filtre.html${new URL(filterLink(location.origin, cfg)).search}`
+    ? `/creer/filtre?w=${encodeURIComponent(workId)}`
+    : `/creer/filtre${new URL(filterLink(location.origin, cfg)).search}`
   edit.hidden = false
 }
 

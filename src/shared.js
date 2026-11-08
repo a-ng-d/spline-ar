@@ -1,12 +1,22 @@
 // Utilitaires communs au player, à la page Créer et à la galerie d'affiches.
 //
 // Format du lien (sans base de données pour la collection, comme SplineXR) :
-//   /?o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…&t=<titre>
+//   /musee?o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…&t=<titre>
 //   - une « œuvre » par paramètre o (jusqu'à MAX_ITEMS)
 //   - <cible>  identifiant créé sur la page Créer (ou URL d'un JSON de cible, encodée)
 //   - <scène>  identifiant Spline (prod.spline.design/<id>/scene.splinecode) ou URL .glb encodée
 //   - réglages en fin de chaîne omis quand ils valent leur défaut
 // Les anciens liens ?scene=…&target=…&s=… restent lisibles.
+//
+// Adresses : /  accueil · /musee  jouer un musée · /visage  jouer un filtre ·
+// /creer  choisir · /creer/musee et /creer/filtre  éditeurs · /affiches  galerie d'affiches.
+// Les anciennes (/?o=…, /visage.html, /musee.html, /filtre.html, /affiche.html) redirigent.
+
+// Exemples montrés sur l'accueil quand on n'a encore aucune création.
+export const EXAMPLES = [
+  { type: 'musee', search: 't=Affiche+myst%C3%A8re&o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
+  { type: 'filtre', search: 't=Filtre+myst%C3%A8re&scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
+]
 
 export const MAX_ITEMS = 32   // affiches cherchées par le moteur 8th Wall
 export const MAX_TRACKED = 4  // affiches suivies en même temps
@@ -87,14 +97,14 @@ export function playerLink(origin, { title, items }) {
   const p = new URLSearchParams()
   if (title) p.set('t', title)
   items.forEach(i => p.append('o', encodeItem(i)))
-  return `${origin}/?${p.toString()}`
+  return `${origin}/musee?${p.toString()}`
 }
 
 export function galleryLink(origin, { title, items }) {
   const p = new URLSearchParams()
   if (title) p.set('t', title)
   items.forEach(i => p.append('a', i.target))
-  return `${origin}/affiche.html?${p.toString()}`
+  return `${origin}/affiches?${p.toString()}`
 }
 
 // Message d'erreur pour une URL de scène saisie, ou '' si elle est valide.

@@ -41,7 +41,7 @@ $('subtitle').textContent = itemDefs.length > 1
   const q = new URLSearchParams(location.search)
   if (q.has('o') || q.has('target')) {
     const edit = $('edit-link')
-    edit.href = `/musee.html${location.search}`
+    edit.href = `/creer/musee${location.search}`
     edit.textContent = itemDefs.length > 1 ? 'Modifier ce musée' : 'Modifier cette affiche'
     edit.hidden = false
   }

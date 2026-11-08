@@ -13,8 +13,8 @@ import { readFilter } from './face-shared.js'
 
 const KEY = 'spline-ar-creations'
 export const TYPES = {
-  musee: { label: 'Musée', editor: '/musee.html', player: '/' },
-  filtre: { label: 'Filtre visage', editor: '/filtre.html', player: '/visage.html' },
+  musee: { label: 'Musée', editor: '/creer/musee', player: '/musee' },
+  filtre: { label: 'Filtre visage', editor: '/creer/filtre', player: '/visage' },
 }
 
 function read() {
@@ -83,7 +83,7 @@ export function timeAgo(ts) {
   return d < 30 ? `il y a ${d} j` : new Date(ts).toLocaleDateString('fr-FR')
 }
 
-// Synchronisation entre onglets (ex. réglage en direct sur visage.html → éditeur filtre).
+// Synchronisation entre onglets (ex. réglage en direct sur /visage → éditeur filtre).
 export function onWorksChanged(fn) {
   window.addEventListener('works-changed', fn)
   window.addEventListener('storage', e => { if (e.key === KEY) fn() })

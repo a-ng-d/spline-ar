@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Spline AR</title>
+  <!-- Moteur 8th Wall (binaire distribué, licence d'usage limité) + utilitaires XR Extras -->
+  <script src="https://cdn.jsdelivr.net/npm/@8thwall/xrextras@1.0.0/dist/xrextras.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1.0.0/dist/xr.js" async crossorigin="anonymous" data-preload-chunks="slam"></script>
+  <link rel="stylesheet" href="/src/theme.css" />
+  <style>
+    html, body { width: 100%; height: 100%; overflow: hidden }
+    #camerafeed { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block }
+    /* Runtime Spline : un canvas transparent par œuvre, au-dessus de la caméra, reçoit les touchers. */
+    .spline-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block;
+      z-index: 5; background: transparent; visibility: hidden; touch-action: none; outline: none }
+
+    #start {
+      position: fixed; inset: 0; z-index: 20; padding: 24px; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .5s, transform .5s;
+    }
+    #kicker { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent2); background: rgba(62,207,207,.1); border: 1px solid rgba(62,207,207,.25);
+      border-radius: 100px; padding: 3px 10px; margin-bottom: 10px }
+    #start.out { opacity: 0; pointer-events: none; transform: scale(.96) }
+    #start .card { position: relative; z-index: 1 }
+    #progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted) }
+    #progress:empty { display: none }
+    #progress:not(:empty)::before { content: ''; width: 18px; height: 18px; border-radius: 50%; flex: none;
+      border: 2px solid var(--border); border-top-color: var(--accent); border-right-color: var(--accent2);
+      animation: spin .8s linear infinite }
+    #error { display: none; font-size: 12px; color: var(--danger); background: rgba(240,91,91,.1);
+      border: 1px solid rgba(240,91,91,.25); border-radius: 10px; padding: 10px 12px }
+    #error.visible { display: block }
+
+    #hint, #badge { position: fixed; left: 50%; transform: translateX(-50%); z-index: 10;
+      pointer-events: none; transition: opacity .3s; opacity: 0 }
+    #hint { bottom: 36px }
+    #badge { top: 20px; color: var(--accent2); border-color: rgba(62,207,207,.3) }
+    #hint.visible, #badge.visible { opacity: 1 }
+    #credit { position: fixed; right: 10px; bottom: 8px; z-index: 6; font-size: 11px; opacity: .6 }
+    #credit a { color: inherit }
+    #debug { position: fixed; top: 8px; left: 8px; z-index: 30; display: none; max-width: 92vw;
+      font: 11px/1.4 var(--mono); color: #7fff7f; background: rgba(0,0,0,.8);
+      padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; pointer-events: none }
+  </style>
+</head>
+<body>
+  <canvas id="camerafeed"></canvas>
+  <div id="credit"><a href="https://spline.design" target="_blank" rel="noopener">Made with Spline</a></div>
+
+  <div id="start">
+    <canvas id="bg-canvas"></canvas>
+    <div class="card">
+      <div class="logo"><span class="logo-dot"></span>Spline AR</div>
+      <div>
+        <div id="kicker"></div>
+        <h1 id="title">Une affiche en <span>réalité augmentée</span></h1>
+        <p id="subtitle" class="lead"></p>
+      </div>
+      <div id="progress">Chargement…</div>
+      <div id="error"></div>
+      <button id="btn-start" class="btn btn-primary btn-block" disabled>Lancer l'AR →</button>
+      <div class="divider">ou</div>
+      <a id="edit-link" class="btn btn-ghost btn-block" hidden>Modifier ce musée</a>
+      <a href="/creer" class="btn btn-ghost btn-block">Créer un musée ou un filtre</a>
+      <a href="/" class="btn btn-ghost btn-sm" style="align-self:center">← Accueil</a>
+    </div>
+  </div>
+
+  <div id="hint" class="pill">Vise l'affiche</div>
+  <div id="badge" class="pill"></div>
+  <button id="quit" class="pill quit" title="Quitter l'AR">✕ Quitter</button>
+  <div id="debug"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
