@@ -147,6 +147,7 @@ function faceModule() {
       debug('moteur', `three r${THREE.REVISION} · ${kind} · point ${cfg.p}`)
     },
     onUpdate: () => { mixer?.update(clock.getDelta()) },
+    onCameraStatusChange: onCameraStatus,
     listeners: [
       { event: 'facecontroller.facefound', process: ({ detail }) => onFace(detail) },
       { event: 'facecontroller.faceupdated', process: ({ detail }) => onFace(detail) },
@@ -220,14 +221,40 @@ function start() {
     XRExtras.RuntimeError.pipelineModule(),
     faceModule(),
   ])
+  run(isMobile() ? 'FRONT' : 'ANY')
+}
+
+// Sur téléphone : caméra avant. Le moteur l'exige « exactement » (facingMode exact: user) ;
+// les webcams d'ordinateur ne déclarent pas d'orientation et seraient refusées, d'où ANY.
+function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform)) // iPadOS
+}
+
+let direction = null
+let retried = false
+function run(dir) {
+  direction = dir
+  debug('caméra', dir === 'FRONT' ? 'avant (selfie)' : 'par défaut')
   try {
     XR8.run({
       canvas: $('camerafeed'),
-      cameraConfig: { direction: XR8.XrConfig.camera().FRONT },
+      cameraConfig: { direction: XR8.XrConfig.camera()[dir] },
       allowedDevices: XR8.XrConfig.device().ANY,
     })
   } catch (err) {
     fail('Le lancement de la caméra a échoué.', err)
+  }
+}
+
+// Si la caméra avant est refusée, on réessaie une fois avec la caméra par défaut.
+function onCameraStatus({ status, reason }) {
+  debug('caméra état', reason ? `${status} (${reason.name || reason})` : status)
+  if (status !== 'failed') return
+  if (direction === 'FRONT' && !retried) {
+    retried = true
+    XR8.stop()
+    setTimeout(() => run('ANY'), 300)
   }
 }
 
