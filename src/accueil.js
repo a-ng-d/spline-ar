@@ -1,4 +1,4 @@
-// Accueil : « Mes créations », ou les exemples tant qu'on n'a rien créé.
+// Accueil : « Pour commencer » (modèles) et « Mes créations », toujours les deux.
 import { startBackground } from './background.js'
 import { renderWorks } from './works-ui.js'
 import { describe, TYPES } from './works.js'
@@ -15,7 +15,7 @@ function el(tag, cls, text) {
   return e
 }
 
-// Exemples : mêmes lignes que « Mes créations », avec Jouer / Affiches / Copier dans mes créations.
+// Modèles : mêmes lignes que « Mes créations », avec Jouer / Affiches / Copier dans mes créations.
 function renderExamples(container) {
   for (const ex of EXAMPLES) {
     const d = describe({ ...ex, id: '' })
@@ -44,13 +44,15 @@ function renderExamples(container) {
   }
 }
 
+renderExamples($('examples'))
+
 renderWorks($('works'), {
-  onEmpty: renderExamples,
+  emptyText: 'Rien pour l\'instant. Crée un musée ou un filtre, ou pars d\'un modèle avec « Modifier » : tes créations apparaîtront ici.',
   onDraw: count => {
-    $('list-label').textContent = count ? 'Mes créations' : 'Pour commencer'
-    $('list-tag').hidden = !!count
+    $('count').hidden = !count
+    $('count').textContent = count
     $('list-help').textContent = count
       ? 'Enregistrées dans ce navigateur. Le lien d\'une création sert aussi de sauvegarde : ouvre-le, puis « Modifier ».'
-      : 'Deux exemples à essayer : ouvre « Affiches » sur un ordinateur et vise l\'écran avec ton téléphone, ou lance le filtre en selfie. « Modifier » en fait une copie à toi.'
+      : ''
   },
 })

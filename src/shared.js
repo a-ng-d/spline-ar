@@ -13,7 +13,7 @@
 // Les anciennes (/?o=…, /visage, /affiches, /visage.html, /musee.html, /filtre.html,
 // /affiche.html, /creer.html) redirigent.
 
-// Exemples montrés sur l'accueil quand on n'a encore aucune création.
+// Modèles montrés sur l'accueil (section « Pour commencer »).
 export const EXAMPLES = [
   { type: 'musee', search: 't=Affiche+myst%C3%A8re&o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
   { type: 'filtre', search: 't=Filtre+myst%C3%A8re&scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
