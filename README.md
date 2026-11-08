@@ -1,6 +1,9 @@
 # Spline AR
 
-Faire sortir une scène 3D d'une affiche, dans le navigateur du téléphone, avec un simple lien.
+Deux usages, dans le navigateur du téléphone, avec un simple lien :
+
+- **Musée d'affiches** : une scène 3D sort de chaque affiche visée (caméra arrière).
+- **Filtre visage** façon Snapchat : une scène 3D s'accroche au visage et réagit aux expressions (caméra selfie).
 
 - **Suivi de l'affiche** : moteur [8th Wall](https://8thwall.org) (binaire distribué, chargé depuis jsDelivr), image target, sans suivi du monde.
 - **Scène Spline** : runtime Spline officiel (`@splinetool/runtime`) — animations, états, sons et interactions comme dans Spline.
@@ -10,8 +13,11 @@ Faire sortir une scène 3D d'une affiche, dans le navigateur du téléphone, ave
 
 | Page | Rôle |
 |---|---|
-| `/creer.html` | Une ou plusieurs affiches, chacune avec sa scène et ses réglages → un lien « expo » + QR code. Un lien existant peut être rechargé pour être modifié |
+| `/creer.html` | Choix du parcours : musée ou filtre visage |
+| `/musee.html` | Une ou plusieurs affiches, chacune avec sa scène et ses réglages → un lien « expo » + QR code. Un lien existant peut être rechargé pour être modifié |
 | `/` | Le player AR (le lien) : jusqu'à 32 affiches cherchées, 4 suivies en même temps |
+| `/filtre.html` | Scène + point d'ancrage + réglages → lien + QR (rien n'est envoyé au serveur) |
+| `/visage.html` | Le filtre visage (le lien) |
 | `/affiche.html?a=<id>&a=…` | Galerie des affiches d'une expo, plein écran au clic (← → pour passer de l'une à l'autre) ; `?target=<id>` = une seule affiche |
 
 ## Le lien
@@ -38,6 +44,17 @@ Options : `moteur=loader` (ancien rendu three.js, scènes Spline figées), `debu
 Chargement : la scène de la première œuvre est préchargée, les autres à la première détection de leur affiche. Au plus 4 scènes Spline restent en mémoire ; la plus ancienne hors champ est libérée au besoin.
 
 Repère de l'affiche (moteur 8th Wall) : plan XY, +Z vers le spectateur, le grand côté du 3:4 vaut 1. La 3D est centrée sur l'affiche, son arrière posé sur le plan.
+
+## Filtre visage
+
+```
+https://<site>/visage.html?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.15&z=0&ry=0&t=<titre>
+```
+
+- Moteur 8th Wall `FaceController` (chunk `face`), caméra selfie, affichage en miroir, un visage.
+- `p` : point d'ancrage du moteur — `forehead` (défaut), `noseBridge`, `noseTip`, `mouth`, `chin`, `leftEar`, `rightEar`, ou `face` (centre). `s`, `x`, `y`, `z` en largeur de visage.
+- **Expressions → variables Spline** : si la scène déclare une variable booléenne `bouche`, `clinGauche`, `clinDroit` ou `sourcils`, elle passe à vrai pendant l'expression (`app.setVariable`). Dans Spline, un événement « Variable Change » déclenche l'animation ou le son.
+- Pas d'occultation par la tête : un objet derrière la tête (branches de lunettes, arrière d'un chapeau) reste visible.
 
 ## Comment le runtime Spline est piloté
 

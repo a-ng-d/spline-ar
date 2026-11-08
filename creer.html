@@ -6,40 +6,23 @@
   <title>Spline AR — Créer</title>
   <link rel="stylesheet" href="/src/theme.css" />
   <style>
-    body { min-height: 100vh; padding: 32px 16px 80px }
-    main { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px }
-    main .card { max-width: none }
-
-    .art-head { display: flex; align-items: center; justify-content: space-between; gap: 10px }
-    .art-num { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px }
-    .art-num b { width: 24px; height: 24px; border-radius: 50%; background: rgba(123,110,246,.15);
-      border: 1px solid rgba(123,110,246,.4); color: var(--accent); display: inline-flex; align-items: center;
-      justify-content: center; font-size: 12px }
-
-    .drop { position: relative; display: flex; align-items: center; gap: 14px; border: 1px dashed var(--border);
-      border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color .15s, background .15s }
-    .drop:hover { border-color: var(--accent); background: rgba(123,110,246,.06) }
-    .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer }
-    .drop img { width: 72px; height: 96px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,.04); flex: none }
-    .drop img[hidden] + .drop-text { padding: 26px 0 }
-    .drop-text { font-size: 13px; line-height: 1.45 }
-    .drop-text small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px }
-
-    details { border-top: 1px solid var(--border); padding-top: 12px }
-    summary { cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--muted); list-style: none; display: flex; align-items: center; gap: 8px }
-    summary::-webkit-details-marker { display: none }
-    summary::before { content: '▶'; color: var(--accent); font-size: 9px; transition: transform .15s }
-    details[open] summary::before { transform: rotate(90deg) }
-    .row { display: grid; grid-template-columns: 112px 1fr 48px; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px }
-    .row output { text-align: right; font: 12px var(--mono); color: var(--muted) }
-
-    #result { display: none; flex-direction: column; gap: 14px }
-    #result.visible { display: flex }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px }
-    #qr-wrap { display: flex; justify-content: center }
-    #qr { background: #fff; border-radius: 12px; padding: 10px; width: 220px; height: 220px }
-    .counter { font-size: 12px; color: var(--muted); text-align: center }
+    body { min-height: 100vh; padding: 32px 16px; display: flex; align-items: center; justify-content: center }
+    main { position: relative; z-index: 1; width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 16px }
+    main > .card { max-width: none }
+    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+    @media (max-width: 560px) { .choices { grid-template-columns: 1fr } }
+    .choice { display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: var(--text);
+      background: transparent; border: 1px solid var(--border); border-radius: var(--r); padding: 20px;
+      transition: background .15s, border-color .15s, transform .15s }
+    .choice:hover { background: rgba(123,110,246,.08); border-color: var(--accent); transform: translateY(-1px) }
+    .choice.face:hover { background: rgba(62,207,207,.08); border-color: var(--accent2) }
+    .choice-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      background: rgba(123,110,246,.15); border: 1px solid rgba(123,110,246,.4); color: var(--accent); font-size: 20px }
+    .choice.face .choice-icon { background: rgba(62,207,207,.1); border-color: rgba(62,207,207,.3); color: var(--accent2) }
+    .choice h2 { font-size: 16px; font-weight: 700; letter-spacing: -.01em }
+    .choice p { font-size: 13px; color: var(--muted); line-height: 1.5 }
+    .choice .go { margin-top: auto; font-size: 12px; font-weight: 600; color: var(--accent) }
+    .choice.face .go { color: var(--accent2) }
   </style>
 </head>
 <body>
@@ -48,76 +31,28 @@
   <div class="card">
     <div class="logo"><span class="logo-dot"></span>Spline AR</div>
     <div>
-      <h1>Crée ton <span>expo AR</span></h1>
-      <p class="lead">Une ou plusieurs affiches, chacune avec sa scène Spline. Un seul lien : le téléphone qui vise une affiche voit sa 3D en sortir.</p>
+      <h1>Que veux-tu <span>créer</span> ?</h1>
+      <p class="lead">Dans les deux cas, ta 3D vient de Spline (Export → Code) et tu obtiens un lien + un QR code à partager.</p>
     </div>
-    <div>
-      <div class="section-label">Nom de l'expo (facultatif)</div>
-      <input id="title" type="text" class="plain" maxlength="80" placeholder="Ex. : Bestiaire — 2e année" />
-    </div>
-    <div class="divider">ou modifie une expo existante</div>
-    <div style="display:flex;gap:8px">
-      <input id="import" type="url" placeholder="Colle le lien de ton expo" />
-      <button id="import-btn" class="btn btn-sm btn-ghost">Charger</button>
-    </div>
-    <div id="import-msg" class="msg"></div>
-  </div>
-
-  <div id="list" style="display:flex;flex-direction:column;gap:16px"></div>
-
-  <button id="add" class="btn btn-ghost btn-block">＋ Ajouter une affiche</button>
-  <div id="counter" class="counter"></div>
-
-  <div class="card">
-    <button id="create" class="btn btn-primary btn-block" disabled>Créer mon lien →</button>
-    <div id="create-msg" class="msg"></div>
-    <div id="result">
-      <div>
-        <div class="section-label">Ton lien</div>
-        <input id="link" type="text" readonly />
-      </div>
-      <div class="actions">
-        <button id="copy" class="btn btn-sm btn-ghost">Copier</button>
-        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener">Ouvrir</a>
-        <a id="gallery" class="btn btn-sm btn-ghost" target="_blank" rel="noopener">Afficher les affiches</a>
-        <a id="qr-dl" class="btn btn-sm btn-ghost" download="qr-expo-ar.png">Télécharger le QR</a>
-      </div>
-      <div id="qr-wrap"><canvas id="qr" width="220" height="220"></canvas></div>
-      <p class="help" style="text-align:center">Pour tester : ouvre « Afficher les affiches » sur l'ordinateur, scanne le QR avec le téléphone et vise l'écran.</p>
+    <div class="choices">
+      <a class="choice" href="/musee.html">
+        <span class="choice-icon">▦</span>
+        <h2>Un musée d'affiches</h2>
+        <p>Une ou plusieurs affiches. Le téléphone qui vise une affiche voit sa scène 3D en sortir. Caméra arrière.</p>
+        <span class="go">Créer un musée →</span>
+      </a>
+      <a class="choice face" href="/filtre.html">
+        <span class="choice-icon">☺</span>
+        <h2>Un filtre visage</h2>
+        <p>Façon Snapchat : ta scène s'accroche au visage (front, nez, menton…) et réagit aux expressions. Caméra selfie.</p>
+        <span class="go">Créer un filtre →</span>
+      </a>
     </div>
   </div>
 </main>
-
-<template id="art-tpl">
-  <section class="card art">
-    <div class="art-head">
-      <div class="art-num"><b></b><span>Affiche</span></div>
-      <button class="btn btn-sm btn-danger remove" title="Retirer cette affiche">✕</button>
-    </div>
-    <label class="drop">
-      <input class="file" type="file" accept="image/jpeg,image/png,image/webp" />
-      <img class="thumb" alt="" hidden />
-      <span class="drop-text">Choisis l'image de l'affiche<small>JPG ou PNG, 480 × 640 px minimum, riche en détails. Zone utilisée : le centre, au format 3:4.</small></span>
-    </label>
-    <div class="msg file-msg"></div>
-    <div>
-      <div class="section-label">Scène</div>
-      <input class="scene" type="url" placeholder="URL Spline (prod.spline.design/…) ou identifiant" />
-      <p class="help">Dans Spline : <b>Export → Code</b>, copie l'URL qui finit par <code>scene.splinecode</code>. Un lien <code>.glb</code> marche aussi.</p>
-      <div class="msg scene-msg"></div>
-    </div>
-    <details>
-      <summary>Réglages</summary>
-      <div class="row"><label>Taille</label><input data-k="s" type="range" min="0.1" max="2" step="0.05" /><output></output></div>
-      <div class="row"><label>Gauche / droite</label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Bas / haut</label><input data-k="y" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Décollement</label><input data-k="z" type="range" min="0" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Rotation</label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
-      <p class="help">En largeur d'affiche (1 = toute la largeur). Modifier un réglage ne renvoie pas l'image.</p>
-    </details>
-  </section>
-</template>
-
-<script type="module" src="/src/creer.js"></script>
+<script type="module">
+  import { startBackground } from '/src/background.js'
+  startBackground(document.getElementById('bg-canvas'))
+</script>
 </body>
 </html>

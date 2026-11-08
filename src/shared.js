@@ -96,3 +96,19 @@ export function galleryLink(origin, { title, items }) {
   items.forEach(i => p.append('a', i.target))
   return `${origin}/affiche.html?${p.toString()}`
 }
+
+// Message d'erreur pour une URL de scène saisie, ou '' si elle est valide.
+export function sceneIssue(value) {
+  const v = (value || '').trim()
+  if (!v) return 'Colle l\'URL de ta scène.'
+  const ref = sceneRef(v)
+  if (SCENE_ID_RE.test(ref)) return ''
+  let u
+  try { u = new URL(v) } catch { return 'Ce n\'est ni une URL ni un identifiant Spline.' }
+  if (u.protocol !== 'https:') return 'L\'URL doit commencer par https://'
+  if (/\.(glb|gltf)$/i.test(u.pathname)) return ''
+  if (u.hostname.endsWith('spline.design')) {
+    return 'Ce lien Spline n\'est pas le bon : utilise Export → Code et copie l\'URL qui finit par scene.splinecode.'
+  }
+  return 'L\'URL doit finir par scene.splinecode (Spline) ou .glb.'
+}

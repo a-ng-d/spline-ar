@@ -1,8 +1,8 @@
-// Page Créer : une ou plusieurs affiches → cibles 8th Wall (dans le navigateur) →
+// Page Créer un musée : une ou plusieurs affiches → cibles 8th Wall (dans le navigateur) →
 // stockage → un lien « expo » + QR. La collection vit dans le lien, pas en base.
 import QRCode from 'qrcode'
 import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget } from './target-maker.js'
-import { playerLink, galleryLink, readItems, sceneRef, posterUrl, ID_RE, SCENE_ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
+import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
 import { startBackground } from './background.js'
 
 startBackground(document.getElementById('bg-canvas'))
@@ -19,22 +19,6 @@ let items = []
 let linkReady = false
 
 const say = (el, text, kind = '') => { el.textContent = text; el.className = `msg ${kind} ${el.dataset.base || ''}`.trim() }
-
-// ── Scène ─────────────────────────────────────────────────────────────────────
-function sceneIssue(value) {
-  const v = (value || '').trim()
-  if (!v) return 'Colle l\'URL de ta scène.'
-  const ref = sceneRef(v)
-  if (SCENE_ID_RE.test(ref)) return ''
-  let u
-  try { u = new URL(v) } catch { return 'Ce n\'est ni une URL ni un identifiant Spline.' }
-  if (u.protocol !== 'https:') return 'L\'URL doit commencer par https://'
-  if (/\.(glb|gltf)$/i.test(u.pathname)) return ''
-  if (u.hostname.endsWith('spline.design')) {
-    return 'Ce lien Spline n\'est pas le bon : utilise Export → Code et copie l\'URL qui finit par scene.splinecode.'
-  }
-  return 'L\'URL doit finir par scene.splinecode (Spline) ou .glb.'
-}
 
 // ── Une affiche dans la liste ─────────────────────────────────────────────────
 function addItem(data = {}) {

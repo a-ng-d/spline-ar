@@ -11,6 +11,9 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         creer: resolve(__dirname, 'creer.html'),
+        musee: resolve(__dirname, 'musee.html'),
+        filtre: resolve(__dirname, 'filtre.html'),
+        visage: resolve(__dirname, 'visage.html'),
         affiche: resolve(__dirname, 'affiche.html'),
       },
     },
