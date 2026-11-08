@@ -20,6 +20,9 @@
       display: flex; align-items: center; justify-content: center;
       transition: opacity .5s, transform .5s;
     }
+    #kicker { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent2); background: rgba(62,207,207,.1); border: 1px solid rgba(62,207,207,.25);
+      border-radius: 100px; padding: 3px 10px; margin-bottom: 10px }
     #start.out { opacity: 0; pointer-events: none; transform: scale(.96) }
     #start .card { position: relative; z-index: 1 }
     #progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted) }
@@ -52,6 +55,7 @@
     <div class="card">
       <div class="logo"><span class="logo-dot"></span>Spline AR</div>
       <div>
+        <div id="kicker">Filtre visage</div>
         <h1 id="title">Un filtre <span>visage</span></h1>
         <p id="subtitle" class="lead">Autorise la caméra, puis place ton visage face à l'écran. Ouvre la bouche, cligne de l'œil, lève les sourcils : la scène peut réagir.</p>
       </div>

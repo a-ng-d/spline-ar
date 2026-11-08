@@ -27,6 +27,9 @@ const startEl = $('start'), btnStart = $('btn-start'), progressEl = $('progress'
 const errorEl = $('error'), hintEl = $('hint'), debugEl = $('debug'), badgeEl = $('badge')
 const stopBackground = startBackground($('bg-canvas'))
 
+const kind = itemDefs.length > 1 ? `Musée · ${itemDefs.length} affiches` : 'Affiche AR'
+$('kicker').textContent = kind
+document.title = `${title || kind} · Spline AR`
 $('title').innerHTML = title
   ? escapeHtml(title)
   : itemDefs.length > 1 ? 'Une expo en <span>réalité augmentée</span>' : 'Une affiche en <span>réalité augmentée</span>'

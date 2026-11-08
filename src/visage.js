@@ -25,6 +25,7 @@ const startEl = $('start'), btnStart = $('btn-start'), progressEl = $('progress'
 const errorEl = $('error'), hintEl = $('hint'), debugEl = $('debug')
 const stopBackground = startBackground($('bg-canvas'))
 if (cfg.title) $('title').textContent = cfg.title
+document.title = `${cfg.title || 'Filtre visage'} · Spline AR`
 
 function fail(msg, err) {
   console.error('[SplineAR]', msg, err || '')

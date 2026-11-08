@@ -78,6 +78,10 @@ Une cible = un JSON + son image de luminance (niveaux de gris, 640 px de haut, r
 - Post-processing Spline : non garanti sur fond transparent.
 - `POST /api/cibles` est ouvert (pas de compte) : taille des images limitée côté serveur.
 
+## Titre et aperçu des liens
+
+Le titre `t` s'affiche sur l'écran d'accueil (avec une étiquette « Musée · N affiches », « Affiche AR » ou « Filtre visage ») et dans l'onglet. `netlify/edge-functions/apercu.js` l'écrit aussi dans le HTML servi (`<title>`, Open Graph) pour l'aperçu des liens partagés (WhatsApp, Slack, mail).
+
 ## Design
 
 Tokens et composants repris de SplineXR (`src/theme.css`, fond animé `src/background.js`) : fond `#06060f`, violet `#7b6ef6`, cyan `#3ecfcf`, DM Sans, cartes en verre.
