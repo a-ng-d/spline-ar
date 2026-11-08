@@ -1,5 +1,6 @@
 // Spline AR — filtre visage façon Snapchat.
-// Moteur 8th Wall (FaceController, caméra selfie) pour le suivi du visage ; la scène Spline
+// Moteur 8th Wall (FaceController, caméra selfie) pour le suivi du visage. Le chunk « slam »
+// est aussi préchargé : XR8.Threejs appelle XR8.XrController au démarrage de la session ; la scène Spline
 // (runtime officiel) est accrochée à un point du visage et suit la tête.
 // Les expressions sont envoyées à la scène sous forme de variables Spline booléennes
 // (bouche, clinGauche, clinDroit, sourcils) quand la scène les déclare.
