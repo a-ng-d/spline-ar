@@ -10,26 +10,32 @@ Faire sortir une scène 3D d'une affiche, dans le navigateur du téléphone, ave
 
 | Page | Rôle |
 |---|---|
-| `/creer.html` | L'étudiant envoie son affiche, colle l'URL de sa scène, règle taille et position → lien + QR code |
-| `/` | Le player AR (le lien) |
-| `/affiche.html?target=<id>` | Affiche l'affiche en plein écran, pour tester sur un écran |
+| `/creer.html` | Une ou plusieurs affiches, chacune avec sa scène et ses réglages → un lien « expo » + QR code. Un lien existant peut être rechargé pour être modifié |
+| `/` | Le player AR (le lien) : jusqu'à 32 affiches cherchées, 4 suivies en même temps |
+| `/affiche.html?a=<id>&a=…` | Galerie des affiches d'une expo, plein écran au clic (← → pour passer de l'une à l'autre) ; `?target=<id>` = une seule affiche |
 
 ## Le lien
 
+La collection vit dans le lien (pas de base de données pour l'expo, comme SplineXR) :
+
 ```
-https://<site>/?scene=<URL 3D>&target=<id ou URL de cible>&s=0.8&x=0&y=0&z=0&ry=0
+https://<site>/?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…
 ```
 
-| Paramètre | Rôle | Défaut |
+| Champ | Rôle | Défaut |
 |---|---|---|
-| `scene` | `.splinecode` (Spline → Export → Code) ou `.glb` / `.gltf` | scène de démo |
-| `target` | identifiant créé sur `/creer.html`, ou URL d'un JSON de cible | affiche de démo |
+| `t` | titre de l'expo (écran d'accueil) | — |
+| `o` | une œuvre par paramètre, champs séparés par `*` ; réglages de fin omis s'ils valent leur défaut | — |
+| `<cible>` | identifiant créé sur `/creer.html`, ou URL d'un JSON de cible (encodée) | — |
+| `<scène>` | identifiant Spline (`prod.spline.design/<id>/…`) ou URL `.glb` encodée | — |
 | `s` | taille, en largeur d'affiche (1 = aussi large que l'affiche) | `0.8` |
 | `x`, `y` | décalage, en largeur d'affiche | `0` |
 | `z` | décollement de l'affiche, en largeur d'affiche | `0` |
 | `ry` | rotation autour de l'axe vertical (degrés) | `0` |
-| `moteur` | `loader` = ancien rendu three.js, scène Spline figée | runtime |
-| `debug` | `1` = cadre de l'affiche, axes, infos de suivi | — |
+
+Options : `moteur=loader` (ancien rendu three.js, scènes Spline figées), `debug=1` (cadre, axes, infos de suivi). Les liens v0.2 `?scene=…&target=…&s=…` restent lisibles. Sans paramètre : affiche et scène de démo.
+
+Chargement : la scène de la première œuvre est préchargée, les autres à la première détection de leur affiche. Au plus 4 scènes Spline restent en mémoire ; la plus ancienne hors champ est libérée au besoin.
 
 Repère de l'affiche (moteur 8th Wall) : plan XY, +Z vers le spectateur, le grand côté du 3:4 vaut 1. La 3D est centrée sur l'affiche, son arrière posé sur le plan.
 
@@ -54,6 +60,10 @@ Une cible = un JSON + son image de luminance (niveaux de gris, 640 px de haut, r
 - Caméra Spline orthographique : à passer en perspective (signalé en mode debug).
 - Post-processing Spline : non garanti sur fond transparent.
 - `POST /api/cibles` est ouvert (pas de compte) : taille des images limitée côté serveur.
+
+## Design
+
+Tokens et composants repris de SplineXR (`src/theme.css`, fond animé `src/background.js`) : fond `#06060f`, violet `#7b6ef6`, cyan `#3ecfcf`, DM Sans, cartes en verre.
 
 ## Développement
 

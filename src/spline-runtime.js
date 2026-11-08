@@ -82,6 +82,11 @@ export async function createSplineOverlay(url, canvas) {
       if (!started) { started = true; app.play() }
     },
     hide: () => { canvas.style.visibility = 'hidden' },
+    dispose: () => {
+      poseFn = null
+      try { app.dispose() } catch {}
+      canvas.remove()
+    },
   }
 }
 
