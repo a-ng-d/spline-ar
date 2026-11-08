@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Créer mon affiche AR</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { background: #111; color: #f5f0e4; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+      padding: 28px 18px 60px }
+    main { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px }
+    h1 { font-size: 26px }
+    h2 { font-size: 17px; margin-bottom: 8px }
+    h2 span { display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #fabe28;
+      color: #14141e; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px }
+    section { background: #1c1c26; border-radius: 14px; padding: 18px }
+    .help { font-size: 13px; opacity: .7; margin-top: 6px }
+    input[type=url], input[type=text] { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid #3a3a48;
+      background: #111; color: inherit; font: 14px ui-monospace, monospace }
+    input[type=file] { width: 100%; font-size: 14px }
+    #preview { display: block; width: 100%; max-height: 360px; object-fit: contain; margin-top: 12px; border-radius: 8px;
+      background: #0b0b10 }
+    .row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; margin: 8px 0 }
+    .row output { text-align: right; font: 13px ui-monospace, monospace; opacity: .8 }
+    input[type=range] { width: 100% }
+    button, .btn { font: 600 15px system-ui, sans-serif; padding: 12px 22px; border-radius: 999px; border: 0;
+      background: #fabe28; color: #14141e; cursor: pointer; text-decoration: none; display: inline-block; text-align: center }
+    button.ghost, .btn.ghost { background: transparent; color: #f5f0e4; border: 1px solid #3a3a48 }
+    button:disabled { opacity: .45; cursor: default }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px }
+    .msg { font-size: 14px; margin-top: 10px; min-height: 20px }
+    .msg.err { color: #ff8a73 }
+    .msg.ok { color: #7fe0b0 }
+    #result { display: none }
+    #result.visible { display: block }
+    #qr { display: block; margin: 14px auto 0; background: #fff; border-radius: 10px; padding: 10px; width: 220px; height: 220px }
+    a { color: #fabe28 }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Créer mon affiche AR</h1>
+    <p class="help">Ton affiche + ta scène Spline = un lien à partager. Le téléphone qui ouvre le lien et vise l'affiche voit la 3D en sortir.</p>
+  </header>
+
+  <section>
+    <h2><span>1</span>Ton affiche</h2>
+    <input id="file" type="file" accept="image/jpeg,image/png,image/webp" />
+    <p class="help">JPG ou PNG, au moins 480 × 640 px. Choisis une image riche en détails et contrastée (évite les grands aplats et les motifs répétés). La zone gardée pour la reconnaissance est au format 3:4 : ce qui est grisé n'est pas utilisé.</p>
+    <img id="preview" alt="" hidden />
+    <div id="file-msg" class="msg"></div>
+  </section>
+
+  <section>
+    <h2><span>2</span>Ta scène</h2>
+    <input id="scene" type="url" placeholder="https://prod.spline.design/…/scene.splinecode" />
+    <p class="help">Dans Spline : <b>Export → Code</b>, puis copie l'URL qui finit par <code>scene.splinecode</code>. Un lien vers un fichier <code>.glb</code> marche aussi.</p>
+    <div id="scene-msg" class="msg"></div>
+  </section>
+
+  <section>
+    <h2><span>3</span>Réglages</h2>
+    <div class="row"><label for="s">Taille</label><input id="s" type="range" min="0.1" max="2" step="0.05" value="0.8" /><output for="s"></output></div>
+    <div class="row"><label for="x">Gauche / droite</label><input id="x" type="range" min="-1" max="1" step="0.05" value="0" /><output for="x"></output></div>
+    <div class="row"><label for="y">Bas / haut</label><input id="y" type="range" min="-1" max="1" step="0.05" value="0" /><output for="y"></output></div>
+    <div class="row"><label for="z">Décollement</label><input id="z" type="range" min="0" max="1" step="0.05" value="0" /><output for="z"></output></div>
+    <div class="row"><label for="ry">Rotation</label><input id="ry" type="range" min="-180" max="180" step="5" value="0" /><output for="ry"></output></div>
+    <p class="help">Taille et positions en largeur d'affiche (1 = toute la largeur). Tu peux revenir ici modifier les réglages : le lien se met à jour sans renvoyer l'image.</p>
+  </section>
+
+  <section>
+    <button id="create" disabled>Créer mon lien</button>
+    <div id="create-msg" class="msg"></div>
+
+    <div id="result">
+      <h2 style="margin-top:16px">Ton lien</h2>
+      <input id="link" type="text" readonly />
+      <div class="actions">
+        <button id="copy" class="ghost">Copier</button>
+        <a id="open" class="btn ghost" target="_blank" rel="noopener">Ouvrir</a>
+        <a id="poster" class="btn ghost" target="_blank" rel="noopener">Afficher mon affiche</a>
+        <a id="qr-dl" class="btn ghost" download="qr-affiche-ar.png">Télécharger le QR</a>
+      </div>
+      <canvas id="qr" width="220" height="220"></canvas>
+      <p class="help" style="text-align:center">Pour tester : ouvre « Afficher mon affiche » sur l'ordinateur, puis scanne ce QR avec le téléphone et vise l'écran.</p>
+    </div>
+  </section>
+</main>
+<script type="module" src="/src/creer.js"></script>
+</body>
+</html>

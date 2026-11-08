@@ -12,6 +12,12 @@
     html, body { width: 100%; height: 100%; overflow: hidden; background: #111; color: #f5f0e4;
       font-family: system-ui, -apple-system, "Segoe UI", sans-serif }
     #camerafeed { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block }
+    /* Runtime Spline : canvas transparent au-dessus de la caméra, reçoit les touchers. */
+    #spline-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block;
+      z-index: 5; background: transparent; visibility: hidden; touch-action: none; outline: none }
+    #credit { position: fixed; right: 10px; bottom: 8px; z-index: 6; font-size: 11px; opacity: .6 }
+    #credit a { color: inherit }
+    #create-link { color: #fabe28; font-size: 14px }
     .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 18px; padding: 28px; text-align: center; background: #111; z-index: 20 }
     .overlay.hidden { display: none }
@@ -34,6 +40,8 @@
 </head>
 <body>
   <canvas id="camerafeed"></canvas>
+  <canvas id="spline-canvas"></canvas>
+  <div id="credit"><a href="https://spline.design" target="_blank" rel="noopener">Made with Spline</a></div>
 
   <div id="start" class="overlay">
     <h1>Affiche en réalité augmentée</h1>
@@ -42,6 +50,7 @@
     <div id="progress">Chargement de la 3D…</div>
     <button id="btn-start" disabled>Lancer l'AR</button>
     <div id="error"></div>
+    <a id="create-link" href="/creer.html">Créer mon affiche AR</a>
   </div>
 
   <div id="hint">Vise l'affiche</div>
