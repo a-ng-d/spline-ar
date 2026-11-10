@@ -2,7 +2,7 @@
 // stockage → un lien « expo » + QR. La collection vit dans le lien, pas en base.
 import QRCode from 'qrcode'
 import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget } from './target-maker.js'
-import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
+import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, backIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
 import { startBackground } from './background.js'
 import './nav.js'
 import { saveWork, getWork, findWorkBySearch, timeAgo } from './works.js'
@@ -12,6 +12,7 @@ startBackground(document.getElementById('bg-canvas'))
 
 const $ = id => document.getElementById(id)
 const listEl = $('list'), tpl = $('art-tpl'), addBtn = $('add'), counterEl = $('counter')
+const backIn = $('back')
 const titleIn = $('title'), createBtn = $('create'), createMsg = $('create-msg')
 const result = $('result'), linkIn = $('link'), qr = $('qr')
 const KEYS = ['s', 'x', 'y', 'z', 'ry']
@@ -98,7 +99,9 @@ function changed() {
   addBtn.disabled = items.length >= MAX_ITEMS
   counterEl.textContent = items.length > 1
     ? `${items.length} affiches · jusqu'à ${MAX_ITEMS} par expo, 4 visibles en même temps` : ''
-  const allOk = items.length > 0 && items.every(itemReady)
+  const bIssue = backIssue(backIn.value)
+  say($('back-msg'), bIssue, bIssue ? 'err' : '')
+  const allOk = items.length > 0 && items.every(itemReady) && !bIssue
   createBtn.disabled = !allOk
   const pending = items.some(i => !i.id)
   createBtn.textContent = linkReady && !pending ? 'Mettre à jour mon lien →' : 'Créer mon lien →'
@@ -110,6 +113,7 @@ function changed() {
 function expo() {
   return {
     title: titleIn.value.trim(),
+    back: backIssue(backIn.value) ? '' : backIn.value.trim(),
     items: items.map(i => ({ target: i.id, scene: sceneRef(i.scene), s: i.s, x: i.x, y: i.y, z: i.z, ry: i.ry })),
   }
 }
@@ -117,7 +121,7 @@ function expo() {
 function save() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
-      workId, title: titleIn.value,
+      workId, title: titleIn.value, back: backIn.value,
       items: items.map(({ id, scene, s, x, y, z, ry }) => ({ id, scene, s, x, y, z, ry })),
     }))
   } catch {}
@@ -128,6 +132,7 @@ function restore() {
     const v = JSON.parse(localStorage.getItem(LS_KEY) || 'null')
     if (!v?.items?.length) return false
     titleIn.value = v.title || ''
+    backIn.value = v.back || ''
     if (v.workId && getWork(v.workId)) workId = v.workId
     v.items.forEach(addItem)
     return true
@@ -186,12 +191,13 @@ $('copy').onclick = async () => {
 // ── Modifier une expo existante à partir de son lien ──────────────────────────
 // Charge une expo depuis la query string de son lien ; renvoie le nombre d'affiches reprises.
 function loadSearch(search) {
-  const { title, items: defs } = readItems(search)
+  const { title, back, items: defs } = readItems(search)
   const usable = defs.filter(d => ID_RE.test(d.target || ''))
   if (!usable.length) return 0
   items.forEach(i => i.el.remove())
   items = []
   titleIn.value = title
+  backIn.value = back || ''
   usable.forEach(d => addItem({ id: d.target, scene: d.scene, s: d.s, x: d.x, y: d.y, z: d.z, ry: d.ry }))
   linkReady = true
   return usable.length
@@ -211,6 +217,7 @@ $('import-btn').onclick = () => {
 
 addBtn.onclick = () => { addItem(); items[items.length - 1].el.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
 titleIn.oninput = changed
+backIn.oninput = changed
 
 // Ouverture : ?w=<création> | lien d'expo (?o=… depuis « Modifier » sur le player) | ?nouveau=1 | brouillon.
 const q = new URLSearchParams(location.search)

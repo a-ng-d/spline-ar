@@ -1,9 +1,9 @@
 // Filtre visage : format du lien et points d'ancrage, communs au player et au créateur.
 //
 //   /filtre?scene=<id Spline ou URL .glb>&p=<point>&s=…&x=…&y=…&z=…&ry=…&t=<titre>
-//   s, x, y, z en largeur de visage ; ry en degrés.
+//   s, x, y, z en largeur de visage ; ry en degrés ; r = lien de retour (facultatif).
 
-import { sceneRef } from './shared.js'
+import { sceneRef, backUrl } from './shared.js'
 
 // Points proposés aux étudiants (noms du moteur 8th Wall, sauf « face » = centre du visage).
 export const POINTS = [
@@ -29,7 +29,7 @@ export const EXPRESSIONS = [
 
 export function readFilter(search) {
   const q = new URLSearchParams(search)
-  const f = { title: q.get('t') || '', scene: sceneRef(q.get('scene')), ...FACE_DEFAULTS }
+  const f = { title: q.get('t') || '', back: backUrl(q.get('r')), scene: sceneRef(q.get('scene')), ...FACE_DEFAULTS }
   if (POINTS.some(pt => pt.id === q.get('p'))) f.p = q.get('p')
   NUMS.forEach(k => { const v = parseFloat(q.get(k)); if (Number.isFinite(v)) f[k] = v })
   return f
@@ -38,6 +38,7 @@ export function readFilter(search) {
 export function filterLink(origin, f) {
   const q = new URLSearchParams()
   if (f.title) q.set('t', f.title)
+  if (backUrl(f.back)) q.set('r', f.back.trim())
   q.set('scene', sceneRef(f.scene))
   if (f.p !== FACE_DEFAULTS.p) q.set('p', f.p)
   NUMS.forEach(k => { if (Number.isFinite(f[k]) && f[k] !== FACE_DEFAULTS[k]) q.set(k, String(+f[k].toFixed(3))) })

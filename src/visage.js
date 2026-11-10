@@ -21,6 +21,7 @@ const TUNING = params.get('reglage') === '1' // panneau de réglage en direct (o
 let workId = params.get('w') || null
 const cfg = readFilter(location.search)
 if (!cfg.scene) cfg.scene = DEMO.scene
+const BACK = cfg.back
 const url = sceneUrl(cfg.scene)
 const kind = isGltfRef(cfg.scene) ? 'gltf' : 'runtime'
 
@@ -332,10 +333,15 @@ function mountTuning() {
   panel.querySelector('.fold').onclick = () => panel.classList.toggle('folded')
 }
 
+// Quitter : vers le lien de retour s'il y en a un (ex. prototype ProtoPie), sinon on recharge
+// la page (caméra coupée, retour à l'écran d'accueil du lien).
 function showQuit() {
   const quit = $('quit')
   quit.classList.add('visible')
-  quit.onclick = () => location.reload()
+  if (BACK) quit.textContent = '← Retour'
+  quit.onclick = () => { if (BACK) location.href = BACK; else location.reload() }
 }
+
+if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
 
 prepare()

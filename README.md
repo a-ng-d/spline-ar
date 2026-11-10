@@ -43,6 +43,7 @@ https://<site>/musee?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…
 | `x`, `y` | décalage, en largeur d'affiche | `0` |
 | `z` | décollement de l'affiche, en largeur d'affiche | `0` |
 | `ry` | rotation autour de l'axe vertical (degrés) | `0` |
+| `r` | lien de retour facultatif (https) : le bouton Quitter de l'AR y renvoie, ex. un prototype ProtoPie Cloud | — |
 
 Options : `moteur=loader` (ancien rendu three.js, scènes Spline figées), `debug=1` (cadre, axes, infos de suivi). Les liens v0.2 `?scene=…&target=…&s=…` restent lisibles. Sans paramètre : affiche et scène de démo.
 
@@ -57,6 +58,7 @@ https://<site>/filtre?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.15&z=0
 ```
 
 - Moteur 8th Wall `FaceController` (chunk `face`), caméra selfie, affichage en miroir, un visage.
+- `r` : lien de retour facultatif (https), comme pour le musée (bouton Quitter / Retour).
 - `p` : point d'ancrage du moteur — `forehead` (défaut), `noseBridge`, `noseTip`, `mouth`, `chin`, `leftEar`, `rightEar`, ou `face` (centre). `s`, `x`, `y`, `z` en largeur de visage.
 - **Expressions → variables Spline** : si la scène déclare une variable booléenne `bouche`, `clinGauche`, `clinDroit` ou `sourcils`, elle passe à vrai pendant l'expression (`app.setVariable`). Dans Spline, un événement « Variable Change » déclenche l'animation ou le son.
 - Taille : la largeur de visage est mesurée dans le repère des points d'ancrage (coins extérieurs des yeux × 1,6) ; repli sur `scaledWidth / scale` du moteur.

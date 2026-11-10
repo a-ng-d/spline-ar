@@ -6,6 +6,7 @@
 //   - <cible>  identifiant créé sur la page Créer (ou URL d'un JSON de cible, encodée)
 //   - <scène>  identifiant Spline (prod.spline.design/<id>/scene.splinecode) ou URL .glb encodée
 //   - réglages en fin de chaîne omis quand ils valent leur défaut
+//   - r=<url>  lien de retour facultatif (bouton Quitter de l'AR), ex. un prototype ProtoPie
 // Les anciens liens ?scene=…&target=…&s=… restent lisibles.
 //
 // Adresses : /  accueil · /musee  jouer un musée · /musee/affiches  les affiches à viser ·
@@ -82,10 +83,11 @@ export function decodeItem(str) {
 export function readItems(search) {
   const p = new URLSearchParams(search)
   const items = p.getAll('o').filter(Boolean).map(decodeItem).filter(i => i.target && i.scene)
-  if (items.length) return { title: p.get('t') || '', items: items.slice(0, MAX_ITEMS) }
+  if (items.length) return { title: p.get('t') || '', back: backUrl(p.get('r')), items: items.slice(0, MAX_ITEMS) }
   const num = (k) => { const v = parseFloat(p.get(k)); return Number.isFinite(v) ? v : DEFAULTS[k] }
   return {
     title: p.get('t') || '',
+    back: backUrl(p.get('r')),
     items: [{
       target: p.get('target') || DEMO.target,
       scene: sceneRef(p.get('scene')) || DEMO.scene,
@@ -94,9 +96,10 @@ export function readItems(search) {
   }
 }
 
-export function playerLink(origin, { title, items }) {
+export function playerLink(origin, { title, back, items }) {
   const p = new URLSearchParams()
   if (title) p.set('t', title)
+  if (backUrl(back)) p.set('r', back.trim())
   items.forEach(i => p.append('o', encodeItem(i)))
   return `${origin}/musee?${p.toString()}`
 }
@@ -122,4 +125,18 @@ export function sceneIssue(value) {
     return 'Ce lien Spline n\'est pas le bon : utilise Export → Code et copie l\'URL qui finit par scene.splinecode.'
   }
   return 'L\'URL doit finir par scene.splinecode (Spline) ou .glb.'
+}
+
+// Lien de retour (paramètre r) : ex. le lien ProtoPie Cloud d'un prototype. Le bouton
+// « Quitter » de l'AR y renvoie. Seules les URL https sont acceptées.
+export function backUrl(value) {
+  const v = (value || '').trim()
+  if (!v) return ''
+  try { return new URL(v).protocol === 'https:' ? v : '' } catch { return '' }
+}
+
+export function backIssue(value) {
+  const v = (value || '').trim()
+  if (!v) return ''
+  return backUrl(v) ? '' : 'Le lien de retour doit être une URL complète en https://'
 }

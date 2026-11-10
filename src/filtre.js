@@ -1,7 +1,7 @@
 // Page Créer un filtre visage : scène + point d'ancrage + réglages → lien + QR.
 // Rien n'est envoyé au serveur : tout tient dans le lien.
 import QRCode from 'qrcode'
-import { sceneIssue } from './shared.js'
+import { sceneIssue, backIssue } from './shared.js'
 import { POINTS, FACE_DEFAULTS, EXPRESSIONS, filterLink, readFilter } from './face-shared.js'
 import { startBackground } from './background.js'
 import { saveWork, getWork, findWorkBySearch, onWorksChanged, timeAgo } from './works.js'
@@ -11,7 +11,7 @@ import './nav.js'
 startBackground(document.getElementById('bg-canvas'))
 
 const $ = id => document.getElementById(id)
-const sceneIn = $('scene'), pointSel = $('p'), titleIn = $('title')
+const sceneIn = $('scene'), pointSel = $('p'), titleIn = $('title'), backIn = $('back')
 const createBtn = $('create'), createMsg = $('create-msg'), result = $('result')
 const linkIn = $('link'), qr = $('qr')
 const KEYS = ['s', 'x', 'y', 'z', 'ry']
@@ -31,13 +31,14 @@ EXPRESSIONS.forEach(e => {
 
 function state() {
   return {
-    title: titleIn.value.trim(), scene: sceneIn.value.trim(), p: pointSel.value,
+    title: titleIn.value.trim(), back: backIssue(backIn.value) ? '' : backIn.value.trim(), scene: sceneIn.value.trim(), p: pointSel.value,
     ...Object.fromEntries(KEYS.map(k => [k, parseFloat(sliders[k].value)])),
   }
 }
 
 function load(f) {
   titleIn.value = f.title || ''
+  backIn.value = f.back || ''
   sceneIn.value = f.scene || ''
   pointSel.value = f.p || FACE_DEFAULTS.p
   KEYS.forEach(k => { sliders[k].value = Number.isFinite(f[k]) ? f[k] : FACE_DEFAULTS[k] })
@@ -58,7 +59,9 @@ function changed() {
   KEYS.forEach(k => { sliders[k].nextElementSibling.textContent = sliders[k].value + (k === 'ry' ? '°' : '') })
   const issue = sceneIssue(sceneIn.value)
   say($('scene-msg'), sceneIn.value.trim() ? issue : '', issue ? 'err' : '')
-  createBtn.disabled = !!issue
+  const bIssue = backIssue(backIn.value)
+  say($('back-msg'), bIssue, bIssue ? 'err' : '')
+  createBtn.disabled = !!issue || !!bIssue
   createBtn.textContent = linkReady ? 'Mettre à jour mon lien →' : 'Créer mon lien →'
   if (linkReady && !issue) renderLink()
   try { localStorage.setItem(LS_KEY, JSON.stringify({ ...state(), linkReady, workId })) } catch {}
@@ -119,6 +122,7 @@ mountWorksDrawer({ currentId: () => workId })
 
 sceneIn.oninput = changed
 titleIn.oninput = changed
+backIn.oninput = changed
 pointSel.onchange = changed
 KEYS.forEach(k => { sliders[k].oninput = changed })
 changed()

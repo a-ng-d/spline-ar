@@ -16,7 +16,8 @@ import { startBackground } from './background.js'
 window.THREE = THREE
 
 const params = new URLSearchParams(location.search)
-const { title, items: itemDefs } = readItems(location.search)
+const { title, back, items: itemDefs } = readItems(location.search)
+const BACK = back // lien de retour (paramètre r), ex. prototype ProtoPie
 const DEBUG = params.get('debug') === '1'
 const ENGINE = params.get('moteur') === 'loader' ? 'loader' : 'runtime'
 const MAX_LIVE_RUNTIMES = MAX_TRACKED // scènes Spline gardées en mémoire en même temps
@@ -361,10 +362,15 @@ function start(ready) {
   }
 }
 
+// Quitter : vers le lien de retour s'il y en a un (ex. prototype ProtoPie), sinon on recharge
+// la page (caméra coupée, retour à l'écran d'accueil du lien).
 function showQuit() {
   const quit = $('quit')
   quit.classList.add('visible')
-  quit.onclick = () => location.reload()
+  if (BACK) quit.textContent = '← Retour'
+  quit.onclick = () => { if (BACK) location.href = BACK; else location.reload() }
 }
+
+if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
 
 prepare()
