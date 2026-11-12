@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
-// Adresses sans barre finale (/musee, /creer/filtre…) → leur index.html, comme les
-// règles 200 de public/_redirects sur Netlify. Pour `vite` et `vite preview`.
+// URLs without a trailing slash (/musee, /creer/filtre…) → their index.html, like the
+// 200 rules of public/_redirects on Netlify. For `vite` and `vite preview`.
 const PAGES = ['/musee', '/musee/affiches', '/filtre', '/creer', '/creer/musee', '/creer/filtre']
 const prettyUrls = {
   name: 'pretty-urls',
@@ -21,16 +21,17 @@ export default defineConfig({
     alias: { three: 'super-three' }
   },
   build: {
+    target: 'es2022', // top-level await (i18n is loaded before the page renders)
     chunkSizeWarningLimit: 4000,
     rollupOptions: {
       input: {
-        accueil: resolve(__dirname, 'index.html'),
-        musee: resolve(__dirname, 'musee/index.html'),
-        filtre: resolve(__dirname, 'filtre/index.html'),
-        creer: resolve(__dirname, 'creer/index.html'),
-        creerMusee: resolve(__dirname, 'creer/musee/index.html'),
-        creerFiltre: resolve(__dirname, 'creer/filtre/index.html'),
-        affiches: resolve(__dirname, 'musee/affiches/index.html'),
+        home: resolve(__dirname, 'index.html'),
+        museum: resolve(__dirname, 'musee/index.html'),
+        filter: resolve(__dirname, 'filtre/index.html'),
+        create: resolve(__dirname, 'creer/index.html'),
+        createMuseum: resolve(__dirname, 'creer/musee/index.html'),
+        createFilter: resolve(__dirname, 'creer/filtre/index.html'),
+        posters: resolve(__dirname, 'musee/affiches/index.html'),
       },
     },
   },

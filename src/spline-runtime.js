@@ -1,11 +1,11 @@
-// Runtime Spline officiel, rendu sur son propre canvas transparent posé au-dessus
-// de la vidéo 8th Wall. À chaque image, juste avant que Spline ne dessine, on
-// remplace la pose et l'optique de SA caméra par celles calculées depuis le suivi
-// de l'affiche. Spline garde tout le reste : animations, états, sons, événements
-// (y compris les interactions tactiles, puisqu'il lance ses rayons depuis cette caméra).
+// Official Spline runtime, rendered on its own transparent canvas laid over the 8th Wall
+// camera feed. On every frame, right before Spline draws, we replace the pose and the
+// projection of ITS camera with the ones computed from the tracked poster or face. Spline keeps
+// everything else: animations, states, sounds, events (including touch interactions, since it
+// casts its rays from that camera).
 //
-// Dépend d'internes non documentés (_renderer.renderSplineScene, _scene.activeCamera) :
-// version du runtime figée dans package.json.
+// Relies on undocumented internals (_renderer.renderSplineScene, _scene.activeCamera):
+// the runtime version is pinned in package.json.
 
 import * as THREE from 'three'
 import { Application } from '@splinetool/runtime'
@@ -19,9 +19,8 @@ const _local = new THREE.Matrix4()
 const _proj = new THREE.Matrix4()
 const _projInv = new THREE.Matrix4()
 
-// Boîte englobante des maillages visibles, calculée avec notre three.js sur les
-// objets du three.js embarqué par Spline (mêmes structures : matrixWorld.elements,
-// geometry.boundingBox.min/max).
+// Bounding box of the visible meshes, computed with our three.js on the objects of the three.js
+// bundled by Spline (same structures: matrixWorld.elements, geometry.boundingBox.min/max).
 function sceneBounds(scene) {
   const box = new THREE.Box3()
   const tmp = new THREE.Box3()
@@ -48,20 +47,21 @@ function sceneBounds(scene) {
 }
 
 /**
- * @param {string} url       URL .splinecode (déjà passée par le proxy si besoin)
+ * @param {string} url  .splinecode URL (already proxied if needed)
  * @param {HTMLCanvasElement} canvas
- * @returns {Promise<{app, bounds: THREE.Box3|null, setPose: (fn) => void, show: () => void, hide: () => void}>}
+ * @returns {Promise<{app, bounds: THREE.Box3|null, cameraType: string, setPose: (fn) => void,
+ *   show: () => void, hide: () => void, dispose: () => void}>}
  */
 export async function createSplineOverlay(url, canvas) {
   const app = new Application(canvas, { renderer: 'webgl', renderMode: 'continuous' })
   await app.load(url)
   app.setBackgroundColor('rgba(0,0,0,0)')
-  app.stop() // en pause tant que l'affiche n'a pas été trouvée
+  app.stop() // paused until the poster / face is found
 
   const scene = app._scene
   const renderer = app._renderer
   if (!scene || !renderer?.renderSplineScene) {
-    throw new Error('version du runtime Spline non prise en charge')
+    throw new Error('unsupported Spline runtime version')
   }
 
   let poseFn = null
@@ -90,17 +90,17 @@ export async function createSplineOverlay(url, canvas) {
   }
 }
 
-// pose() renvoie { world, camera, projection } :
-//   world      Matrix4 — repère Spline → monde 8th Wall (affiche × réglages × mise à l'échelle)
-//   camera     Matrix4 — matrixWorld de la caméra 8th Wall
-//   projection Matrix4 — projection de la caméra 8th Wall
+// pose() returns { world, camera, projection }:
+//   world      Matrix4 — Spline scene frame → 8th Wall world (poster/face × settings × scaling)
+//   camera     Matrix4 — matrixWorld of the 8th Wall camera
+//   projection Matrix4 — projection of the 8th Wall camera
 function applyPose(cam, pose) {
   const p = pose()
   if (!p) return
   _w.copy(p.world)
   _wInv.copy(_w).invert()
   _cam.copy(p.camera)
-  _rel.multiplyMatrices(_wInv, _cam) // caméra exprimée dans le repère de la scène Spline
+  _rel.multiplyMatrices(_wInv, _cam) // camera expressed in the Spline scene frame
 
   if (cam.parent?.matrixWorld) {
     _parent.fromArray(cam.parent.matrixWorld.elements).invert()

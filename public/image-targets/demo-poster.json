@@ -1,7 +1,7 @@
 {
-  "imagePath": "image-targets/affiche-demo_luminance.jpg",
+  "imagePath": "image-targets/demo-poster_luminance.jpg",
   "metadata": null,
-  "name": "affiche-demo",
+  "name": "demo-poster",
   "type": "PLANAR",
   "properties": {
     "left": 0,
@@ -13,10 +13,8 @@
     "originalHeight": 2000
   },
   "resources": {
-    "originalImage": "affiche-demo_original.jpg",
-    "croppedImage": "affiche-demo_cropped.jpg",
-    "thumbnailImage": "affiche-demo_thumbnail.jpg",
-    "luminanceImage": "affiche-demo_luminance.jpg"
+    "thumbnailImage": "demo-poster_thumbnail.jpg",
+    "luminanceImage": "demo-poster_luminance.jpg"
   },
   "created": 1794049989305,
   "updated": 1794049989305

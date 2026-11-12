@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spline AR — Créer un filtre visage</title>
+  <title data-i18n="filter.editor.pageTitle">Spline AR — Create a face filter</title>
   <link rel="stylesheet" href="/src/theme.css" />
   <style>
     body { min-height: 100vh; padding: 32px 16px 80px }
@@ -33,68 +33,68 @@
   <div class="card">
     <div class="logo"><span class="logo-dot"></span>Spline AR</div>
     <div>
-      <h1>Crée ton <span>filtre visage</span></h1>
-      <p class="lead">Ta scène Spline s'accroche à un point du visage et suit la tête, comme un filtre Snapchat. Pas d'image à envoyer.</p>
+      <h1 data-i18n-html="filter.editor.title"></h1>
+      <p class="lead" data-i18n="filter.editor.lead"></p>
     </div>
     <div>
-      <div class="section-label">Nom du filtre (facultatif)</div>
-      <input id="title" type="text" class="plain" maxlength="80" placeholder="Ex. : Couronne de feu" />
+      <div class="section-label" data-i18n="filter.editor.titleLabel"></div>
+      <input id="title" type="text" class="plain" maxlength="80" data-i18n-placeholder="filter.editor.titlePlaceholder" />
     </div>
     <div>
-      <div class="section-label">Lien de retour (facultatif)</div>
+      <div class="section-label" data-i18n="editor.backLabel"></div>
       <input id="back" type="url" placeholder="https://cloud.protopie.io/p/…" />
-      <p class="help">Le bouton « Quitter » de l'AR renverra vers ce lien, par exemple ton prototype ProtoPie Cloud (il se rouvre dans ProtoPie Player si l'appli est installée).</p>
+      <p class="help" data-i18n="editor.backHelp"></p>
       <div id="back-msg" class="msg"></div>
     </div>
   </div>
 
   <div class="card">
     <div>
-      <div class="section-label">Scène</div>
-      <input id="scene" type="url" placeholder="URL Spline (prod.spline.design/…) ou identifiant" />
-      <p class="help">Dans Spline : <b>Export → Code</b>, copie l'URL qui finit par <code>scene.splinecode</code>. Un lien <code>.glb</code> marche aussi. Modélise ton objet face caméra (l'avant vers +Z), le haut vers le haut.</p>
+      <div class="section-label" data-i18n="editor.scene"></div>
+      <input id="scene" type="url" data-i18n-placeholder="editor.scenePlaceholder" />
+      <p class="help"><span data-i18n-html="editor.sceneHelp"></span> <span data-i18n="filter.editor.sceneTip"></span></p>
       <div id="scene-msg" class="msg"></div>
     </div>
     <div>
-      <div class="section-label">Point d'ancrage</div>
+      <div class="section-label" data-i18n="filter.editor.point"></div>
       <select id="p"></select>
     </div>
     <div>
-      <div class="section-label">Réglages</div>
-      <div class="row"><label>Taille</label><input data-k="s" type="range" min="0.1" max="3" step="0.05" /><output></output></div>
-      <div class="row"><label>Gauche / droite</label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Bas / haut</label><input data-k="y" type="range" min="-1" max="1.5" step="0.05" /><output></output></div>
-      <div class="row"><label>Avant / arrière</label><input data-k="z" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Rotation</label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
-      <p class="help">En largeur de visage (1 = largeur du visage), à partir du point d'ancrage. Teste avec « Ouvrir » sur un ordinateur avec webcam, ajuste, recommence.</p>
+      <div class="section-label" data-i18n="settings.title"></div>
+      <div class="row"><label data-i18n="settings.size"></label><input data-k="s" type="range" min="0.1" max="3" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.leftRight"></label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.downUp"></label><input data-k="y" type="range" min="-1" max="1.5" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.frontBack"></label><input data-k="z" type="range" min="-1" max="1" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.rotation"></label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
+      <p class="help" data-i18n="filter.editor.settingsHelp"></p>
     </div>
   </div>
 
   <div class="card">
-    <div class="section-label">Faire réagir la scène au visage</div>
-    <p class="help" style="margin-top:0">Dans Spline, crée une <b>variable booléenne</b> avec un de ces noms, puis un événement « Variable Change » qui lance ton animation ou ton son. Elle passe à vrai pendant l'expression.</p>
+    <div class="section-label" data-i18n="filter.editor.reactTitle"></div>
+    <p class="help" style="margin-top:0" data-i18n-html="filter.editor.reactHelp"></p>
     <div class="expr" id="expr"></div>
   </div>
 
   <div class="card">
-    <button id="create" class="btn btn-primary btn-block" disabled>Créer mon lien →</button>
+    <button id="create" class="btn btn-primary btn-block" disabled></button>
     <div id="create-msg" class="msg"></div>
     <div id="saved-state" class="saved-state"></div>
     <div id="result">
       <div>
-        <div class="section-label">Ton lien</div>
+        <div class="section-label" data-i18n="editor.yourLink"></div>
         <input id="link" type="text" readonly />
       </div>
       <div class="actions">
-        <button id="copy" class="btn btn-sm btn-ghost">Copier</button>
-        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener">Ouvrir</a>
-        <a id="qr-dl" class="btn btn-sm btn-ghost" download="qr-filtre-visage.png">Télécharger le QR</a>
+        <button id="copy" class="btn btn-sm btn-ghost" data-i18n="actions.copy"></button>
+        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="actions.open"></a>
+        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-filter-qr.png" data-i18n="editor.downloadQr"></a>
       </div>
       <div id="qr-wrap"><canvas id="qr" width="220" height="220"></canvas></div>
-      <p class="help" style="text-align:center">Scanne le QR avec le téléphone : le filtre s'ouvre en caméra selfie.</p>
+      <p class="help" style="text-align:center" data-i18n="filter.editor.testHelp"></p>
     </div>
   </div>
 </main>
-<script type="module" src="/src/filtre.js"></script>
+<script type="module" src="/src/filter-editor.js"></script>
 </body>
 </html>

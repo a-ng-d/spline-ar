@@ -1,41 +1,53 @@
-// Utilitaires communs au player, à la page Créer et à la galerie d'affiches.
+// Shared helpers for the museum player, the editors and the poster gallery.
 //
-// Format du lien (sans base de données pour la collection, comme SplineXR) :
-//   /musee?o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…&t=<titre>
-//   - une « œuvre » par paramètre o (jusqu'à MAX_ITEMS)
-//   - <cible>  identifiant créé sur la page Créer (ou URL d'un JSON de cible, encodée)
-//   - <scène>  identifiant Spline (prod.spline.design/<id>/scene.splinecode) ou URL .glb encodée
-//   - réglages en fin de chaîne omis quand ils valent leur défaut
-//   - r=<url>  lien de retour facultatif (bouton Quitter de l'AR), ex. un prototype ProtoPie
-// Les anciens liens ?scene=…&target=…&s=… restent lisibles.
+// Museum link format (no database for the collection: the link *is* the record):
+//   /musee?o=<target>*<scene>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…&t=<title>&r=<back url>
+//   - one artwork per `o` parameter (up to MAX_ITEMS)
+//   - <target>  poster id created in the editor (or the URL of a target JSON, encoded)
+//   - <scene>   Spline scene id (prod.spline.design/<id>/scene.splinecode) or an encoded .glb URL
+//   - trailing settings are omitted when they equal their default
+//   - t  optional title · r  optional "back" link (the Quit button of the AR), e.g. a ProtoPie prototype
+// Legacy single-poster links ?scene=…&target=…&s=… are still read.
 //
-// Adresses : /  accueil · /musee  jouer un musée · /musee/affiches  les affiches à viser ·
-// /filtre  jouer un filtre · /creer  choisir · /creer/musee et /creer/filtre  éditeurs.
-// Les anciennes (/?o=…, /visage, /affiches, /visage.html, /musee.html, /filtre.html,
-// /affiche.html, /creer.html) redirigent.
+// Routes (kept in French: they are part of published links):
+//   /                  home              /musee            play a museum
+//   /musee/affiches    posters to aim at /filtre           play a face filter
+//   /creer             choose            /creer/musee      museum editor
+//   /creer/filtre      filter editor
+// Former addresses redirect (see public/_redirects).
 
-// Modèles montrés sur l'accueil (section « Pour commencer »).
-export const EXAMPLES = [
-  { type: 'musee', search: 't=Affiches+myst%C3%A8res&o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
-  { type: 'filtre', search: 't=Filtre+myst%C3%A8re&scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
+// Creation types, as stored in links and in the browser ("My creations"). The French values
+// are persisted data: do not rename them.
+export const TYPE_MUSEUM = 'musee'
+export const TYPE_FILTER = 'filtre'
+
+// Templates shown on the home page ("Get started"). The title is added per language.
+export const TEMPLATES = [
+  { type: TYPE_MUSEUM, titleKey: 'templates.museum.title',
+    search: 'o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
+  { type: TYPE_FILTER, titleKey: 'templates.filter.title',
+    search: 'scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
 ]
 
-export const MAX_ITEMS = 32   // affiches cherchées par le moteur 8th Wall
-export const MAX_TRACKED = 4  // affiches suivies en même temps
-// pl : affiche au mur (0, défaut) ou posée à plat sur une table / au sol (1) ; à plat, la scène
-// est redressée pour se tenir debout au-dessus de l'image.
+export const MAX_ITEMS = 32   // posters searched by the 8th Wall engine
+export const MAX_TRACKED = 4  // posters tracked at the same time
+// pl: poster on a wall (0, default) or lying flat on a table / the floor (1). When flat, the
+// scene is stood up so that it rises above the image.
 export const DEFAULTS = { s: 0.8, x: 0, y: 0, z: 0, ry: 0, pl: 0 }
 const KEYS = ['s', 'x', 'y', 'z', 'ry', 'pl']
 
-// Identifiant de cible créé par la page Créer (stocké sur Netlify Blobs).
+// Poster id created by the editor (stored on Netlify Blobs).
 export const ID_RE = /^[a-z0-9]{6,24}$/
-// Identifiant de scène Spline (même règle que SplineXR).
+// Spline scene id (same rule as SplineXR).
 export const SCENE_ID_RE = /^[A-Za-z0-9_-]{6,64}$/
 
-export const DEMO = { target: '/image-targets/affiche-demo.json', poster: '/demo/affiche-demo.jpg',
-  scene: 'h7gKpO9w4utya2UU' }
+export const DEMO = {
+  target: '/image-targets/demo-poster.json',
+  poster: '/demo/demo-poster.jpg',
+  scene: 'h7gKpO9w4utya2UU',
+}
 
-// "abc123" → "/c/abc123/target.json" ; une URL est laissée telle quelle.
+// "abc123" → "/c/abc123/target.json"; a URL is returned unchanged.
 export function targetUrl(value) {
   if (!value) return null
   return ID_RE.test(value) ? `/c/${value}/target.json` : value
@@ -46,8 +58,8 @@ export function posterUrl(value) {
   return ID_RE.test(value) ? `/c/${value}/affiche.jpg` : value
 }
 
-// Accepte : URL prod Spline, identifiant seul, ou URL .glb/.gltf.
-// Renvoie une référence courte : l'identifiant Spline, ou l'URL complète du GLB.
+// Accepts a Spline prod URL, a bare id, or a .glb/.gltf URL.
+// Returns a short reference: the Spline id, or the full GLB URL.
 export function sceneRef(input) {
   const s = (input || '').trim()
   const m = s.match(/prod\.spline\.design\/([A-Za-z0-9_-]+)/)
@@ -81,12 +93,12 @@ export function decodeItem(str) {
   return item
 }
 
-// Lit les œuvres depuis une query string (nouveau format o=…, ou ancien format).
+// Reads the artworks of a museum link (current `o=` format, or the legacy single-poster one).
 export function readItems(search) {
   const p = new URLSearchParams(search)
   const items = p.getAll('o').filter(Boolean).map(decodeItem).filter(i => i.target && i.scene)
   if (items.length) return { title: p.get('t') || '', back: backUrl(p.get('r')), items: items.slice(0, MAX_ITEMS) }
-  const num = (k) => { const v = parseFloat(p.get(k)); return Number.isFinite(v) ? v : DEFAULTS[k] }
+  const num = k => { const v = parseFloat(p.get(k)); return Number.isFinite(v) ? v : DEFAULTS[k] }
   return {
     title: p.get('t') || '',
     back: backUrl(p.get('r')),
@@ -113,32 +125,30 @@ export function galleryLink(origin, { title, items }) {
   return `${origin}/musee/affiches?${p.toString()}`
 }
 
-// Message d'erreur pour une URL de scène saisie, ou '' si elle est valide.
+// Validation of a scene URL typed by the user: returns an i18n key, or '' when valid.
 export function sceneIssue(value) {
   const v = (value || '').trim()
-  if (!v) return 'Colle l\'URL de ta scène.'
-  const ref = sceneRef(v)
-  if (SCENE_ID_RE.test(ref)) return ''
+  if (!v) return 'errors.scene.empty'
+  if (SCENE_ID_RE.test(sceneRef(v))) return ''
   let u
-  try { u = new URL(v) } catch { return 'Ce n\'est ni une URL ni un identifiant Spline.' }
-  if (u.protocol !== 'https:') return 'L\'URL doit commencer par https://'
+  try { u = new URL(v) } catch { return 'errors.scene.invalid' }
+  if (u.protocol !== 'https:') return 'errors.scene.https'
   if (/\.(glb|gltf)$/i.test(u.pathname)) return ''
-  if (u.hostname.endsWith('spline.design')) {
-    return 'Ce lien Spline n\'est pas le bon : utilise Export → Code et copie l\'URL qui finit par scene.splinecode.'
-  }
-  return 'L\'URL doit finir par scene.splinecode (Spline) ou .glb.'
+  if (u.hostname.endsWith('spline.design')) return 'errors.scene.wrongSplineLink'
+  return 'errors.scene.extension'
 }
 
-// Lien de retour (paramètre r) : ex. le lien ProtoPie Cloud d'un prototype. Le bouton
-// « Quitter » de l'AR y renvoie. Seules les URL https sont acceptées.
+// "Back" link (parameter r): e.g. a ProtoPie Cloud prototype. The AR Quit button goes there.
+// Only https URLs are accepted.
 export function backUrl(value) {
   const v = (value || '').trim()
   if (!v) return ''
   try { return new URL(v).protocol === 'https:' ? v : '' } catch { return '' }
 }
 
+// Returns an i18n key, or '' when valid (or empty: the field is optional).
 export function backIssue(value) {
   const v = (value || '').trim()
   if (!v) return ''
-  return backUrl(v) ? '' : 'Le lien de retour doit être une URL complète en https://'
+  return backUrl(v) ? '' : 'errors.back.https'
 }

@@ -1,37 +1,50 @@
-// Page Créer un filtre visage : scène + point d'ancrage + réglages → lien + QR.
-// Rien n'est envoyé au serveur : tout tient dans le lien.
+// Face filter editor: scene + anchor point + settings → link + QR code.
+// Nothing is sent to the server: everything fits in the link.
 import QRCode from 'qrcode'
-import { sceneIssue, backIssue } from './shared.js'
-import { POINTS, FACE_DEFAULTS, EXPRESSIONS, filterLink, readFilter } from './face-shared.js'
+import { sceneIssue, backIssue, TYPE_FILTER } from './shared.js'
+import { POINTS, FACE_DEFAULTS, EXPRESSIONS, filterLink, readFilter } from './filter-shared.js'
 import { startBackground } from './background.js'
 import { saveWork, getWork, findWorkBySearch, onWorksChanged, timeAgo } from './works.js'
 import { mountWorksDrawer } from './works-ui.js'
-import './nav.js'
+import { mountNav } from './nav.js'
+import { initI18n, t, setText, onLanguageChange } from './i18n.js'
 
 startBackground(document.getElementById('bg-canvas'))
+await initI18n()
+mountNav()
 
 const $ = id => document.getElementById(id)
 const sceneIn = $('scene'), pointSel = $('p'), titleIn = $('title'), backIn = $('back')
 const createBtn = $('create'), createMsg = $('create-msg'), result = $('result')
 const linkIn = $('link'), qr = $('qr')
 const KEYS = ['s', 'x', 'y', 'z', 'ry']
-const LS_KEY = 'spline-ar-filtre'
+const DRAFT_KEY = 'spline-ar-filtre' // persisted key: do not rename
 const sliders = Object.fromEntries(KEYS.map(k => [k, document.querySelector(`[data-k=${k}]`)]))
 let linkReady = false
-let workId = null // création « Mes créations » ouverte dans l'éditeur
+let workId = null // "My creations" entry open in the editor
 
-const say = (el, text, kind = '') => { el.textContent = text; el.className = `msg ${kind}` }
+const say = (el, key, kind = '', params) => { setText(el, key, params); el.className = `msg ${kind}` }
 
-POINTS.forEach(p => pointSel.add(new Option(p.label, p.id)))
+// Anchor points (option labels re-translated on language change).
+function fillPoints() {
+  const current = pointSel.value || FACE_DEFAULTS.p
+  pointSel.replaceChildren(...POINTS.map(p => new Option(t(p.labelKey), p.id)))
+  pointSel.value = current
+}
+fillPoints()
+onLanguageChange(fillPoints)
+
+// Expressions: both accepted variable names + what triggers them.
 EXPRESSIONS.forEach(e => {
-  const code = document.createElement('code'); code.textContent = e.variable
-  const label = document.createElement('span'); label.textContent = e.label
+  const code = document.createElement('code'); code.textContent = e.variables.join(' / ')
+  const label = document.createElement('span'); setText(label, e.labelKey)
   $('expr').append(code, label)
 })
 
 function state() {
   return {
-    title: titleIn.value.trim(), back: backIssue(backIn.value) ? '' : backIn.value.trim(), scene: sceneIn.value.trim(), p: pointSel.value,
+    title: titleIn.value.trim(), back: backIssue(backIn.value) ? '' : backIn.value.trim(),
+    scene: sceneIn.value.trim(), p: pointSel.value,
     ...Object.fromEntries(KEYS.map(k => [k, parseFloat(sliders[k].value)])),
   }
 }
@@ -48,7 +61,7 @@ async function renderLink() {
   const link = filterLink(location.origin, state())
   linkIn.value = link
   remember(new URL(link).search)
-  // « Ouvrir » lance le filtre avec le panneau de réglage en direct, relié à cette création.
+  // "Open" starts the filter with the live tuning panel, linked to this creation.
   $('open').href = `${link}&reglage=1&w=${encodeURIComponent(workId)}`
   await QRCode.toCanvas(qr, link, { width: 220, margin: 1 })
   $('qr-dl').href = qr.toDataURL('image/png')
@@ -62,61 +75,66 @@ function changed() {
   const bIssue = backIssue(backIn.value)
   say($('back-msg'), bIssue, bIssue ? 'err' : '')
   createBtn.disabled = !!issue || !!bIssue
-  createBtn.textContent = linkReady ? 'Mettre à jour mon lien →' : 'Créer mon lien →'
+  setText(createBtn, linkReady ? 'editor.updateLink' : 'editor.createLink')
   if (linkReady && !issue) renderLink()
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ ...state(), linkReady, workId })) } catch {}
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...state(), linkReady, workId })) } catch {}
 }
 
-// Chaque lien créé ou mis à jour est enregistré dans « Mes créations ».
+// Every created or updated link is saved to "My creations".
 function remember(search) {
-  const id = saveWork({ id: workId, type: 'filtre', search })
+  const id = saveWork({ id: workId, type: TYPE_FILTER, search })
   if (id !== workId) {
     workId = id
-    window.dispatchEvent(new CustomEvent('works-changed')) // le tiroir marque la création ouverte
+    window.dispatchEvent(new CustomEvent('works-changed')) // the drawer highlights the open creation
     history.replaceState(null, '', `?w=${encodeURIComponent(id)}`)
   }
-  $('saved-state').textContent = `✓ Enregistré dans Mes créations · ${timeAgo(getWork(id)?.updatedAt || Date.now())}`
+  renderSavedState()
 }
+function renderSavedState() {
+  const w = workId && getWork(workId)
+  if (w) setText($('saved-state'), 'editor.savedState', { when: timeAgo(w.updatedAt) })
+}
+onLanguageChange(renderSavedState)
 
 createBtn.onclick = async () => {
   linkReady = true
   await renderLink()
-  say(createMsg, 'C\'est prêt.', 'ok')
+  say(createMsg, 'editor.ready', 'ok')
   changed()
 }
 
 $('copy').onclick = async () => {
-  try { await navigator.clipboard.writeText(linkIn.value); say(createMsg, 'Lien copié.', 'ok') }
-  catch { linkIn.select(); say(createMsg, 'Sélectionne le lien et copie-le.') }
+  try { await navigator.clipboard.writeText(linkIn.value); say(createMsg, 'editor.copied', 'ok') }
+  catch { linkIn.select(); say(createMsg, 'editor.copyManually') }
 }
 
-// Ouverture : ?w=<création> | lien de filtre (?scene=… depuis « Modifier ») | ?nouveau=1 | brouillon.
+// Opening: ?w=<creation> | filter link (?scene=… from "Edit") | ?nouveau=1 | draft.
 const q = new URLSearchParams(location.search)
 const fromWork = q.get('w') && getWork(q.get('w'))
-let saved = null
-try { saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null') } catch {}
+let draft = null
+try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null') } catch {}
 if (fromWork) {
   workId = fromWork.id
   load(readFilter('?' + fromWork.search)); linkReady = true
 } else if (q.has('scene')) {
-  workId = findWorkBySearch('filtre', location.search)?.id || null
+  workId = findWorkBySearch(TYPE_FILTER, location.search)?.id || null
   load(readFilter(location.search)); linkReady = true
 } else if (q.has('nouveau')) {
   history.replaceState(null, '', location.pathname)
   load(FACE_DEFAULTS)
-} else if (saved) {
-  if (saved.workId && getWork(saved.workId)) workId = saved.workId
-  load(saved); linkReady = !!saved.linkReady
+} else if (draft) {
+  if (draft.workId && getWork(draft.workId)) workId = draft.workId
+  load(draft); linkReady = !!draft.linkReady
 } else {
   load(FACE_DEFAULTS)
 }
 
-// Réglage en direct sur /filtre (autre onglet) → on recharge les valeurs ici.
+// Live tuning on /filtre (other tab) → reload the values here.
 onWorksChanged(() => {
   const w = workId && getWork(workId)
   if (!w) return
   const cur = new URL(filterLink(location.origin, state())).search.slice(1)
-  if (w.search !== cur) { load(readFilter('?' + w.search)); changed(); say(createMsg, 'Réglages mis à jour depuis le filtre.', 'ok') }
+  if (w.search !== cur) { load(readFilter('?' + w.search)); changed(); say(createMsg, 'filter.editor.syncedFromFilter', 'ok') }
 })
 mountWorksDrawer({ currentId: () => workId })
 

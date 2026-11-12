@@ -1,26 +1,27 @@
-// Spline AR — player : une ou plusieurs scènes 3D qui sortent d'affiches (mode « musée »).
-// Moteur 8th Wall pour la caméra et le suivi d'images (jusqu'à 32 cherchées, 4 suivies).
-//   - Scène Spline : runtime Spline officiel (animations, sons, interactions), un canvas
-//     transparent par œuvre, caméra pilotée depuis la pose de l'affiche (src/spline-runtime.js).
-//   - GLB / glTF, ou ?moteur=loader : three.js pur dans la scène 8th Wall.
-// Format du lien : voir src/shared.js.
-//   debug=1   cadre de chaque affiche, axes, infos de suivi
-//   moteur=loader   scènes Spline rendues par @splinetool/loader (figées)
+// Spline AR — museum player: one or more 3D scenes coming out of posters.
+// 8th Wall engine for the camera and image tracking (up to 32 searched, 4 tracked).
+//   - Spline scene: official Spline runtime (animations, sounds, interactions), one transparent
+//     canvas per artwork, its camera driven from the poster pose (src/spline-runtime.js).
+//   - GLB / glTF, or ?moteur=loader: plain three.js inside the 8th Wall scene.
+// Link format: see src/shared.js.
+//   debug=1          frame of each poster, axes, tracking info
+//   moteur=loader    Spline scenes rendered by @splinetool/loader (static)
 
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { readItems, targetUrl, sceneUrl, isGltfRef, MAX_TRACKED } from './shared.js'
 import { startBackground } from './background.js'
+import { initI18n, t, tn, setText, onLanguageChange, mountLanguageSwitch } from './i18n.js'
 
-// Le moteur 8th Wall lit three.js sur window.THREE pour créer son renderer.
+// The 8th Wall engine reads three.js from window.THREE to create its renderer.
 window.THREE = THREE
 
 const params = new URLSearchParams(location.search)
-const { title, back, items: itemDefs } = readItems(location.search)
-const BACK = back // lien de retour (paramètre r), ex. prototype ProtoPie
+const { title, back: BACK, items: itemDefs } = readItems(location.search)
 const DEBUG = params.get('debug') === '1'
 const ENGINE = params.get('moteur') === 'loader' ? 'loader' : 'runtime'
-const MAX_LIVE_RUNTIMES = MAX_TRACKED // scènes Spline gardées en mémoire en même temps
+const MAX_LIVE_RUNTIMES = MAX_TRACKED // Spline scenes kept in memory at the same time
+const MANY = itemDefs.length > 1
 
 // ── DOM ───────────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id)
@@ -28,33 +29,36 @@ const startEl = $('start'), btnStart = $('btn-start'), progressEl = $('progress'
 const errorEl = $('error'), hintEl = $('hint'), debugEl = $('debug'), badgeEl = $('badge')
 const stopBackground = startBackground($('bg-canvas'))
 
-const kind = itemDefs.length > 1 ? `Musée · ${itemDefs.length} affiches` : 'Affiche AR'
-$('kicker').textContent = kind
-document.title = `${title || kind} · Spline AR`
-$('title').innerHTML = title
-  ? escapeHtml(title)
-  : itemDefs.length > 1 ? 'Une expo en <span>réalité augmentée</span>' : 'Une affiche en <span>réalité augmentée</span>'
-$('subtitle').textContent = itemDefs.length > 1
-  ? `${itemDefs.length} affiches. Autorise la caméra, puis vise une affiche : sa 3D apparaît dessus.`
-  : 'Autorise la caméra, puis vise l\'affiche en entier. La 3D apparaît dessus.'
-// Lien d'une création (pas la démo) : « Modifier » rouvre l'éditeur avec ce lien.
-{
-  const q = new URLSearchParams(location.search)
-  if (q.has('o') || q.has('target')) {
-    const edit = $('edit-link')
-    edit.href = `/creer/musee${location.search}`
-    edit.textContent = itemDefs.length > 1 ? 'Modifier ce musée' : 'Modifier cette affiche'
-    edit.hidden = false
-  }
-}
-hintEl.textContent = itemDefs.length > 1 ? 'Vise une affiche' : 'Vise l\'affiche'
+await initI18n()
+mountLanguageSwitch($('lang-slot'))
 
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+// Texts that depend on the link (title, number of posters) and on the language.
+function renderTexts() {
+  const kind = MANY ? tn('museum.kind', itemDefs.length) : t('museum.kindSingle')
+  $('kicker').textContent = kind
+  document.title = `${title || kind} · Spline AR`
+  const h1 = $('title')
+  if (title) h1.textContent = title
+  else h1.innerHTML = t(MANY ? 'museum.player.titleMany' : 'museum.player.titleOne')
+  setText($('subtitle'), MANY ? 'museum.player.subtitleMany' : 'museum.player.subtitleOne', { n: itemDefs.length })
+  setText(hintEl, MANY ? 'museum.player.hintMany' : 'museum.player.hintOne')
+  setText($('quit'), BACK ? 'player.back' : 'player.quit')
 }
-function fail(msg, err) {
-  console.error('[SplineAR]', msg, err || '')
-  errorEl.textContent = msg + (err?.message ? ` (${err.message})` : '')
+renderTexts()
+onLanguageChange(renderTexts)
+
+// A creation's link (not the demo): "Edit" reopens the editor with this link.
+if (params.has('o') || params.has('target')) {
+  const edit = $('edit-link')
+  edit.href = `/creer/musee${location.search}`
+  setText(edit, MANY ? 'museum.player.editMany' : 'museum.player.editOne')
+  edit.hidden = false
+}
+if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
+
+function fail(key, err) {
+  console.error('[SplineAR]', key, err || '')
+  setText(errorEl, key, { detail: err?.message ? `(${err.message})` : '' })
   errorEl.classList.add('visible')
   startEl.classList.remove('out')
 }
@@ -65,19 +69,19 @@ function debug(k, v) {
   debugEl.style.display = 'block'
   debugEl.textContent = Object.entries(debugState).map(([a, b]) => `${a}: ${b}`).join('\n')
 }
-function showBadge(text) {
-  badgeEl.textContent = text
-  badgeEl.classList.toggle('visible', !!text)
+function showBadge(key) {
+  setText(badgeEl, key)
+  badgeEl.classList.toggle('visible', !!key)
 }
 
-// ── Cibles ────────────────────────────────────────────────────────────────────
-// Le JSON pointe vers son image de luminance ; on la résout à côté du JSON pour
-// qu'une cible puisse être hébergée n'importe où (avec CORS).
+// ── Targets ───────────────────────────────────────────────────────────────────
+// The JSON points to its luminance image; we resolve it next to the JSON so that a target can
+// be hosted anywhere (with CORS).
 async function loadTarget(url) {
   const jsonUrl = new URL(url, location.href)
   const res = await fetch(jsonUrl)
   if (!res.ok || !/json/.test(res.headers.get('content-type') || '')) {
-    throw new Error(`affiche introuvable (${res.status})`)
+    throw new Error(`poster not found (${res.status})`)
   }
   const data = await res.json()
   const lum = data.resources?.luminanceImage
@@ -87,28 +91,28 @@ async function loadTarget(url) {
   return data
 }
 
-// Dimensions de l'affiche dans le repère de la cible (moteur 8th Wall) :
-// plan XY, +Z vers le spectateur ; le côté qui correspond à 4 dans le 3:4 vaut 1.
+// Poster size in the target frame (8th Wall engine): XY plane, +Z towards the viewer; the side
+// matching "4" in the 3:4 ratio is 1.
 function posterSize(properties = {}) {
   const { width = 3, height = 4, isRotated = false } = properties
   return isRotated ? { w: 1, h: width / height } : { w: width / height, h: 1 }
 }
 
-// ── Chargeurs three.js (GLB, ou Spline figé) ──────────────────────────────────
-// Le CDN Spline ne renvoie pas d'en-têtes CORS : on passe par le proxy Netlify.
+// ── three.js loaders (GLB, or static Spline) ──────────────────────────────────
+// Spline's CDN sends no CORS headers: we go through the Netlify proxy.
 const proxied = url => url.replace('https://prod.spline.design/', '/spline-proxy/')
 
 async function loadSplineStatic(url) {
   const { default: SplineLoader } = await import('@splinetool/loader')
   return new Promise((resolve, reject) => {
-    // Patch repris de SplineXR : Vector3.copy(null) plante pendant le parsing.
+    // Patch from SplineXR: Vector3.copy(null) crashes during parsing.
     const orig = THREE.Vector3.prototype.copy
     const restore = () => { THREE.Vector3.prototype.copy = orig }
     THREE.Vector3.prototype.copy = function (v) { return v == null ? this : orig.call(this, v) }
     new SplineLoader().load(proxied(url),
       s => { restore(); resolve({ object: s }) }, undefined,
-      e => { restore(); reject(e instanceof Error ? e : new Error('chargement Spline')) })
-    setTimeout(() => { restore(); reject(new Error('délai dépassé (30 s)')) }, 30000)
+      e => { restore(); reject(e instanceof Error ? e : new Error('Spline loading failed')) })
+    setTimeout(() => { restore(); reject(new Error('timeout (30 s)')) }, 30000)
   })
 }
 
@@ -125,9 +129,9 @@ function loadGltf(url) {
   })
 }
 
-// ── Une œuvre = une affiche + sa scène ────────────────────────────────────────
+// ── An artwork = a poster + its scene ─────────────────────────────────────────
 let xrCamera = null
-const liveRuntimes = [] // œuvres dont la scène Spline est chargée, du plus ancien au plus récent
+const liveRuntimes = [] // artworks whose Spline scene is loaded, oldest first
 
 class Artwork {
   constructor(def, index) {
@@ -135,9 +139,9 @@ class Artwork {
     this.index = index
     this.url = sceneUrl(def.scene)
     this.kind = isGltfRef(def.scene) ? 'gltf' : ENGINE === 'loader' ? 'loader' : 'runtime'
-    this.anchor = new THREE.Group()   // suit l'affiche
-    this.content = new THREE.Group() // réglages (x, y, z, ry)
-    this.fit = new THREE.Group()     // mise à l'échelle de la 3D sur l'affiche
+    this.anchor = new THREE.Group()  // follows the poster
+    this.content = new THREE.Group() // settings (x, y, z, ry, pl)
+    this.fit = new THREE.Group()     // scaling of the 3D onto the poster
     this.anchor.add(this.content)
     this.content.add(this.fit)
     this.anchor.visible = false
@@ -149,8 +153,8 @@ class Artwork {
 
   async loadTarget() {
     this.target = await loadTarget(targetUrl(this.def.target))
-    // Noms uniques : le moteur identifie les affiches par leur nom.
-    this.target.name = `oeuvre-${this.index}`
+    // Unique names: the engine identifies posters by name.
+    this.target.name = `artwork-${this.index}`
     this.poster = posterSize(this.target.properties)
     if (DEBUG) {
       this.anchor.add(new THREE.LineSegments(
@@ -160,10 +164,10 @@ class Artwork {
     }
   }
 
-  // Largeur max = s × largeur d'affiche, centrée sur l'affiche.
-  //   Au mur (pl = 0) : arrière de la scène posé sur l'affiche, le haut de la scène vers le haut de l'affiche.
-  //   À plat (pl = 1) : scène redressée de 90° (son haut vers le ciel, son avant vers le bas de
-  //   l'affiche), base posée sur l'image ; la rotation tourne alors autour de la verticale.
+  // Max size = s × poster width, centred on the poster.
+  //   Wall (pl = 0): back of the scene on the poster, scene up = poster up.
+  //   Flat (pl = 1): scene stood up by 90° (up towards the sky, front towards the bottom edge of
+  //   the poster), base on the image; the rotation then turns around the vertical.
   applyFit(box) {
     const { s, x, y, z, ry, pl } = this.def
     const size = box.getSize(new THREE.Vector3())
@@ -176,12 +180,12 @@ class Artwork {
     this.content.rotation.set(pl === 1 ? Math.PI / 2 : 0, THREE.MathUtils.degToRad(ry), 0)
   }
 
-  // Charge la scène une seule fois, même si l'affiche est détectée en rafale.
+  // Loads the scene only once, even if the poster is detected repeatedly.
   ensureScene() {
     if (this.overlay || this.fit.children.length) return Promise.resolve()
     if (!this.loading) {
       this.loading = this.loadScene()
-        .catch(err => { console.error('[SplineAR]', err); debug(`œuvre ${this.index + 1}`, `erreur : ${err.message}`) })
+        .catch(err => { console.error('[SplineAR]', err); debug(`artwork ${this.index + 1}`, `error: ${err.message}`) })
         .finally(() => { this.loading = null })
     }
     return this.loading
@@ -201,13 +205,13 @@ class Artwork {
         canvas.remove()
         throw err
       }
-      if (!overlay.bounds) { overlay.dispose(); throw new Error('scène vide') }
+      if (!overlay.bounds) { overlay.dispose(); throw new Error('empty scene') }
       this.applyFit(overlay.bounds)
       overlay.setPose(() => this.pose())
       this.overlay = overlay
       liveRuntimes.push(this)
       if (overlay.cameraType && !/perspective/i.test(overlay.cameraType)) {
-        debug(`œuvre ${this.index + 1}`, `caméra Spline ${overlay.cameraType} : passe-la en perspective`)
+        debug(`artwork ${this.index + 1}`, `Spline camera ${overlay.cameraType}: switch it to perspective`)
       }
       if (this.tracked) overlay.show()
     } else {
@@ -216,7 +220,7 @@ class Artwork {
       object.traverse(o => { if (o.isCamera) cams.push(o) })
       cams.forEach(c => c.parent?.remove(c))
       if (object.isScene) { object.background = null; object.fog = null }
-      // On ne touche jamais au transform de la scène Spline (matrixAutoUpdate = false).
+      // Never touch the Spline scene's own transform (matrixAutoUpdate = false).
       object.updateMatrixWorld(true)
       this.applyFit(new THREE.Box3().setFromObject(object))
       this.fit.add(object)
@@ -231,7 +235,7 @@ class Artwork {
     if (i >= 0) liveRuntimes.splice(i, 1)
   }
 
-  // Pose transmise au runtime Spline juste avant chacun de ses rendus.
+  // Pose given to the Spline runtime right before each of its renders.
   pose() {
     if (!this.tracked || !xrCamera) return null
     this.anchor.updateMatrixWorld(true)
@@ -246,26 +250,26 @@ class Artwork {
     this.anchor.visible = true
     if (this.tracked) return
     this.tracked = true
-    // Récemment vue : passe en fin de file pour ne pas être déchargée.
+    // Recently seen: move to the end of the queue so it is not unloaded.
     const i = liveRuntimes.indexOf(this)
     if (i >= 0) { liveRuntimes.splice(i, 1); liveRuntimes.push(this) }
     this.overlay?.show()
     if (!this.overlay && !this.fit.children.length) {
-      showBadge('Chargement de l\'œuvre…')
+      showBadge('museum.player.loadingArtwork')
       this.ensureScene().then(() => showBadge(''))
     }
-    debug(`œuvre ${this.index + 1}`, 'trouvée')
+    debug(`artwork ${this.index + 1}`, 'found')
   }
 
   onLost() {
     this.tracked = false
     this.anchor.visible = false
     this.overlay?.hide()
-    debug(`œuvre ${this.index + 1}`, 'perdue')
+    debug(`artwork ${this.index + 1}`, 'lost')
   }
 }
 
-// Libère la plus ancienne scène Spline hors champ quand on atteint le plafond.
+// Frees the oldest off-screen Spline scene when the cap is reached.
 function makeRoomForRuntime() {
   while (liveRuntimes.length >= MAX_LIVE_RUNTIMES) {
     const victim = liveRuntimes.find(a => !a.tracked)
@@ -277,7 +281,7 @@ function makeRoomForRuntime() {
 const artworks = itemDefs.map((def, i) => new Artwork(def, i))
 const byName = name => artworks.find(a => a.target?.name === name)
 
-// ── Pipeline 8th Wall ─────────────────────────────────────────────────────────
+// ── 8th Wall pipeline ─────────────────────────────────────────────────────────
 function updateHint() {
   hintEl.classList.toggle('visible', !artworks.some(a => a.tracked))
 }
@@ -301,7 +305,7 @@ function arModule() {
       stopBackground()
       updateHint()
       showQuit()
-      debug('moteur', `three r${THREE.REVISION} · ${ENGINE}`)
+      debug('engine', `three r${THREE.REVISION} · ${ENGINE}`)
     },
     onUpdate: () => {
       const dt = clock.getDelta()
@@ -322,26 +326,26 @@ const xrReady = new Promise(resolve => {
 
 async function prepare() {
   try {
-    progressEl.textContent = itemDefs.length > 1 ? 'Chargement des affiches…' : 'Chargement de l\'affiche…'
+    setText(progressEl, MANY ? 'museum.player.loadingPosters' : 'museum.player.loadingPoster')
     const results = await Promise.allSettled(artworks.map(a => a.loadTarget()))
     const failed = results.filter(r => r.status === 'rejected')
     failed.forEach(r => console.error('[SplineAR]', r.reason))
     if (failed.length === artworks.length) throw failed[0].reason
     const ready = artworks.filter(a => a.target)
-    if (failed.length) debug('affiches', `${failed.length} introuvable(s)`)
+    if (failed.length) debug('posters', `${failed.length} not found`)
 
-    // La première scène est préchargée ; les autres le seront à la première détection.
-    progressEl.textContent = 'Chargement de la 3D…'
+    // The first scene is preloaded; the others load when their poster is first detected.
+    setText(progressEl, 'player.loading3d')
     await ready[0].ensureScene()
-    if (!ready[0].overlay && !ready[0].fit.children.length) throw new Error('scène illisible')
+    if (!ready[0].overlay && !ready[0].fit.children.length) throw new Error('unreadable scene')
 
     await xrReady
-    progressEl.textContent = ''
+    setText(progressEl, '')
     btnStart.disabled = false
     btnStart.onclick = () => start(ready)
   } catch (err) {
-    progressEl.textContent = ''
-    fail('Impossible de charger la scène ou l\'affiche.', err)
+    setText(progressEl, '')
+    fail('museum.player.errorLoad', err)
   }
 }
 
@@ -362,19 +366,16 @@ function start(ready) {
   try {
     XR8.run({ canvas: $('camerafeed'), allowedDevices: XR8.XrConfig.device().ANY })
   } catch (err) {
-    fail('Le lancement de l\'AR a échoué.', err)
+    fail('player.errorStart', err)
   }
 }
 
-// Quitter : vers le lien de retour s'il y en a un (ex. prototype ProtoPie), sinon on recharge
-// la page (caméra coupée, retour à l'écran d'accueil du lien).
+// Quit: go to the back link if there is one (e.g. a ProtoPie prototype), otherwise reload the
+// page (camera off, back to the link's start screen).
 function showQuit() {
   const quit = $('quit')
   quit.classList.add('visible')
-  if (BACK) quit.textContent = '← Retour'
   quit.onclick = () => { if (BACK) location.href = BACK; else location.reload() }
 }
-
-if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
 
 prepare()

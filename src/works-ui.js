@@ -1,5 +1,7 @@
-// Interface « Mes créations » : liste réutilisable + tiroir latéral ouvert depuis la barre de navigation.
+// "My creations" UI: reusable list + side drawer opened from the navigation bar.
 import { listWorks, describe, deleteWork, timeAgo, onWorksChanged, TYPES } from './works.js'
+import { t, setText, onLanguageChange } from './i18n.js'
+import { TYPE_FILTER } from './shared.js'
 
 function el(tag, cls, text) {
   const e = document.createElement(tag)
@@ -7,9 +9,15 @@ function el(tag, cls, text) {
   if (text != null) e.textContent = text
   return e
 }
+// Element whose text is an i18n key (re-translated on language switch).
+function elKey(tag, cls, key, params) {
+  const e = el(tag, cls)
+  setText(e, key, params)
+  return e
+}
 
-// Remplit `container` avec la liste ; `currentId` = création ouverte dans l'éditeur.
-export function renderWorks(container, { currentId = null, emptyText, onEmpty, onDraw } = {}) {
+// Fills `container` with the list; `currentId` = creation open in the editor (value or getter).
+export function renderWorks(container, { currentId = null, emptyKey = 'works.empty', onEmpty, onDraw } = {}) {
   const draw = () => {
     const cur = typeof currentId === 'function' ? currentId() : currentId
     const works = listWorks()
@@ -17,29 +25,30 @@ export function renderWorks(container, { currentId = null, emptyText, onEmpty, o
     onDraw?.(works.length)
     if (!works.length && onEmpty) { onEmpty(container); return }
     if (!works.length) {
-      container.append(el('p', 'help works-empty', emptyText ||
-        'Rien pour l\'instant. Tes musées et filtres apparaîtront ici dès que tu crées leur lien.'))
+      container.append(elKey('p', 'help works-empty', emptyKey))
       return
     }
     for (const w of works) {
       const d = describe(w)
       const row = el('div', 'work' + (w.id === cur ? ' current' : ''))
-      const thumb = el('div', 'work-thumb' + (w.type === 'filtre' ? ' face' : ''))
+      const thumb = el('div', 'work-thumb' + (w.type === TYPE_FILTER ? ' face' : ''))
       if (d.thumb) { const img = el('img'); img.src = d.thumb; img.alt = ''; img.loading = 'lazy'; thumb.append(img) }
       else thumb.textContent = '☺'
       const info = el('div', 'work-info')
       info.append(el('div', 'work-title', d.title))
-      info.append(el('div', 'work-meta', `${TYPES[w.type].label} · ${d.detail === TYPES[w.type].label ? '' : d.detail + ' · '}${timeAgo(w.updatedAt)}`))
+      const meta = [t(TYPES[w.type].labelKey), d.detail, timeAgo(w.updatedAt)].filter(Boolean).join(' · ')
+      info.append(el('div', 'work-meta', meta))
       const actions = el('div', 'work-actions')
-      const edit = el('a', 'btn btn-sm btn-ghost', w.id === cur ? 'Ouverte' : 'Modifier')
+      const edit = elKey('a', 'btn btn-sm btn-ghost', w.id === cur ? 'works.opened' : 'actions.edit')
       edit.href = d.edit
       if (w.id === cur) edit.classList.add('is-current')
-      const open = el('a', 'btn btn-sm btn-ghost', 'Jouer')
+      const open = elKey('a', 'btn btn-sm btn-ghost', 'actions.play')
       open.href = d.link; open.target = '_blank'; open.rel = 'noopener'
       const del = el('button', 'btn btn-sm btn-danger', '✕')
-      del.title = 'Supprimer de mes créations'
+      del.dataset.i18nTitle = 'works.delete'
+      del.title = t('works.delete')
       del.onclick = () => {
-        if (confirm(`Supprimer « ${d.title} » de tes créations ?\nLe lien partagé continuera de marcher.`)) deleteWork(w.id)
+        if (confirm(t('works.confirmDelete', { title: d.title }))) deleteWork(w.id)
       }
       actions.append(edit, open, del)
       row.append(thumb, info, actions)
@@ -48,28 +57,29 @@ export function renderWorks(container, { currentId = null, emptyText, onEmpty, o
   }
   draw()
   onWorksChanged(draw)
+  onLanguageChange(draw)
   return draw
 }
 
-// Bouton « Mes créations (n) » dans la barre de navigation + tiroir latéral.
+// "My creations (n)" button in the navigation bar + side drawer.
 export function mountWorksDrawer({ currentId = null } = {}) {
   const nav = document.querySelector('.topnav')
   if (!nav) return
   const btn = el('button', 'works-btn')
-  const count = () => { btn.textContent = `Mes créations (${listWorks().length})` }
+  const count = () => setText(btn, 'works.buttonCount', { n: listWorks().length })
   count(); onWorksChanged(count)
 
   const drawer = el('aside', 'drawer')
   const head = el('div', 'drawer-head')
-  head.append(el('div', 'section-label', 'Mes créations'))
-  const close = el('button', 'btn btn-sm btn-ghost', 'Fermer')
+  head.append(elKey('div', 'section-label', 'works.title'))
+  const close = elKey('button', 'btn btn-sm btn-ghost', 'actions.close')
   head.append(close)
   const list = el('div', 'works')
   const foot = el('div', 'drawer-foot')
-  const nm = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau musée'); nm.href = '/creer/musee?nouveau=1'
-  const nf = el('a', 'btn btn-sm btn-ghost', '＋ Nouveau filtre'); nf.href = '/creer/filtre?nouveau=1'
+  const nm = elKey('a', 'btn btn-sm btn-ghost', 'works.newMuseum'); nm.href = '/creer/musee?nouveau=1'
+  const nf = elKey('a', 'btn btn-sm btn-ghost', 'works.newFilter'); nf.href = '/creer/filtre?nouveau=1'
   foot.append(nm, nf)
-  const note = el('p', 'help', 'Enregistrées dans ce navigateur. Le lien d\'une création sert aussi de sauvegarde : ouvre-le puis « Modifier ».')
+  const note = elKey('p', 'help', 'works.note')
   drawer.append(head, list, foot, note)
   const veil = el('div', 'drawer-veil')
   document.body.append(veil, drawer)
@@ -79,5 +89,7 @@ export function mountWorksDrawer({ currentId = null } = {}) {
   btn.onclick = () => toggle(true)
   close.onclick = veil.onclick = () => toggle(false)
   addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false) })
-  nav.append(btn)
+  const langSwitch = nav.querySelector('.lang-switch')
+  if (langSwitch) langSwitch.before(btn)
+  else nav.append(btn)
 }

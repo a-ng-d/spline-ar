@@ -1,0 +1,255 @@
+{
+  "actions": {
+    "close": "Fermer",
+    "copy": "Copier",
+    "edit": "Modifier",
+    "load": "Charger",
+    "open": "Ouvrir",
+    "play": "Jouer",
+    "save": "Enregistrer"
+  },
+  "common": {
+    "back": "← Retour",
+    "or": "ou"
+  },
+  "create": {
+    "filterGo": "Créer un filtre →",
+    "filterText": "Façon Snapchat : ta scène s'accroche au visage (front, nez, menton…) et réagit aux expressions. Caméra selfie.",
+    "filterTitle": "Un filtre visage",
+    "lead": "Dans les deux cas, ta 3D vient de Spline (Export → Code) et tu obtiens un lien + un QR code à partager.",
+    "museumGo": "Créer un musée →",
+    "museumText": "Une ou plusieurs affiches. Le téléphone qui vise une affiche voit sa scène 3D en sortir. Caméra arrière.",
+    "museumTitle": "Un musée d'affiches",
+    "pageTitle": "Spline AR — Créer",
+    "title": "Que veux-tu <span>créer</span> ?"
+  },
+  "editor": {
+    "backHelp": "Le bouton « Quitter » de l'AR renverra vers ce lien, par exemple ton prototype ProtoPie Cloud (il se rouvre dans ProtoPie Player si l'appli est installée).",
+    "backLabel": "Lien de retour (facultatif)",
+    "copied": "Lien copié.",
+    "copyManually": "Sélectionne le lien et copie-le.",
+    "createLink": "Créer mon lien →",
+    "downloadQr": "Télécharger le QR",
+    "ready": "C'est prêt.",
+    "savedState": "✓ Enregistré dans Mes créations · {when}",
+    "scene": "Scène",
+    "sceneHelp": "Dans Spline : <b>Export → Code</b>, copie l'URL qui finit par <code>scene.splinecode</code>. Un lien <code>.glb</code> marche aussi.",
+    "scenePlaceholder": "URL Spline (prod.spline.design/…) ou identifiant",
+    "updateLink": "Mettre à jour mon lien →",
+    "yourLink": "Ton lien"
+  },
+  "errors": {
+    "back": {
+      "https": "Le lien doit commencer par https://"
+    },
+    "image": {
+      "tooSmall": "Image trop petite : il faut au moins {minW} × {minH} px dans la zone gardée (ici {w} × {h}).",
+      "unreadable": "Impossible de lire cette image."
+    },
+    "link": {
+      "invalid": "Ce n'est pas un lien valide."
+    },
+    "scene": {
+      "empty": "Colle l'URL de ta scène.",
+      "extension": "L'URL doit finir par scene.splinecode (Spline) ou .glb.",
+      "https": "L'URL doit commencer par https://",
+      "invalid": "Ce n'est ni une URL ni un identifiant Spline.",
+      "wrongSplineLink": "Ce lien Spline n'est pas le bon : utilise Export → Code et copie l'URL qui finit par scene.splinecode."
+    },
+    "upload": {
+      "bad_jpeg": "Envoi refusé : image JPEG illisible.",
+      "jpeg": "Envoi refusé : image JPEG attendue.",
+      "json": "Envoi refusé (données invalides).",
+      "method": "Envoi refusé (méthode).",
+      "network": "Échec de l'envoi : vérifie ta connexion.",
+      "properties": "Envoi refusé : propriétés de cible invalides.",
+      "too_heavy": "Envoi refusé : image trop lourde.",
+      "too_small": "Envoi refusé : image trop petite (480 × 640 minimum).",
+      "unknown": "Échec de l'envoi."
+    }
+  },
+  "filter": {
+    "editor": {
+      "lead": "Ta scène Spline s'accroche à un point du visage et suit la tête, comme un filtre Snapchat. Pas d'image à envoyer.",
+      "pageTitle": "Spline AR — Créer un filtre visage",
+      "point": "Point d'ancrage",
+      "reactHelp": "Dans Spline, crée une <b>variable booléenne</b> avec un de ces noms, puis un événement « Variable Change » qui lance ton animation ou ton son. Elle passe à vrai pendant l'expression.",
+      "reactTitle": "Faire réagir la scène au visage",
+      "sceneTip": "Modélise ton objet face caméra (l'avant vers +Z), le haut vers le haut.",
+      "settingsHelp": "En largeur de visage (1 = largeur du visage), à partir du point d'ancrage. Teste avec « Ouvrir » sur un ordinateur avec webcam, ajuste, recommence.",
+      "syncedFromFilter": "Réglages mis à jour depuis le filtre.",
+      "testHelp": "Scanne le QR avec le téléphone : le filtre s'ouvre en caméra selfie.",
+      "title": "Crée ton <span>filtre visage</span>",
+      "titleLabel": "Nom du filtre (facultatif)",
+      "titlePlaceholder": "Ex. : Couronne de feu"
+    },
+    "expression": {
+      "eyebrowsRaised": "sourcils levés",
+      "leftEyeClosed": "œil gauche fermé",
+      "mouthOpen": "bouche ouverte",
+      "rightEyeClosed": "œil droit fermé"
+    },
+    "player": {
+      "edit": "Modifier ce filtre",
+      "errorCamera": "Le lancement de la caméra a échoué. {detail}",
+      "errorLoad": "Impossible de charger la scène. {detail}",
+      "hint": "Place ton visage face à l'écran",
+      "start": "Lancer le filtre →",
+      "subtitle": "Autorise la caméra, puis place ton visage face à l'écran. Ouvre la bouche, cligne de l'œil, lève les sourcils : la scène peut réagir.",
+      "title": "Un filtre <span>visage</span>"
+    },
+    "point": {
+      "chin": "Menton (barbe)",
+      "face": "Centre du visage",
+      "forehead": "Front (chapeau, couronne, cornes)",
+      "leftEar": "Oreille gauche",
+      "mouth": "Bouche",
+      "noseBridge": "Haut du nez (lunettes, masque)",
+      "noseTip": "Bout du nez",
+      "rightEar": "Oreille droite"
+    },
+    "tuning": {
+      "dirty": "Modifié — pense à enregistrer.",
+      "fold": "Replier",
+      "saved": "✓ Enregistré dans Mes créations",
+      "title": "Réglage en direct"
+    }
+  },
+  "home": {
+    "copyTitle": "Ouvrir une copie dans l'éditeur",
+    "createFilter": "☺ Créer un filtre visage",
+    "createMuseum": "▦ Créer un musée d'affiches",
+    "footer": "Open source · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR : <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">moteur 8th Wall © Niantic Spatial</a> · Sans lien avec Spline ni Niantic Spatial",
+    "lead": "Tes scènes Spline en réalité augmentée, dans le navigateur du téléphone, avec un simple lien : elles sortent d'une affiche, ou se portent sur le visage comme un filtre.",
+    "pageTitle": "Spline AR — ta 3D hors du cadre",
+    "posters": "Affiches",
+    "postersTitle": "Afficher les affiches à viser",
+    "templates": "Pour commencer",
+    "templatesHelp": "Essaie-les : ouvre « Affiches » sur un ordinateur et vise l'écran avec ton téléphone, ou lance le filtre en selfie. En AR, tape sur la 3D pour interagir. « Modifier » en fait une copie à toi.",
+    "templatesTag": "Modèles",
+    "title": "Fais sortir ta 3D <span>du cadre</span>",
+    "worksEmpty": "Rien pour l'instant. Tes musées et filtres apparaîtront ici dès que tu crées leur lien."
+  },
+  "lang": {
+    "switch": "Langue"
+  },
+  "museum": {
+    "editor": {
+      "addPoster": "＋ Ajouter une affiche",
+      "alreadyUploaded": "Affiche déjà envoyée — choisis une autre image pour la remplacer.",
+      "chooseImage": "Choisis l'image de l'affiche",
+      "counter": "{n} affiches · jusqu'à {max} par musée, {tracked} visibles en même temps",
+      "imageHelp": "JPG ou PNG, 480 × 640 px minimum, riche en détails. Zone utilisée : le centre, au format 3:4.",
+      "imageOk": "Image OK.",
+      "importDivider": "ou modifie un musée existant",
+      "importNone": "Aucune affiche créée ici dans ce lien.",
+      "importPlaceholder": "Colle le lien de ton musée",
+      "imported": {
+        "one": "{n} affiche chargée.",
+        "other": "{n} affiches chargées."
+      },
+      "lead": "Une ou plusieurs affiches, chacune avec sa scène Spline. Un seul lien : le téléphone qui vise une affiche voit sa 3D en sortir.",
+      "pageTitle": "Spline AR — Créer un musée",
+      "poster": "Affiche",
+      "removePoster": "Retirer cette affiche",
+      "settingsHelp": "En largeur d'affiche (1 = toute la largeur). « À plat » : la scène se dresse au-dessus de l'image posée sur une table ; le décollement devient la hauteur et la rotation tourne autour de la verticale. Modifier un réglage ne renvoie pas l'affiche.",
+      "showPosters": "Afficher les affiches",
+      "testHelp": "Pour tester : ouvre « Afficher les affiches » sur l'ordinateur, scanne le QR avec le téléphone et vise l'écran.",
+      "title": "Crée ton <span>musée AR</span>",
+      "titleLabel": "Nom du musée (facultatif)",
+      "titlePlaceholder": "Ex. : Bestiaire — 2e année",
+      "uploadingMany": "Envoi de l'affiche {i} / {n}…",
+      "uploadingOne": "Envoi de l'affiche…"
+    },
+    "kind": {
+      "one": "Musée · {n} affiche",
+      "other": "Musée · {n} affiches"
+    },
+    "kindSingle": "Affiche AR",
+    "player": {
+      "editMany": "Modifier ce musée",
+      "editOne": "Modifier cette affiche",
+      "errorLoad": "Impossible de charger la scène ou l'affiche. {detail}",
+      "hintMany": "Vise une affiche",
+      "hintOne": "Vise l'affiche",
+      "loadingArtwork": "Chargement de l'œuvre…",
+      "loadingPoster": "Chargement de l'affiche…",
+      "loadingPosters": "Chargement des affiches…",
+      "subtitleMany": "{n} affiches. Autorise la caméra, puis vise une affiche : sa 3D apparaît dessus.",
+      "subtitleOne": "Autorise la caméra, puis vise l'affiche en entier. La 3D apparaît dessus.",
+      "titleMany": "Un musée en <span>réalité augmentée</span>",
+      "titleOne": "Une affiche en <span>réalité augmentée</span>"
+    }
+  },
+  "nav": {
+    "back": "Retour",
+    "create": "Créer",
+    "filter": "Filtre visage",
+    "home": "Accueil",
+    "homeBack": "← Accueil",
+    "museum": "Musée",
+    "posters": "Affiches"
+  },
+  "player": {
+    "back": "✕ Retour",
+    "createLink": "Créer un musée ou un filtre",
+    "credit": "Made with Spline",
+    "errorStart": "Le lancement de l'AR a échoué. {detail}",
+    "loading3d": "Chargement de la 3D…",
+    "quit": "✕ Quitter",
+    "quitTitle": "Quitter l'AR",
+    "start": "Lancer l'AR →"
+  },
+  "posters": {
+    "fullHint": "Clique pour revenir · ← → pour changer · Échap",
+    "lead": "Clique sur une affiche pour l'afficher en plein écran, puis vise l'écran avec le téléphone.",
+    "pageTitle": "Spline AR — Affiches",
+    "poster": "Affiche",
+    "tile": "Affiche {n}",
+    "title": "Les <span>affiches</span>"
+  },
+  "settings": {
+    "downUp": "Bas / haut",
+    "frontBack": "Avant / arrière",
+    "leftRight": "Gauche / droite",
+    "lift": "Décollement",
+    "poster": "Affiche",
+    "posterFlat": "À plat (table, sol)",
+    "posterWall": "Au mur (verticale)",
+    "rotation": "Rotation",
+    "size": "Taille",
+    "title": "Réglages"
+  },
+  "templates": {
+    "filter": {
+      "title": "Filtre mystère"
+    },
+    "museum": {
+      "title": "Affiches mystères"
+    }
+  },
+  "time": {
+    "justNow": "à l'instant"
+  },
+  "types": {
+    "filter": "Filtre visage",
+    "museum": "Musée"
+  },
+  "works": {
+    "buttonCount": "Mes créations ({n})",
+    "confirmDelete": "Supprimer « {title} » de tes créations ?\nLe lien partagé continuera de marcher.",
+    "delete": "Supprimer de mes créations",
+    "empty": "Rien pour l'instant. Tes musées et filtres apparaîtront ici dès que tu crées leur lien.",
+    "newFilter": "＋ Nouveau filtre",
+    "newMuseum": "＋ Nouveau musée",
+    "note": "Enregistrées dans ce navigateur. Le lien d'une création sert aussi de sauvegarde : ouvre-le puis « Modifier ».",
+    "opened": "Ouvert",
+    "posterCount": {
+      "one": "{n} affiche",
+      "other": "{n} affiches"
+    },
+    "title": "Mes créations",
+    "untitledFilter": "Filtre sans titre",
+    "untitledMuseum": "Musée sans titre"
+  }
+}

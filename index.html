@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spline AR — Accueil</title>
-  <meta name="description" content="Fais sortir tes scènes Spline d'une affiche, ou porte-les sur ton visage, avec un simple lien." />
+  <title data-i18n="home.pageTitle">Spline AR</title>
+  <meta name="description" content="Bring your Spline scenes out of a poster, or wear them on your face, with a simple link. Open-source WebAR for students." />
   <script>
-    // Anciens liens de musée (/?o=…, /?target=…, /?scene=…) → /musee, avant tout affichage.
+    // Legacy museum links (/?o=…, /?target=…, /?scene=…) → /musee, before anything renders.
     (function () {
       var q = new URLSearchParams(location.search)
       if (q.has('o') || q.has('target') || q.has('scene')) location.replace('/musee' + location.search)
@@ -26,41 +26,48 @@
     .list-head .section-label { margin: 0 }
     .tag { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent2);
       background: rgba(62,207,207,.1); border: 1px solid rgba(62,207,207,.25); border-radius: 100px; padding: 2px 8px }
+    footer { text-align: center; font-size: 12px; color: var(--muted) }
+    footer a { color: var(--muted) }
   </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 <main>
   <div class="card">
-    <div class="logo"><span class="logo-dot"></span>Spline AR</div>
+    <div class="card-head">
+      <div class="logo"><span class="logo-dot"></span>Spline AR</div>
+      <div id="lang-slot"></div>
+    </div>
     <div>
-      <h1>Fais sortir ta 3D <span>du cadre</span></h1>
-      <p class="lead">Tes scènes Spline en réalité augmentée, dans le navigateur du téléphone, avec un simple lien : elles sortent d'une affiche, ou se portent sur le visage comme un filtre.</p>
+      <h1 data-i18n-html="home.title"></h1>
+      <p class="lead" data-i18n="home.lead"></p>
     </div>
     <div class="ctas">
-      <a class="btn btn-primary" href="/creer/musee?nouveau=1">▦ Créer un musée d'affiches</a>
-      <a class="btn btn-face" href="/creer/filtre?nouveau=1">☺ Créer un filtre visage</a>
+      <a class="btn btn-primary" href="/creer/musee?nouveau=1" data-i18n="home.createMuseum"></a>
+      <a class="btn btn-face" href="/creer/filtre?nouveau=1" data-i18n="home.createFilter"></a>
     </div>
   </div>
 
   <div class="card">
     <div class="list-head">
-      <div class="section-label">Pour commencer</div>
-      <span class="tag">Modèles</span>
+      <div class="section-label" data-i18n="home.templates"></div>
+      <span class="tag" data-i18n="home.templatesTag"></span>
     </div>
-    <div id="examples" class="works"></div>
-    <p class="help" style="margin-top:0">Essaie-les : ouvre « Affiches » sur un ordinateur et vise l'écran avec ton téléphone, ou lance le filtre en selfie. En AR, tape sur la 3D pour interagir. « Modifier » en fait une copie à toi.</p>
+    <div id="templates" class="works"></div>
+    <p class="help" style="margin-top:0" data-i18n="home.templatesHelp"></p>
   </div>
 
   <div class="card">
     <div class="list-head">
-      <div class="section-label">Mes créations</div>
+      <div class="section-label" data-i18n="works.title"></div>
       <span id="count" class="tag" hidden></span>
     </div>
     <div id="works" class="works"></div>
     <p id="list-help" class="help" style="margin-top:0"></p>
   </div>
+
+  <footer data-i18n-html="home.footer"></footer>
 </main>
-<script type="module" src="/src/accueil.js"></script>
+<script type="module" src="/src/home.js"></script>
 </body>
 </html>

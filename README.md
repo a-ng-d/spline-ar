@@ -1,117 +1,145 @@
 # Spline AR
 
-Deux usages, dans le navigateur du téléphone, avec un simple lien :
+**Bring your Spline scenes out of a poster, or wear them on your face — in the phone's browser, with a simple link.**
 
-- **Musée d'affiches** : une scène 3D sort de chaque affiche visée (caméra arrière).
-- **Filtre visage** façon Snapchat : une scène 3D s'accroche au visage et réagit aux expressions (caméra selfie).
+[Live site](https://spline-ar.netlify.app) · [Français](README.fr.md) · [Contributing](CONTRIBUTING.md)
 
-- **Suivi de l'affiche** : moteur [8th Wall](https://8thwall.org) (binaire distribué, chargé depuis jsDelivr), image target, sans suivi du monde.
-- **Scène Spline** : runtime Spline officiel (`@splinetool/runtime`) — animations, états, sons et interactions comme dans Spline.
-- **GLB / glTF** : three.js pur (`super-three`, comme SplineXR), animations jouées.
+Spline AR is an open-source WebAR tool made for design students. No app to install, no code, no Node.js for the people who use it: design a scene in [Spline](https://spline.design), paste its link, get a link + a QR code to share.
 
-## Adresses
+- **Poster museum** — one or more posters (image targets), each with its own Spline scene. The phone aiming at a poster sees its 3D come out (rear camera).
+- **Face filter** — Snapchat-style: a Spline scene sticks to a point of the face, follows the head and can react to expressions (selfie camera).
 
-| Adresse | Rôle |
+Spline animations, states, sounds and tap interactions work as in Spline, because the official Spline runtime does the rendering. It is the twin of [SplineXR](https://github.com/a-ng-d/spline-xr) (the same idea, in VR headsets).
+
+The interface is available in **English and French**. The browser language is used by default; a switch (EN | FR) changes it, and the choice is remembered.
+
+## How it works
+
+| Layer | Technology |
 |---|---|
-| `/` | Accueil : créer un musée ou un filtre, « Pour commencer » (deux modèles : Affiches mystères, Filtre mystère) et « Mes créations » |
-| `/musee?…` | Jouer un musée d'affiches (caméra arrière) |
-| `/filtre?…` | Jouer un filtre visage (caméra selfie) |
-| `/creer` | Choix du parcours |
-| `/creer/musee` | Éditeur de musée : affiches + scènes + réglages → lien + QR |
-| `/creer/filtre` | Éditeur de filtre : scène + point d'ancrage + réglages → lien + QR |
-| `/musee/affiches?a=<id>&a=…` | Les affiches d'un musée, à afficher sur un écran (ou imprimer) pour les viser : galerie, plein écran au clic |
+| Image and face tracking | [8th Wall](https://8thwall.org) engine, distributed binary loaded from jsDelivr (image targets, `FaceController`, no world tracking) |
+| Spline scenes | Official runtime `@splinetool/runtime` on a transparent canvas above the camera; its camera follows the 8th Wall camera |
+| GLB / glTF | three.js (`super-three`, as in SplineXR), animations played |
+| Hosting | Netlify: static site, Functions + Blobs for poster images, an Edge Function for link previews |
+| Interface language | [Tolgee](https://tolgee.io) (`@tolgee/web`) with JSON files in `locales/` |
 
-Les pages sont des dossiers (`musee/index.html`…) ; `public/_redirects` sert les adresses sans barre finale (règles 200) et redirige les anciennes (`/visage`, `/affiches`, `/visage.html`, `/musee.html`, `/filtre.html`, `/affiche.html`, `/creer.html`). Les anciens liens de musée `/?o=…` sont renvoyés vers `/musee?o=…` par l'accueil. Le plugin `pretty-urls` de `vite.config.js` reproduit les règles 200 en local.
+## Addresses
 
-Exemples de l'accueil : `EXAMPLES` dans `src/shared.js`.
+| Address | Role |
+|---|---|
+| `/` | Home: create a museum or a filter, "Get started" (two templates) and "My creations" |
+| `/musee?…` | Play a poster museum (rear camera) |
+| `/filtre?…` | Play a face filter (selfie camera) |
+| `/creer` | Choose what to create |
+| `/creer/musee` | Museum editor: posters + scenes + settings → link + QR |
+| `/creer/filtre` | Filter editor: scene + anchor point + settings → link + QR |
+| `/musee/affiches?a=<id>&a=…` | The posters of a museum, to show on a screen (or print) and aim at |
 
-## Le lien
+The routes and URL parameters stay in French on purpose: they are already printed on posters and shared in QR codes, so changing them would break existing links. Everything else (code, comments, file names) is in English.
 
-La collection vit dans le lien (pas de base de données pour l'expo, comme SplineXR) :
+Pages are folders (`musee/index.html`…); `public/_redirects` serves addresses without a trailing slash and redirects legacy ones (`/visage`, `/affiches`, `*.html`). The `pretty-urls` plugin in `vite.config.js` does the same locally.
+
+## The museum link
+
+The collection lives in the link (no database for the museum itself):
 
 ```
-https://<site>/musee?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…
+https://<site>/musee?t=<title>&o=<target>*<scene>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…&r=<back link>
 ```
 
-| Champ | Rôle | Défaut |
+| Field | Role | Default |
 |---|---|---|
-| `t` | titre de l'expo (écran d'accueil) | — |
-| `o` | une œuvre par paramètre, champs séparés par `*` ; réglages de fin omis s'ils valent leur défaut | — |
-| `<cible>` | identifiant créé sur `/creer.html`, ou URL d'un JSON de cible (encodée) | — |
-| `<scène>` | identifiant Spline (`prod.spline.design/<id>/…`) ou URL `.glb` encodée | — |
-| `s` | taille, en largeur d'affiche (1 = aussi large que l'affiche) | `0.8` |
-| `x`, `y` | décalage, en largeur d'affiche | `0` |
-| `z` | décollement de l'affiche, en largeur d'affiche | `0` |
-| `ry` | rotation autour de l'axe vertical (degrés) | `0` |
-| `pl` | `0` affiche au mur ; `1` affiche à plat (table, sol) : scène redressée de 90°, base posée sur l'image, `z` = hauteur, `ry` autour de la verticale | `0` |
-| `r` | lien de retour facultatif (https) : le bouton Quitter de l'AR y renvoie, ex. un prototype ProtoPie Cloud | — |
+| `t` | museum title (start screen, tab, link preview) | — |
+| `o` | one artwork per parameter, fields separated by `*`; trailing settings are omitted when they equal their default | — |
+| `<target>` | ID created in the editor, or URL of a target JSON (encoded) | — |
+| `<scene>` | Spline ID (`prod.spline.design/<id>/…`) or encoded `.glb` URL | — |
+| `s` | size, in poster widths (1 = as wide as the poster) | `0.8` |
+| `x`, `y` | offset, in poster widths | `0` |
+| `z` | lift from the poster, in poster widths | `0` |
+| `ry` | rotation around the vertical axis (degrees) | `0` |
+| `pl` | `0` poster on a wall; `1` poster lying flat (table, floor): scene stood up by 90°, base on the image, `z` = height | `0` |
+| `r` | optional back link (https): the AR "Quit" button goes there, e.g. a ProtoPie Cloud prototype | — |
 
-Options : `moteur=loader` (ancien rendu three.js, scènes Spline figées), `debug=1` (cadre, axes, infos de suivi). Les liens v0.2 `?scene=…&target=…&s=…` restent lisibles. Sans paramètre : affiche et scène de démo.
+Options: `moteur=loader` (older three.js rendering, static Spline scenes), `debug=1` (frame, axes, tracking info). Without parameters: demo poster and scene.
 
-Chargement : la scène de la première œuvre est préchargée, les autres à la première détection de leur affiche. Au plus 4 scènes Spline restent en mémoire ; la plus ancienne hors champ est libérée au besoin.
+The first artwork's scene is preloaded; the others load when their poster is first detected. At most 4 Spline scenes stay in memory. The engine searches up to 32 posters and tracks 4 at the same time.
 
-Repère de l'affiche (moteur 8th Wall) : plan XY, +Z vers le spectateur, le grand côté du 3:4 vaut 1. La 3D est centrée sur l'affiche, son arrière posé sur le plan.
-
-## Filtre visage
+## The face filter link
 
 ```
-https://<site>/filtre?scene=<id Spline ou URL .glb>&p=<point>&s=1&x=0&y=0.15&z=0&ry=0&t=<titre>
+https://<site>/filtre?scene=<Spline ID or .glb URL>&p=<point>&s=1&x=0&y=0.15&z=0&ry=0&t=<title>&r=<back link>
 ```
 
-- Moteur 8th Wall `FaceController` (chunk `face`), caméra selfie, affichage en miroir, un visage.
-- `r` : lien de retour facultatif (https), comme pour le musée (bouton Quitter / Retour).
-- `p` : point d'ancrage du moteur — `forehead` (défaut), `noseBridge`, `noseTip`, `mouth`, `chin`, `leftEar`, `rightEar`, ou `face` (centre). `s`, `x`, `y`, `z` en largeur de visage.
-- **Expressions → variables Spline** : si la scène déclare une variable booléenne `bouche`, `clinGauche`, `clinDroit` ou `sourcils`, elle passe à vrai pendant l'expression (`app.setVariable`). Dans Spline, un événement « Variable Change » déclenche l'animation ou le son.
-- Taille : la largeur de visage est mesurée dans le repère des points d'ancrage (coins extérieurs des yeux × 1,6) ; repli sur `scaledWidth / scale` du moteur.
-- **Réglage en direct** : « Ouvrir » depuis l'éditeur ajoute `&reglage=1&w=<id>` → panneau de curseurs sur le filtre en cours + repère cyan au point d'ancrage ; « Enregistrer » met à jour la création (et l'éditeur ouvert dans l'autre onglet).
-- Pas d'occultation par la tête : un objet derrière la tête (branches de lunettes, arrière d'un chapeau) reste visible.
+- `p`: anchor point — `forehead` (default), `noseBridge`, `noseTip`, `mouth`, `chin`, `leftEar`, `rightEar`, or `face` (centre). `s`, `x`, `y`, `z` are in face widths.
+- **Expressions → Spline variables**: if the scene declares a boolean variable `mouthOpen`, `leftEyeClosed`, `rightEyeClosed` or `eyebrowsRaised`, it turns true during the expression. In Spline, a "Variable Change" event starts the animation or the sound. The French names used by earlier versions (`bouche`, `clinGauche`, `clinDroit`, `sourcils`) still work.
+- **Live tuning**: "Open" from the editor adds `&reglage=1&w=<id>` → sliders over the running filter; "Save" updates the creation (and the editor open in the other tab).
+- No head occlusion: an object behind the head stays visible.
 
-## Comment le runtime Spline est piloté
+## How the Spline runtime is driven
 
-Le runtime Spline dessine sur son propre canvas (`#spline-canvas`), transparent, posé au-dessus de la vidéo. Juste avant chacun de ses rendus (`_renderer.renderSplineScene`), `src/spline-runtime.js` remplace la pose et la projection de sa caméra active par celles de la caméra 8th Wall, exprimées dans le repère de la scène Spline (affiche × réglages × mise à l'échelle). Spline garde tout le reste, y compris le lancer de rayons des interactions tactiles.
+The Spline runtime draws on its own transparent canvas above the video. Just before each of its renders (`_renderer.renderSplineScene`), `src/spline-runtime.js` replaces the pose and projection of its active camera with those of the 8th Wall camera, expressed in the Spline scene's frame (poster × settings × scale). Spline keeps everything else, including the raycasting for tap interactions.
 
-Ce sont des internes non documentés : la version de `@splinetool/runtime` est figée (`2.0.151`). À revérifier avant toute mise à jour.
+These are undocumented internals: the `@splinetool/runtime` version is pinned (`2.0.151`). Check again before any upgrade.
 
-La scène est mise en pause jusqu'à la première détection de l'affiche, puis tourne en continu (le son continue si l'affiche sort du champ).
+## Targets
 
-## Cibles
+A target = a JSON file + its luminance image (greyscale, 640 px high, centre crop in 3:4; a landscape image is rotated by 90°), the same rules as `@8thwall/image-target-cli`.
 
-Une cible = un JSON + son image de luminance (niveaux de gris, 640 px de haut, recadrée au centre en 3:4 ; une image paysage est tournée de 90°). Mêmes règles que `@8thwall/image-target-cli`.
+- **In the editor**: the target is built in the browser (`src/target-maker.js`), then stored on **Netlify Blobs** (store `cibles`) by `netlify/functions/targets.mjs` (`POST /api/cibles`). `netlify/functions/target-file.mjs` serves `/c/<id>/target.json`, `luminance.jpg` and `affiche.jpg`.
+- **By hand**: `npx @8thwall/image-target-cli@latest`. The JSON can be hosted anywhere (with CORS); the image is resolved next to the JSON.
 
-- **Page Créer** : la cible est fabriquée dans le navigateur (`src/target-maker.js`), puis stockée sur **Netlify Blobs** (store `cibles`) par `netlify/functions/cibles.mjs` (`POST /api/cibles`). `netlify/functions/cible-fichier.mjs` sert `/c/<id>/target.json`, `luminance.jpg` et `affiche.jpg`.
-- **À la main** : `npx @8thwall/image-target-cli@latest`, ou l'appli 8th Wall Desktop. Le JSON peut être hébergé n'importe où (CORS) : l'image est résolue à côté du JSON (`resources.luminanceImage`).
+## My creations
 
-## Limites connues
+Museums and filters are saved in the browser (`localStorage`, key `spline-ar-creations`, `src/works.js`). **The share link is the single source of truth**: a creation is `{ id, type, search }`, where `search` is the link's query string. No account, no database for the collection (poster images are on Netlify Blobs, referenced by ID). The link also works as a backup from one device to another: open it, then "Edit".
 
-- Le CDN Spline n'envoie pas d'en-têtes CORS : proxy `/spline-proxy/*` (`netlify.toml` et `public/_redirects`). En `npm run dev`, utiliser `netlify dev`.
-- Caméra Spline orthographique : à passer en perspective (signalé en mode debug).
-- Post-processing Spline : non garanti sur fond transparent.
-- `POST /api/cibles` est ouvert (pas de compte) : taille des images limitée côté serveur.
+## Translations
 
-## Mes créations
+- Strings live in `locales/en.json` and `locales/fr.json` (nested keys, same structure in both files). English is the fallback.
+- `src/i18n.js` sets up Tolgee (`FormatSimple` for `{param}` placeholders, `LanguageDetector` for the browser language, `LanguageStorage` to remember the choice) and exposes `t()`, `tn()` (one/other plurals), `setText()` and `mountLanguageSwitch()`.
+- In HTML: `data-i18n="key"` (text), `data-i18n-html` (text with markup), `data-i18n-placeholder`, `data-i18n-title`, `data-i18n-aria-label`, and `data-i18n-params='{"n":3}'`. Everything is re-translated when the language changes, without reloading.
+- Link previews (`netlify/edge-functions/link-preview.js`) follow the `Accept-Language` header.
 
-Musées et filtres sont enregistrés dans le navigateur (`localStorage`, clé `spline-ar-creations`, `src/works.js`). Le **lien de partage est la seule source de vérité** : une création = `{ id, type, search }`, où `search` est la query string du lien ; titre, nombre d'affiches et vignette s'en déduisent. Pas de compte, pas de base pour la collection (les images d'affiches sont sur Netlify Blobs, référencées par identifiant).
+Adding a language: copy `locales/en.json`, translate the values, import it in `src/i18n.js` and add it to `LANGUAGES`, then to `STRINGS` in the edge function. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-- Chaque lien créé ou mis à jour dans un éditeur est enregistré automatiquement ; l'éditeur passe sur `?w=<id>`.
-- Liste sur `/creer.html`, tiroir « Mes créations » sur `/musee.html` et `/filtre.html` (Modifier, Jouer, Supprimer, Nouveau).
-- Sur un lien joué, « Modifier » rouvre l'éditeur avec ce lien (reprend la création si elle est déjà dans la liste, sinon l'ajoute).
-- Le lien sert de sauvegarde d'un appareil à l'autre : l'ouvrir puis « Modifier ».
-- Synchronisation entre onglets (événement `storage`) : le réglage en direct du filtre met à jour l'éditeur ouvert.
-
-## Titre et aperçu des liens
-
-Le titre `t` s'affiche sur l'écran d'accueil (avec une étiquette « Musée · N affiches », « Affiche AR » ou « Filtre visage ») et dans l'onglet. `netlify/edge-functions/apercu.js` l'écrit aussi dans le HTML servi (`<title>`, Open Graph) pour l'aperçu des liens partagés (WhatsApp, Slack, mail).
-
-## Design
-
-Tokens et composants repris de SplineXR (`src/theme.css`, fond animé `src/background.js`) : fond `#06060f`, violet `#7b6ef6`, cyan `#3ecfcf`, DM Sans, cartes en verre.
-
-## Développement
+## Development
 
 ```bash
 npm install
-netlify dev      # proxy Spline + fonctions + Blobs
-npm run build    # → dist/
+npx netlify dev   # site + Spline proxy + Functions + Blobs
+npm run build     # → dist/
 ```
 
-Déploiement Netlify : site relié au dépôt, build `npm run build`, dossier publié `dist/`.
+`npm run dev` (Vite alone) works for the interface, but scenes need the Spline proxy and posters need the Functions: use `netlify dev`. AR needs HTTPS on the phone; use the Netlify deploy previews or a tunnel.
+
+Deployment: a Netlify site linked to the repository, build `npm run build`, publish directory `dist/`.
+
+## Known limits
+
+- The Spline CDN sends no CORS headers: proxy `/spline-proxy/*` (`netlify.toml` and `public/_redirects`).
+- Orthographic Spline cameras must be switched to perspective (reported in debug mode).
+- Spline post-processing is not guaranteed on a transparent background.
+- `POST /api/cibles` is open (no account): image sizes are limited on the server.
+- 8th Wall image targets are planar: no VPS / location-based AR in the distributed engine.
+
+## Attributions
+
+Spline AR stands on the work of others. Thank you to them.
+
+| Component | Use | License |
+|---|---|---|
+| [8th Wall engine](https://github.com/8thwall/engine) (`@8thwall/engine-binary`) by Niantic Spatial, Inc. | Image and face tracking | Distributed engine binary under its own [limited-use license](https://github.com/8thwall/engine/blob/main/LICENSE). It is **not** part of this repository and not covered by its license: it is loaded at runtime from jsDelivr, unmodified. See the [attribution guidelines](https://8thwall.org/docs/open-source). |
+| XR Extras (`@8thwall/xrextras`) by 8th Wall | Loading, permission and error screens of the engine | See [its npm package](https://www.npmjs.com/package/@8thwall/xrextras) |
+| [Spline](https://spline.design) runtime and loader (`@splinetool/runtime`, `@splinetool/loader`) | Rendering of Spline scenes | Published on npm by Spline; use subject to Spline's terms of service ([spline.design](https://spline.design)) |
+| [Tolgee](https://github.com/tolgee/tolgee-js) (`@tolgee/web`) | Interface translation | BSD-3-Clause |
+| [three.js](https://threejs.org) via [`super-three`](https://www.npmjs.com/package/super-three) | GLB / glTF rendering, maths | MIT |
+| [node-qrcode](https://github.com/soldair/node-qrcode) (`qrcode`) | QR codes | MIT |
+| [Netlify Blobs](https://github.com/netlify/blobs) (`@netlify/blobs`) | Storage of poster images | MIT |
+| [Vite](https://vitejs.dev) | Build | MIT |
+| [DM Sans](https://fonts.google.com/specimen/DM+Sans) via Google Fonts | Typeface | SIL Open Font License 1.1 |
+| [SplineXR](https://github.com/a-ng-d/spline-xr) | Design tokens and components (`src/theme.css`, `src/background.js`) | Same author |
+
+"Spline" is a trademark of Spline Design Inc.; "8th Wall" and "Niantic Spatial" belong to Niantic Spatial, Inc. This project is independent and **not affiliated with, endorsed or sponsored by** Spline or Niantic Spatial. The "Made with Spline" credit shown during AR links to spline.design.
+
+## License
+
+The code of this repository is released under the [MIT License](LICENSE). Third-party components keep their own licenses (see above); in particular, the 8th Wall engine binary is not covered by the MIT License.

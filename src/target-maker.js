@@ -1,20 +1,19 @@
-// Fabrication d'une image target 8th Wall dans le navigateur, à l'identique de
-// @8thwall/image-target-cli (crop.js / apply.js, cible plane) :
-//   - paysage → image tournée de 90° dans le sens horaire (isRotated)
-//   - recadrage centré au ratio 3:4 (largeur:hauteur)
-//   - image de luminance : niveaux de gris, 640 px de haut, JPEG
+// Builds an 8th Wall image target in the browser, matching @8thwall/image-target-cli
+// (crop.js / apply.js, planar target):
+//   - landscape image → rotated 90° clockwise (isRotated)
+//   - centred crop at a 3:4 (width:height) ratio
+//   - luminance image: greyscale, 640 px high, JPEG
 
 const LUMINANCE_HEIGHT = 640
 const MIN_W = 480
 const MIN_H = 640
-const AFFICHE_MAX = 1600 // côté le plus long de l'affiche stockée pour l'affichage à l'écran
+const POSTER_MAX = 1600 // longest side of the poster image stored for on-screen display / printing
 
 export async function readImage(file) {
-  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
-  return bitmap
+  return createImageBitmap(file, { imageOrientation: 'from-image' })
 }
 
-// Même calcul que getDefaultCrop de la CLI.
+// Same computation as getDefaultCrop in the CLI.
 export function defaultCrop(srcW, srcH) {
   const isRotated = srcW > srcH
   const [width, height] = isRotated ? [srcH, srcW] : [srcW, srcH]
@@ -28,22 +27,23 @@ export function defaultCrop(srcW, srcH) {
     isRotated, originalWidth: width, originalHeight: height }
 }
 
+// Returns a list of { key, params } i18n messages (empty when the image is usable).
 export function cropIssues(crop) {
   const issues = []
   if (crop.width < MIN_W || crop.height < MIN_H) {
-    issues.push(`Image trop petite : il faut au moins ${MIN_W} × ${MIN_H} px dans la zone gardée (ici ${crop.width} × ${crop.height}).`)
+    issues.push({ key: 'errors.image.tooSmall', params: { minW: MIN_W, minH: MIN_H, w: crop.width, h: crop.height } })
   }
   return issues
 }
 
-// Image (tournée si besoin) dans un canvas, dans le repère de la cible.
+// Image (rotated if needed) drawn in a canvas, in the target's frame.
 function orientedCanvas(bitmap, isRotated) {
   const c = document.createElement('canvas')
   const ctx = c.getContext('2d')
   if (isRotated) {
     c.width = bitmap.height; c.height = bitmap.width
     ctx.translate(c.width, 0)
-    ctx.rotate(Math.PI / 2) // 90° horaire, comme sharp.rotate(90)
+    ctx.rotate(Math.PI / 2) // 90° clockwise, like sharp.rotate(90)
   } else {
     c.width = bitmap.width; c.height = bitmap.height
   }
@@ -51,18 +51,20 @@ function orientedCanvas(bitmap, isRotated) {
   return c
 }
 
-function toJpeg(canvas, quality) {
-  return canvas.toDataURL('image/jpeg', quality)
+const toJpeg = (canvas, quality) => canvas.toDataURL('image/jpeg', quality)
+
+export class ImageIssueError extends Error {
+  constructor(issues) { super(issues[0]?.key || 'errors.image.unreadable'); this.issues = issues }
 }
 
 export function buildTarget(bitmap) {
   const crop = defaultCrop(bitmap.width, bitmap.height)
   const issues = cropIssues(crop)
-  if (issues.length) throw new Error(issues.join(' '))
+  if (issues.length) throw new ImageIssueError(issues)
 
   const oriented = orientedCanvas(bitmap, crop.isRotated)
 
-  // Luminance : zone recadrée, 640 px de haut, niveaux de gris.
+  // Luminance: cropped area, 640 px high, greyscale.
   const lw = Math.round(crop.width * LUMINANCE_HEIGHT / crop.height)
   const lum = document.createElement('canvas')
   lum.width = lw; lum.height = LUMINANCE_HEIGHT
@@ -76,34 +78,44 @@ export function buildTarget(bitmap) {
   }
   lctx.putImageData(px, 0, 0)
 
-  // Affiche à afficher à l'écran ou à imprimer : image d'origine, non tournée, réduite.
-  const k = Math.min(1, AFFICHE_MAX / Math.max(bitmap.width, bitmap.height))
-  const aff = document.createElement('canvas')
-  aff.width = Math.round(bitmap.width * k); aff.height = Math.round(bitmap.height * k)
-  aff.getContext('2d').drawImage(bitmap, 0, 0, aff.width, aff.height)
+  // Poster to show on a screen or print: original image, not rotated, downscaled.
+  const k = Math.min(1, POSTER_MAX / Math.max(bitmap.width, bitmap.height))
+  const poster = document.createElement('canvas')
+  poster.width = Math.round(bitmap.width * k); poster.height = Math.round(bitmap.height * k)
+  poster.getContext('2d').drawImage(bitmap, 0, 0, poster.width, poster.height)
 
   return {
     properties: crop,
     luminance: toJpeg(lum, 0.9),
-    affiche: toJpeg(aff, 0.85),
+    poster: toJpeg(poster, 0.85),
   }
 }
 
-// Rectangle gardé, exprimé dans l'image d'origine (pour l'aperçu).
+// Kept rectangle, expressed in the original image (for the preview).
 export function keptRect(bitmap) {
   const c = defaultCrop(bitmap.width, bitmap.height)
   if (!c.isRotated) return { x: c.left, y: c.top, w: c.width, h: c.height }
-  // Repère tourné de 90° horaire : (u, v) tourné ↔ (x = v, y = H - u - …) d'origine.
+  // Frame rotated 90° clockwise: rotated (u, v) ↔ original (x = v, y = H − u).
   return { x: c.top, y: bitmap.height - c.left - c.width, w: c.height, h: c.width }
 }
 
-export async function uploadTarget(t) {
-  const res = await fetch('/api/cibles', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(t),
-  })
+// Error raised by uploadTarget; `code` maps to the i18n key `errors.upload.<code>`.
+export class UploadError extends Error {
+  constructor(code, status) { super(code); this.code = code; this.status = status }
+}
+
+export async function uploadTarget(target) {
+  let res
+  try {
+    res = await fetch('/api/cibles', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(target),
+    })
+  } catch {
+    throw new UploadError('network')
+  }
   const body = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(body.error || `envoi refusé (${res.status})`)
+  if (!res.ok) throw new UploadError(body.code || 'unknown', res.status)
   return body
 }

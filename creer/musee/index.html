@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spline AR — Créer un musée</title>
+  <title data-i18n="museum.editor.pageTitle">Spline AR — Create a museum</title>
   <link rel="stylesheet" href="/src/theme.css" />
   <style>
     body { min-height: 100vh; padding: 32px 16px 80px }
@@ -52,49 +52,49 @@
   <div class="card">
     <div class="logo"><span class="logo-dot"></span>Spline AR</div>
     <div>
-      <h1>Crée ton <span>expo AR</span></h1>
-      <p class="lead">Une ou plusieurs affiches, chacune avec sa scène Spline. Un seul lien : le téléphone qui vise une affiche voit sa 3D en sortir.</p>
+      <h1 data-i18n-html="museum.editor.title"></h1>
+      <p class="lead" data-i18n="museum.editor.lead"></p>
     </div>
     <div>
-      <div class="section-label">Nom de l'expo (facultatif)</div>
-      <input id="title" type="text" class="plain" maxlength="80" placeholder="Ex. : Bestiaire — 2e année" />
+      <div class="section-label" data-i18n="museum.editor.titleLabel"></div>
+      <input id="title" type="text" class="plain" maxlength="80" data-i18n-placeholder="museum.editor.titlePlaceholder" />
     </div>
     <div>
-      <div class="section-label">Lien de retour (facultatif)</div>
+      <div class="section-label" data-i18n="editor.backLabel"></div>
       <input id="back" type="url" placeholder="https://cloud.protopie.io/p/…" />
-      <p class="help">Le bouton « Quitter » de l'AR renverra vers ce lien, par exemple ton prototype ProtoPie Cloud (il se rouvre dans ProtoPie Player si l'appli est installée).</p>
+      <p class="help" data-i18n="editor.backHelp"></p>
       <div id="back-msg" class="msg"></div>
     </div>
-    <div class="divider">ou modifie une expo existante</div>
+    <div class="divider" data-i18n="museum.editor.importDivider"></div>
     <div style="display:flex;gap:8px">
-      <input id="import" type="url" placeholder="Colle le lien de ton expo" />
-      <button id="import-btn" class="btn btn-sm btn-ghost">Charger</button>
+      <input id="import" type="url" data-i18n-placeholder="museum.editor.importPlaceholder" />
+      <button id="import-btn" class="btn btn-sm btn-ghost" data-i18n="actions.load"></button>
     </div>
     <div id="import-msg" class="msg"></div>
   </div>
 
   <div id="list" style="display:flex;flex-direction:column;gap:16px"></div>
 
-  <button id="add" class="btn btn-ghost btn-block">＋ Ajouter une affiche</button>
+  <button id="add" class="btn btn-ghost btn-block" data-i18n="museum.editor.addPoster"></button>
   <div id="counter" class="counter"></div>
 
   <div class="card">
-    <button id="create" class="btn btn-primary btn-block" disabled>Créer mon lien →</button>
+    <button id="create" class="btn btn-primary btn-block" disabled></button>
     <div id="create-msg" class="msg"></div>
     <div id="saved-state" class="saved-state"></div>
     <div id="result">
       <div>
-        <div class="section-label">Ton lien</div>
+        <div class="section-label" data-i18n="editor.yourLink"></div>
         <input id="link" type="text" readonly />
       </div>
       <div class="actions">
-        <button id="copy" class="btn btn-sm btn-ghost">Copier</button>
-        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener">Ouvrir</a>
-        <a id="gallery" class="btn btn-sm btn-ghost" target="_blank" rel="noopener">Afficher les affiches</a>
-        <a id="qr-dl" class="btn btn-sm btn-ghost" download="qr-expo-ar.png">Télécharger le QR</a>
+        <button id="copy" class="btn btn-sm btn-ghost" data-i18n="actions.copy"></button>
+        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="actions.open"></a>
+        <a id="gallery" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="museum.editor.showPosters"></a>
+        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-museum-qr.png" data-i18n="editor.downloadQr"></a>
       </div>
       <div id="qr-wrap"><canvas id="qr" width="220" height="220"></canvas></div>
-      <p class="help" style="text-align:center">Pour tester : ouvre « Afficher les affiches » sur l'ordinateur, scanne le QR avec le téléphone et vise l'écran.</p>
+      <p class="help" style="text-align:center" data-i18n="museum.editor.testHelp"></p>
     </div>
   </div>
 </main>
@@ -102,34 +102,34 @@
 <template id="art-tpl">
   <section class="card art">
     <div class="art-head">
-      <div class="art-num"><b></b><span>Affiche</span></div>
-      <button class="btn btn-sm btn-danger remove" title="Retirer cette affiche">✕</button>
+      <div class="art-num"><b></b><span data-i18n="museum.editor.poster"></span></div>
+      <button class="btn btn-sm btn-danger remove" data-i18n-title="museum.editor.removePoster">✕</button>
     </div>
     <label class="drop">
       <input class="file" type="file" accept="image/jpeg,image/png,image/webp" />
       <img class="thumb" alt="" hidden />
-      <span class="drop-text">Choisis l'image de l'affiche<small>JPG ou PNG, 480 × 640 px minimum, riche en détails. Zone utilisée : le centre, au format 3:4.</small></span>
+      <span class="drop-text"><span data-i18n="museum.editor.chooseImage"></span><small data-i18n="museum.editor.imageHelp"></small></span>
     </label>
     <div class="msg file-msg"></div>
     <div>
-      <div class="section-label">Scène</div>
-      <input class="scene" type="url" placeholder="URL Spline (prod.spline.design/…) ou identifiant" />
-      <p class="help">Dans Spline : <b>Export → Code</b>, copie l'URL qui finit par <code>scene.splinecode</code>. Un lien <code>.glb</code> marche aussi.</p>
+      <div class="section-label" data-i18n="editor.scene"></div>
+      <input class="scene" type="url" data-i18n-placeholder="editor.scenePlaceholder" />
+      <p class="help" data-i18n-html="editor.sceneHelp"></p>
       <div class="msg scene-msg"></div>
     </div>
     <details>
-      <summary>Réglages</summary>
-      <div class="row"><label>Affiche</label><select data-k="pl" class="pl"><option value="0">Au mur (verticale)</option><option value="1">À plat (table, sol)</option></select><output hidden></output></div>
-      <div class="row"><label>Taille</label><input data-k="s" type="range" min="0.1" max="2" step="0.05" /><output></output></div>
-      <div class="row"><label>Gauche / droite</label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Bas / haut</label><input data-k="y" type="range" min="-1" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Décollement</label><input data-k="z" type="range" min="0" max="1" step="0.05" /><output></output></div>
-      <div class="row"><label>Rotation</label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
-      <p class="help">En largeur d'affiche (1 = toute la largeur). « À plat » : la scène se dresse au-dessus de l'image posée sur une table ; le décollement devient la hauteur et la rotation tourne autour de la verticale. Modifier un réglage ne renvoie pas l'image.</p>
+      <summary data-i18n="settings.title"></summary>
+      <div class="row"><label data-i18n="settings.poster"></label><select data-k="pl" class="pl"><option value="0" data-i18n="settings.posterWall"></option><option value="1" data-i18n="settings.posterFlat"></option></select><output hidden></output></div>
+      <div class="row"><label data-i18n="settings.size"></label><input data-k="s" type="range" min="0.1" max="2" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.leftRight"></label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.downUp"></label><input data-k="y" type="range" min="-1" max="1" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.lift"></label><input data-k="z" type="range" min="0" max="1" step="0.05" /><output></output></div>
+      <div class="row"><label data-i18n="settings.rotation"></label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
+      <p class="help" data-i18n="museum.editor.settingsHelp"></p>
     </details>
   </section>
 </template>
 
-<script type="module" src="/src/musee.js"></script>
+<script type="module" src="/src/museum-editor.js"></script>
 </body>
 </html>

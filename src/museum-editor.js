@@ -1,14 +1,17 @@
-// Page Créer un musée : une ou plusieurs affiches → cibles 8th Wall (dans le navigateur) →
-// stockage → un lien « expo » + QR. La collection vit dans le lien, pas en base.
+// Museum editor: one or more posters → 8th Wall targets (built in the browser) → storage →
+// one museum link + QR code. The collection lives in the link, not in a database.
 import QRCode from 'qrcode'
-import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget } from './target-maker.js'
-import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, backIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS } from './shared.js'
+import { readImage, buildTarget, defaultCrop, cropIssues, uploadTarget, UploadError, ImageIssueError } from './target-maker.js'
+import { playerLink, galleryLink, readItems, sceneRef, sceneIssue, backIssue, posterUrl, ID_RE, DEFAULTS, MAX_ITEMS, MAX_TRACKED, TYPE_MUSEUM } from './shared.js'
 import { startBackground } from './background.js'
-import './nav.js'
+import { mountNav } from './nav.js'
 import { saveWork, getWork, findWorkBySearch, timeAgo } from './works.js'
 import { mountWorksDrawer } from './works-ui.js'
+import { initI18n, setText, translateDom, onLanguageChange } from './i18n.js'
 
 startBackground(document.getElementById('bg-canvas'))
+await initI18n()
+mountNav()
 
 const $ = id => document.getElementById(id)
 const listEl = $('list'), tpl = $('art-tpl'), addBtn = $('add'), counterEl = $('counter')
@@ -16,19 +19,24 @@ const backIn = $('back')
 const titleIn = $('title'), createBtn = $('create'), createMsg = $('create-msg')
 const result = $('result'), linkIn = $('link'), qr = $('qr')
 const KEYS = ['s', 'x', 'y', 'z', 'ry', 'pl']
-const LS_KEY = 'spline-ar-expo'
+const DRAFT_KEY = 'spline-ar-expo' // persisted key: do not rename
 
-/** @type {{ el: HTMLElement, bitmap?: ImageBitmap, id?: string, scene: string, s, x, y, z, ry }[]} */
+/** @type {{ el: HTMLElement, bitmap?: ImageBitmap, id?: string, scene: string, s, x, y, z, ry, pl }[]} */
 let items = []
 let linkReady = false
-let workId = null // création « Mes créations » ouverte dans l'éditeur
+let workId = null // "My creations" entry open in the editor
 
-const say = (el, text, kind = '') => { el.textContent = text; el.className = `msg ${kind} ${el.dataset.base || ''}`.trim() }
+// Message element: i18n key + params, styled as error / success.
+const say = (el, key, kind = '', params) => {
+  setText(el, key, params)
+  el.className = `msg ${kind} ${el.dataset.base || ''}`.trim()
+}
 
-// ── Une affiche dans la liste ─────────────────────────────────────────────────
+// ── One poster in the list ────────────────────────────────────────────────────
 function addItem(data = {}) {
   if (items.length >= MAX_ITEMS) return
   const el = tpl.content.firstElementChild.cloneNode(true)
+  translateDom(el)
   const item = { el, id: data.id, scene: data.scene || '', ...DEFAULTS }
   KEYS.forEach(k => { if (Number.isFinite(data[k])) item[k] = data[k] })
   items.push(item)
@@ -39,7 +47,7 @@ function addItem(data = {}) {
   q('.scene-msg').dataset.base = 'scene-msg'
   q('.scene').value = item.scene
   KEYS.forEach(k => { q(`[data-k=${k}]`).value = item[k] })
-  if (item.id) showThumb(item, posterUrl(item.id), 'Affiche déjà envoyée — choisis une autre image pour la remplacer.')
+  if (item.id) showThumb(item, posterUrl(item.id), 'museum.editor.alreadyUploaded')
   if (KEYS.some(k => item[k] !== DEFAULTS[k])) q('details').open = true
 
   q('.file').onchange = async e => {
@@ -48,17 +56,19 @@ function addItem(data = {}) {
     try {
       item.bitmap = await readImage(file)
     } catch {
-      say(q('.file-msg'), 'Impossible de lire cette image.', 'err'); return
+      say(q('.file-msg'), 'errors.image.unreadable', 'err'); return
     }
-    item.id = undefined // nouvelle image → nouvel envoi
+    item.id = undefined // new image → new upload
     const issues = cropIssues(defaultCrop(item.bitmap.width, item.bitmap.height))
-    showThumb(item, thumbFromBitmap(item.bitmap), issues.length
-      ? null : `${file.name} — ${item.bitmap.width} × ${item.bitmap.height} px`)
-    if (issues.length) say(q('.file-msg'), issues.join(' '), 'err')
+    showThumb(item, thumbFromBitmap(item.bitmap), issues.length ? null : 'museum.editor.imageOk',
+      { name: file.name, w: item.bitmap.width, h: item.bitmap.height })
+    if (issues.length) say(q('.file-msg'), issues[0].key, 'err', issues[0].params)
     changed()
   }
   q('.scene').oninput = e => { item.scene = e.target.value; changed() }
-  KEYS.forEach(k => { q(`[data-k=${k}]`)[k === 'pl' ? 'onchange' : 'oninput'] = e => { item[k] = parseFloat(e.target.value); changed() } })
+  KEYS.forEach(k => {
+    q(`[data-k=${k}]`)[k === 'pl' ? 'onchange' : 'oninput'] = e => { item[k] = parseFloat(e.target.value); changed() }
+  })
   q('.remove').onclick = () => {
     items = items.filter(i => i !== item)
     el.remove()
@@ -67,10 +77,10 @@ function addItem(data = {}) {
   changed()
 }
 
-function showThumb(item, src, text) {
+function showThumb(item, src, key, params) {
   const img = item.el.querySelector('.thumb')
   img.src = src; img.hidden = false
-  if (text) say(item.el.querySelector('.file-msg'), text, 'ok')
+  if (key) say(item.el.querySelector('.file-msg'), key, 'ok', params)
 }
 
 function thumbFromBitmap(bitmap) {
@@ -86,7 +96,7 @@ function itemReady(item) {
   return imgOk && !sceneIssue(item.scene)
 }
 
-// ── État général ──────────────────────────────────────────────────────────────
+// ── Global state ──────────────────────────────────────────────────────────────
 function changed() {
   items.forEach((item, i) => {
     const q = sel => item.el.querySelector(sel)
@@ -97,20 +107,19 @@ function changed() {
     say(q('.scene-msg'), issue, issue ? 'err' : '')
   })
   addBtn.disabled = items.length >= MAX_ITEMS
-  counterEl.textContent = items.length > 1
-    ? `${items.length} affiches · jusqu'à ${MAX_ITEMS} par expo, 4 visibles en même temps` : ''
+  setText(counterEl, items.length > 1 ? 'museum.editor.counter' : '', { n: items.length, max: MAX_ITEMS, tracked: MAX_TRACKED })
   const bIssue = backIssue(backIn.value)
   say($('back-msg'), bIssue, bIssue ? 'err' : '')
   const allOk = items.length > 0 && items.every(itemReady) && !bIssue
   createBtn.disabled = !allOk
   const pending = items.some(i => !i.id)
-  createBtn.textContent = linkReady && !pending ? 'Mettre à jour mon lien →' : 'Créer mon lien →'
+  setText(createBtn, linkReady && !pending ? 'editor.updateLink' : 'editor.createLink')
   if (linkReady && !pending && allOk) renderLink()
   else if (pending) result.classList.remove('visible')
-  save()
+  saveDraft()
 }
 
-function expo() {
+function museum() {
   return {
     title: titleIn.value.trim(),
     back: backIssue(backIn.value) ? '' : backIn.value.trim(),
@@ -118,18 +127,18 @@ function expo() {
   }
 }
 
-function save() {
+function saveDraft() {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify({
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
       workId, title: titleIn.value, back: backIn.value,
       items: items.map(({ id, scene, s, x, y, z, ry, pl }) => ({ id, scene, s, x, y, z, ry, pl })),
     }))
   } catch {}
 }
 
-function restore() {
+function restoreDraft() {
   try {
-    const v = JSON.parse(localStorage.getItem(LS_KEY) || 'null')
+    const v = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null')
     if (!v?.items?.length) return false
     titleIn.value = v.title || ''
     backIn.value = v.back || ''
@@ -140,27 +149,38 @@ function restore() {
 }
 
 async function renderLink() {
-  const e = expo()
-  const link = playerLink(location.origin, e)
+  const m = museum()
+  const link = playerLink(location.origin, m)
   linkIn.value = link
   $('open').href = link
-  $('gallery').href = galleryLink(location.origin, e)
+  $('gallery').href = galleryLink(location.origin, m)
   await QRCode.toCanvas(qr, link, { width: 220, margin: 1 })
   $('qr-dl').href = qr.toDataURL('image/png')
   result.classList.add('visible')
   remember(new URL(link).search)
 }
 
-// Chaque lien créé ou mis à jour est enregistré dans « Mes créations ».
+// Every created or updated link is saved to "My creations".
 function remember(search) {
-  const id = saveWork({ id: workId, type: 'musee', search })
+  const id = saveWork({ id: workId, type: TYPE_MUSEUM, search })
   if (id !== workId) {
     workId = id
-    window.dispatchEvent(new CustomEvent('works-changed')) // le tiroir marque la création ouverte
+    window.dispatchEvent(new CustomEvent('works-changed')) // the drawer highlights the open creation
     history.replaceState(null, '', `?w=${encodeURIComponent(id)}`)
-    save()
+    saveDraft()
   }
-  $('saved-state').textContent = `✓ Enregistré dans Mes créations · ${timeAgo(getWork(id)?.updatedAt || Date.now())}`
+  renderSavedState()
+}
+function renderSavedState() {
+  const w = workId && getWork(workId)
+  if (w) setText($('saved-state'), 'editor.savedState', { when: timeAgo(w.updatedAt) })
+}
+onLanguageChange(renderSavedState)
+
+function uploadErrorKey(err) {
+  if (err instanceof ImageIssueError) return err.issues[0].key
+  if (err instanceof UploadError) return `errors.upload.${err.code}`
+  return 'errors.upload.unknown'
 }
 
 createBtn.onclick = async () => {
@@ -168,28 +188,30 @@ createBtn.onclick = async () => {
   try {
     const todo = items.filter(i => !i.id)
     for (const [n, item] of todo.entries()) {
-      say(createMsg, todo.length > 1 ? `Envoi de l'affiche ${n + 1} / ${todo.length}…` : 'Envoi de l\'affiche…')
+      if (todo.length > 1) say(createMsg, 'museum.editor.uploadingMany', '', { i: n + 1, n: todo.length })
+      else say(createMsg, 'museum.editor.uploadingOne')
       const res = await uploadTarget(buildTarget(item.bitmap))
       item.id = res.id
-      save()
+      saveDraft()
     }
     linkReady = true
     await renderLink()
-    say(createMsg, 'C\'est prêt.', 'ok')
+    say(createMsg, 'editor.ready', 'ok')
   } catch (err) {
-    say(createMsg, `Échec : ${err.message}`, 'err')
+    console.error('[SplineAR]', err)
+    say(createMsg, uploadErrorKey(err), 'err', err.issues?.[0]?.params)
   } finally {
     changed()
   }
 }
 
 $('copy').onclick = async () => {
-  try { await navigator.clipboard.writeText(linkIn.value); say(createMsg, 'Lien copié.', 'ok') }
-  catch { linkIn.select(); say(createMsg, 'Sélectionne le lien et copie-le.') }
+  try { await navigator.clipboard.writeText(linkIn.value); say(createMsg, 'editor.copied', 'ok') }
+  catch { linkIn.select(); say(createMsg, 'editor.copyManually') }
 }
 
-// ── Modifier une expo existante à partir de son lien ──────────────────────────
-// Charge une expo depuis la query string de son lien ; renvoie le nombre d'affiches reprises.
+// ── Edit an existing museum from its link ─────────────────────────────────────
+// Loads a museum from its link's query string; returns the number of posters picked up.
 function loadSearch(search) {
   const { title, back, items: defs } = readItems(search)
   const usable = defs.filter(d => ID_RE.test(d.target || ''))
@@ -206,33 +228,33 @@ function loadSearch(search) {
 $('import-btn').onclick = () => {
   const msg = $('import-msg')
   let url
-  try { url = new URL($('import').value.trim()) } catch { say(msg, 'Ce n\'est pas un lien valide.', 'err'); return }
-  const existing = findWorkBySearch('musee', url.search)
-  workId = existing?.id || null
+  try { url = new URL($('import').value.trim()) } catch { say(msg, 'errors.link.invalid', 'err'); return }
+  workId = findWorkBySearch(TYPE_MUSEUM, url.search)?.id || null
   const n = loadSearch(url.search)
-  if (!n) { say(msg, 'Aucune affiche créée ici dans ce lien.', 'err'); return }
+  if (!n) { say(msg, 'museum.editor.importNone', 'err'); return }
   changed()
-  say(msg, `${n} affiche${n > 1 ? 's' : ''} chargée${n > 1 ? 's' : ''}.`, 'ok')
+  say(msg, n > 1 ? 'museum.editor.imported.other' : 'museum.editor.imported.one', 'ok', { n })
 }
 
 addBtn.onclick = () => { addItem(); items[items.length - 1].el.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
 titleIn.oninput = changed
 backIn.oninput = changed
 
-// Ouverture : ?w=<création> | lien d'expo (?o=… depuis « Modifier » sur le player) | ?nouveau=1 | brouillon.
+// Opening: ?w=<creation> | museum link (?o=… from "Edit" on the player) | ?nouveau=1 | draft.
+// (`nouveau` = "new": persisted in published links from the home page, kept as is.)
 const q = new URLSearchParams(location.search)
 const fromWork = q.get('w') && getWork(q.get('w'))
 if (fromWork) {
   workId = fromWork.id
   loadSearch('?' + fromWork.search)
 } else if (q.has('o') || q.has('target')) {
-  workId = findWorkBySearch('musee', location.search)?.id || null
+  workId = findWorkBySearch(TYPE_MUSEUM, location.search)?.id || null
   if (!loadSearch(location.search)) addItem()
 } else if (q.has('nouveau')) {
-  try { localStorage.removeItem(LS_KEY) } catch {}
+  try { localStorage.removeItem(DRAFT_KEY) } catch {}
   history.replaceState(null, '', location.pathname)
   addItem()
-} else if (restore()) {
+} else if (restoreDraft()) {
   linkReady = items.every(i => i.id)
 } else {
   addItem()

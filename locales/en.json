@@ -1,0 +1,255 @@
+{
+  "actions": {
+    "close": "Close",
+    "copy": "Copy",
+    "edit": "Edit",
+    "load": "Load",
+    "open": "Open",
+    "play": "Play",
+    "save": "Save"
+  },
+  "common": {
+    "back": "← Back",
+    "or": "or"
+  },
+  "create": {
+    "filterGo": "Create a filter →",
+    "filterText": "Snapchat-style: your scene sticks to the face (forehead, nose, chin…) and reacts to expressions. Selfie camera.",
+    "filterTitle": "A face filter",
+    "lead": "Either way, your 3D comes from Spline (Export → Code) and you get a link + a QR code to share.",
+    "museumGo": "Create a museum →",
+    "museumText": "One or more posters. The phone aiming at a poster sees its 3D scene come out. Rear camera.",
+    "museumTitle": "A poster museum",
+    "pageTitle": "Spline AR — Create",
+    "title": "What do you want to <span>create</span>?"
+  },
+  "editor": {
+    "backHelp": "The AR “Quit” button will go to this link, for example your ProtoPie Cloud prototype (it reopens in ProtoPie Player if the app is installed).",
+    "backLabel": "Back link (optional)",
+    "copied": "Link copied.",
+    "copyManually": "Select the link and copy it.",
+    "createLink": "Create my link →",
+    "downloadQr": "Download the QR",
+    "ready": "It's ready.",
+    "savedState": "✓ Saved in My creations · {when}",
+    "scene": "Scene",
+    "sceneHelp": "In Spline: <b>Export → Code</b>, copy the URL ending in <code>scene.splinecode</code>. A <code>.glb</code> link works too.",
+    "scenePlaceholder": "Spline URL (prod.spline.design/…) or ID",
+    "updateLink": "Update my link →",
+    "yourLink": "Your link"
+  },
+  "errors": {
+    "back": {
+      "https": "The link must start with https://"
+    },
+    "image": {
+      "tooSmall": "Image too small: the kept area needs at least {minW} × {minH} px (here {w} × {h}).",
+      "unreadable": "Could not read this image."
+    },
+    "link": {
+      "invalid": "This isn't a valid link."
+    },
+    "scene": {
+      "empty": "Paste your scene's URL.",
+      "extension": "The URL must end in scene.splinecode (Spline) or .glb.",
+      "https": "The URL must start with https://",
+      "invalid": "This is neither a URL nor a Spline ID.",
+      "wrongSplineLink": "This isn't the right Spline link: use Export → Code and copy the URL ending in scene.splinecode."
+    },
+    "upload": {
+      "bad_jpeg": "Upload refused: unreadable JPEG image.",
+      "jpeg": "Upload refused: a JPEG image was expected.",
+      "json": "Upload refused (invalid data).",
+      "method": "Upload refused (method).",
+      "network": "Upload failed: check your connection.",
+      "properties": "Upload refused: invalid target properties.",
+      "too_heavy": "Upload refused: image too heavy.",
+      "too_small": "Upload refused: image too small (480 × 640 minimum).",
+      "unknown": "Upload failed."
+    }
+  },
+  "filter": {
+    "editor": {
+      "lead": "Your Spline scene sticks to a point of the face and follows the head, like a Snapchat filter. No image to upload.",
+      "pageTitle": "Spline AR — Create a face filter",
+      "point": "Anchor point",
+      "reactHelp": "In Spline, create a <b>boolean variable</b> with one of these names, then a “Variable Change” event that starts your animation or sound. It turns true during the expression.",
+      "reactTitle": "Make the scene react to the face",
+      "sceneTip": "Model your object facing the camera (front towards +Z), top pointing up.",
+      "settingsHelp": "In face widths (1 = the width of the face), from the anchor point. Test with “Open” on a computer with a webcam, adjust, repeat.",
+      "syncedFromFilter": "Settings updated from the filter.",
+      "testHelp": "Scan the QR with the phone: the filter opens with the selfie camera.",
+      "title": "Create your <span>face filter</span>",
+      "titleLabel": "Filter name (optional)",
+      "titlePlaceholder": "E.g. Crown of fire"
+    },
+    "expression": {
+      "eyebrowsRaised": "eyebrows raised",
+      "leftEyeClosed": "left eye closed",
+      "mouthOpen": "mouth open",
+      "rightEyeClosed": "right eye closed"
+    },
+    "player": {
+      "edit": "Edit this filter",
+      "errorCamera": "Starting the camera failed. {detail}",
+      "errorLoad": "Could not load the scene. {detail}",
+      "hint": "Face the screen",
+      "start": "Start the filter →",
+      "subtitle": "Allow the camera, then face the screen. Open your mouth, wink, raise your eyebrows: the scene can react.",
+      "title": "A face <span>filter</span>"
+    },
+    "point": {
+      "chin": "Chin (beard)",
+      "face": "Centre of the face",
+      "forehead": "Forehead (hat, crown, horns)",
+      "leftEar": "Left ear",
+      "mouth": "Mouth",
+      "noseBridge": "Bridge of the nose (glasses, mask)",
+      "noseTip": "Tip of the nose",
+      "rightEar": "Right ear"
+    },
+    "tuning": {
+      "dirty": "Changed — remember to save.",
+      "fold": "Fold",
+      "saved": "✓ Saved in My creations",
+      "title": "Live tuning"
+    }
+  },
+  "home": {
+    "copyTitle": "Open a copy in the editor",
+    "createFilter": "☺ Create a face filter",
+    "createMuseum": "▦ Create a poster museum",
+    "footer": "Open source · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR: <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">8th Wall engine © Niantic Spatial</a> · Not affiliated with Spline or Niantic Spatial",
+    "lead": "Your Spline scenes in augmented reality, in the phone's browser, with a simple link: they come out of a poster, or you wear them on your face like a filter.",
+    "pageTitle": "Spline AR — your 3D out of the frame",
+    "posters": "Posters",
+    "postersTitle": "Show the posters to aim at",
+    "templates": "Get started",
+    "templatesHelp": "Try them: open “Posters” on a computer and aim your phone at the screen, or start the filter in selfie mode. In AR, tap the 3D to interact. “Edit” makes your own copy.",
+    "templatesTag": "Templates",
+    "title": "Bring your 3D <span>out of the frame</span>",
+    "worksEmpty": "Nothing yet. Your museums and filters will show up here as soon as you create their link."
+  },
+  "lang": {
+    "switch": "Language"
+  },
+  "museum": {
+    "editor": {
+      "addPoster": "＋ Add a poster",
+      "alreadyUploaded": "Poster already uploaded — choose another image to replace it.",
+      "chooseImage": "Choose the poster image",
+      "counter": "{n} posters · up to {max} per museum, {tracked} visible at the same time",
+      "imageHelp": "JPG or PNG, at least 480 × 640 px, rich in detail. Area used: the centre, in 3:4 format.",
+      "imageOk": "Image OK.",
+      "importDivider": "or edit an existing museum",
+      "importNone": "No poster created here in this link.",
+      "importPlaceholder": "Paste your museum's link",
+      "imported": {
+        "one": "{n} poster loaded.",
+        "other": "{n} posters loaded."
+      },
+      "lead": "One or more posters, each with its Spline scene. One link: the phone aiming at a poster sees its 3D come out.",
+      "pageTitle": "Spline AR — Create a museum",
+      "poster": "Poster",
+      "removePoster": "Remove this poster",
+      "settingsHelp": "In poster widths (1 = the full width). “Flat”: the scene stands above the image lying on a table; lift becomes height and rotation turns around the vertical axis. Changing a setting does not re-upload the poster.",
+      "showPosters": "Show the posters",
+      "testHelp": "To test: open “Show the posters” on the computer, scan the QR with the phone and aim at the screen.",
+      "title": "Create your <span>AR museum</span>",
+      "titleLabel": "Museum name (optional)",
+      "titlePlaceholder": "E.g. Bestiary — 2nd year",
+      "uploadingMany": "Uploading poster {i} / {n}…",
+      "uploadingOne": "Uploading the poster…"
+    },
+    "kind": {
+      "one": "Museum · {n} poster",
+      "other": "Museum · {n} posters"
+    },
+    "kindSingle": "AR poster",
+    "player": {
+      "editMany": "Edit this museum",
+      "editOne": "Edit this poster",
+      "errorLoad": "Could not load the scene or the poster. {detail}",
+      "hintMany": "Aim at a poster",
+      "hintOne": "Aim at the poster",
+      "loadingArtwork": "Loading the artwork…",
+      "loadingPoster": "Loading the poster…",
+      "loadingPosters": "Loading the posters…",
+      "subtitleMany": "{n} posters. Allow the camera, then aim at a poster: its 3D appears on it.",
+      "subtitleOne": "Allow the camera, then aim at the whole poster. The 3D appears on it.",
+      "titleMany": "A museum in <span>augmented reality</span>",
+      "titleOne": "A poster in <span>augmented reality</span>"
+    }
+  },
+  "nav": {
+    "back": "Back",
+    "create": "Create",
+    "filter": "Face filter",
+    "home": "Home",
+    "homeBack": "← Home",
+    "museum": "Museum",
+    "posters": "Posters"
+  },
+  "player": {
+    "back": "✕ Back",
+    "createLink": "Create a museum or a filter",
+    "credit": "Made with Spline",
+    "errorStart": "Starting AR failed. {detail}",
+    "loading3d": "Loading the 3D…",
+    "quit": "✕ Quit",
+    "quitTitle": "Quit AR",
+    "start": "Start AR →"
+  },
+  "posters": {
+    "fullHint": "Click to go back · ← → to switch · Esc",
+    "lead": "Click a poster to show it full screen, then aim at the screen with the phone.",
+    "pageTitle": "Spline AR — Posters",
+    "poster": "Poster",
+    "tile": "Poster {n}",
+    "title": "The <span>posters</span>"
+  },
+  "settings": {
+    "downUp": "Down / up",
+    "frontBack": "Front / back",
+    "leftRight": "Left / right",
+    "lift": "Lift",
+    "poster": "Poster",
+    "posterFlat": "Flat (table, floor)",
+    "posterWall": "On a wall (upright)",
+    "rotation": "Rotation",
+    "size": "Size",
+    "title": "Settings"
+  },
+  "templates": {
+    "filter": {
+      "title": "Mystery filter"
+    },
+    "museum": {
+      "title": "Mystery posters"
+    }
+  },
+  "time": {
+    "justNow": "just now"
+  },
+  "types": {
+    "filter": "Face filter",
+    "museum": "Museum"
+  },
+  "works": {
+    "buttonCount": "My creations ({n})",
+    "confirmDelete": "Remove “{title}” from your creations?\nThe shared link will keep working.",
+    "delete": "Remove from my creations",
+    "empty": "Nothing yet. Your museums and filters will show up here as soon as you create their link.",
+    "newFilter": "＋ New filter",
+    "newMuseum": "＋ New museum",
+    "note": "Saved in this browser. A creation's link is also its backup: open it, then “Edit”.",
+    "opened": "Open",
+    "posterCount": {
+      "one": "{n} poster",
+      "other": "{n} posters"
+    },
+    "title": "My creations",
+    "untitledFilter": "Untitled filter",
+    "untitledMuseum": "Untitled museum"
+  }
+}

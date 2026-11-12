@@ -1,0 +1,30 @@
+name: Bug report
+description: Something does not work (a museum, a filter, an editor…)
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting! English or French are both fine. / Merci ! Anglais ou français, au choix.
+  - type: input
+    id: link
+    attributes:
+      label: Link that fails
+      description: The museum or filter link (or the page address).
+      placeholder: https://spline-ar.netlify.app/musee?o=…
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Phone / computer and browser
+      placeholder: iPhone 13, Safari 18
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshot, error message, console output

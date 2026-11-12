@@ -8,14 +8,14 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Le CDN Spline ne renvoie pas d'en-têtes CORS : proxy même origine.
+# The Spline CDN sends no CORS headers: same-origin proxy.
 [[redirects]]
   from = "/spline-proxy/*"
   to = "https://prod.spline.design/:splat"
   status = 200
   force = true
 
-# Cibles et assets lisibles depuis d'autres sites (cibles hébergées ailleurs).
+# Targets and assets readable from other sites (targets hosted elsewhere).
 [[headers]]
   for = "/image-targets/*"
   [headers.values]

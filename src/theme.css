@@ -1,5 +1,6 @@
-/* Design partagé avec SplineXR (source : index.html de a-ng-d/spline-xr). */
+/* Design shared with SplineXR (source: index.html of a-ng-d/spline-xr). */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+[hidden] { display: none !important }
 
 :root {
   --bg: #06060f;
@@ -22,7 +23,7 @@ code { font-family: var(--mono); font-size: .92em }
 
 #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none }
 
-/* --- Carte en verre --- */
+/* --- Glass card --- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -58,7 +59,7 @@ h1 span { color: var(--accent) }
 .divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 11px }
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border) }
 
-/* --- Champs --- */
+/* --- Fields --- */
 input[type=text], input[type=url] {
   width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
   border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 13px;
@@ -71,7 +72,7 @@ input.error { border-color: var(--danger); animation: shake .3s }
 @keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-4px) } 75% { transform: translateX(4px) } }
 input[type=range] { width: 100%; accent-color: var(--accent) }
 
-/* --- Boutons --- */
+/* --- Buttons --- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   border: none; border-radius: 10px; padding: 10px 16px;
@@ -93,7 +94,7 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 .msg.err { color: var(--danger) }
 .msg.ok { color: var(--ok) }
 
-/* --- Chargement --- */
+/* --- Loading --- */
 .spinner {
   width: 40px; height: 40px; border-radius: 50%;
   border: 2px solid var(--border);
@@ -102,7 +103,7 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 }
 @keyframes spin { to { transform: rotate(360deg) } }
 
-/* --- Pilules (HUD) --- */
+/* --- Pills (HUD) --- */
 .pill {
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(6,6,15,.8); border: 1px solid var(--border);
@@ -110,7 +111,7 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
   padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--text);
 }
 
-/* --- Navigation (fil d'Ariane + retour) --- */
+/* --- Navigation (breadcrumb + back) --- */
 .topnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   font-size: 12px; color: var(--muted) }
 .topnav .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px;
@@ -123,12 +124,12 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 .crumbs span[aria-current] { color: var(--text); font-weight: 600 }
 .crumbs i { font-style: normal; opacity: .5 }
 
-/* --- Bouton Quitter pendant l'AR --- */
+/* --- Quit button during AR --- */
 .quit { position: fixed; top: 14px; right: 14px; z-index: 25; display: none; cursor: pointer }
 .quit.visible { display: inline-flex }
 .quit:hover { border-color: var(--danger); color: var(--danger) }
 
-/* --- Mes créations --- */
+/* --- My creations --- */
 .topnav .works-btn { margin-left: auto; padding: 6px 12px; border-radius: 100px; cursor: pointer;
   background: rgba(123,110,246,.12); border: 1px solid rgba(123,110,246,.35); color: var(--accent);
   font: 600 12px var(--font) }
@@ -163,3 +164,47 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 .drawer-head .section-label { margin: 0 }
 .drawer-foot { display: flex; gap: 8px; flex-wrap: wrap }
 .saved-state { font-size: 12px; color: var(--ok); min-height: 16px }
+
+/* --- Card header (logo + language switch) --- */
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+
+/* --- Language switch (EN | FR) --- */
+.lang-switch { display: inline-flex; padding: 2px; border-radius: 100px; background: var(--surface);
+  border: 1px solid var(--border) }
+.lang-switch button { font: 600 11px/1 var(--font, inherit); letter-spacing: .06em; padding: 5px 9px;
+  border: 0; border-radius: 100px; background: transparent; color: var(--muted); cursor: pointer }
+.lang-switch button:hover { color: var(--text) }
+.lang-switch button[aria-pressed="true"] { background: rgba(123,110,246,.2); color: var(--text) }
+.topnav .lang-switch { margin-left: auto }
+.topnav .works-btn + .lang-switch { margin-left: 0 }
+
+/* --- Player pages (/musee, /filtre): start screen and AR HUD --- */
+.player #start {
+  position: fixed; inset: 0; z-index: 20; padding: 24px; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; overflow-y: auto;
+  transition: opacity .5s, transform .5s;
+}
+.player #start.out { opacity: 0; pointer-events: none; transform: scale(.96) }
+.player #start .card { position: relative; z-index: 1 }
+.kicker { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent2); background: rgba(62,207,207,.1); border: 1px solid rgba(62,207,207,.25);
+  border-radius: 100px; padding: 3px 10px; margin-bottom: 10px }
+.kicker:empty { display: none }
+.progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted) }
+.progress:empty { display: none }
+.progress:not(:empty)::before { content: ''; width: 18px; height: 18px; border-radius: 50%; flex: none;
+  border: 2px solid var(--border); border-top-color: var(--accent); border-right-color: var(--accent2);
+  animation: spin .8s linear infinite }
+.error-box { display: none; font-size: 12px; color: var(--danger); background: rgba(240,91,91,.1);
+  border: 1px solid rgba(240,91,91,.25); border-radius: 10px; padding: 10px 12px }
+.error-box.visible { display: block }
+.hint, .badge { position: fixed; left: 50%; transform: translateX(-50%); z-index: 10;
+  pointer-events: none; transition: opacity .3s; opacity: 0 }
+.hint { bottom: 36px }
+.badge { top: 20px; color: var(--accent2); border-color: rgba(62,207,207,.3) }
+.hint.visible, .badge.visible { opacity: 1 }
+.player #credit { position: fixed; right: 10px; bottom: 8px; z-index: 6; font-size: 11px; opacity: .6 }
+.player #credit a { color: inherit }
+.debug { position: fixed; top: 8px; left: 8px; z-index: 30; display: none; max-width: 92vw;
+  font: 11px/1.4 var(--mono); color: #7fff7f; background: rgba(0,0,0,.8);
+  padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; pointer-events: none }

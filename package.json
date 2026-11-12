@@ -1,6 +1,30 @@
 {
   "name": "spline-ar",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "description": "Open-source WebAR for students: bring Spline scenes out of posters (image targets) or wear them as face filters, with a simple link. 8th Wall engine + Spline runtime, EN/FR.",
+  "license": "MIT",
+  "author": "a-ng-d",
+  "homepage": "https://spline-ar.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a-ng-d/spline-ar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/a-ng-d/spline-ar/issues"
+  },
+  "keywords": [
+    "webar",
+    "augmented-reality",
+    "spline",
+    "8thwall",
+    "image-target",
+    "face-filter",
+    "education",
+    "design",
+    "tolgee",
+    "i18n"
+  ],
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +34,7 @@
     "@netlify/blobs": "^11.1.8",
     "@splinetool/loader": "1.12.81",
     "@splinetool/runtime": "2.0.151",
+    "@tolgee/web": "^7.3.0",
     "qrcode": "^1.5.4",
     "super-three": "0.147.1"
   },

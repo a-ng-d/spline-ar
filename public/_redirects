@@ -1,7 +1,7 @@
-# Proxy du CDN Spline (pas d'en-têtes CORS côté Spline)
+# Spline CDN proxy (Spline sends no CORS headers)
 /spline-proxy/*    https://prod.spline.design/:splat  200!
 
-# Adresses sans barre finale → pages
+# URLs without a trailing slash → pages
 /musee             /musee/index.html            200
 /musee/affiches    /musee/affiches/index.html   200
 /filtre            /filtre/index.html           200
@@ -9,7 +9,7 @@
 /creer/musee       /creer/musee/index.html      200
 /creer/filtre      /creer/filtre/index.html     200
 
-# Anciennes adresses (la query string est conservée)
+# Legacy addresses (the query string is kept)
 /visage            /filtre             301
 /visage/           /filtre             301
 /visage.html       /filtre             301

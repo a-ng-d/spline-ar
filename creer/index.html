@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spline AR — Créer</title>
+  <title data-i18n="create.pageTitle">Spline AR — Create</title>
   <link rel="stylesheet" href="/src/theme.css" />
   <style>
     body { min-height: 100vh; padding: 32px 16px; display: flex; justify-content: center }
@@ -32,36 +32,30 @@
   <div class="card">
     <div class="logo"><span class="logo-dot"></span>Spline AR</div>
     <div>
-      <h1>Que veux-tu <span>créer</span> ?</h1>
-      <p class="lead">Dans les deux cas, ta 3D vient de Spline (Export → Code) et tu obtiens un lien + un QR code à partager.</p>
+      <h1 data-i18n-html="create.title"></h1>
+      <p class="lead" data-i18n="create.lead"></p>
     </div>
     <div class="choices">
       <a class="choice" href="/creer/musee">
         <span class="choice-icon">▦</span>
-        <h2>Un musée d'affiches</h2>
-        <p>Une ou plusieurs affiches. Le téléphone qui vise une affiche voit sa scène 3D en sortir. Caméra arrière.</p>
-        <span class="go">Créer un musée →</span>
+        <h2 data-i18n="create.museumTitle"></h2>
+        <p data-i18n="create.museumText"></p>
+        <span class="go" data-i18n="create.museumGo"></span>
       </a>
       <a class="choice face" href="/creer/filtre">
         <span class="choice-icon">☺</span>
-        <h2>Un filtre visage</h2>
-        <p>Façon Snapchat : ta scène s'accroche au visage (front, nez, menton…) et réagit aux expressions. Caméra selfie.</p>
-        <span class="go">Créer un filtre →</span>
+        <h2 data-i18n="create.filterTitle"></h2>
+        <p data-i18n="create.filterText"></p>
+        <span class="go" data-i18n="create.filterGo"></span>
       </a>
     </div>
   </div>
   <div class="card" id="creations">
-    <div class="section-label" style="margin:0">Mes créations</div>
+    <div class="section-label" style="margin:0" data-i18n="works.title"></div>
     <div id="works" class="works"></div>
-    <p class="help" style="margin-top:0">Enregistrées dans ce navigateur. Le lien d'une création sert aussi de sauvegarde : ouvre-le, puis « Modifier ».</p>
+    <p class="help" style="margin-top:0" data-i18n="works.note"></p>
   </div>
 </main>
-<script type="module">
-  import '/src/nav.js'
-  import { renderWorks } from '/src/works-ui.js'
-  renderWorks(document.getElementById('works'))
-  import { startBackground } from '/src/background.js'
-  startBackground(document.getElementById('bg-canvas'))
-</script>
+<script type="module" src="/src/create.js"></script>
 </body>
 </html>

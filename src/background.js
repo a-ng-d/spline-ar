@@ -1,5 +1,5 @@
-// Fond animé repris de SplineXR : 4 orbes en dégradé radial qui dérivent lentement.
-// Renvoie une fonction d'arrêt (le fond est coupé quand la caméra prend le relais).
+// Animated background shared with SplineXR: 4 radial-gradient orbs drifting slowly.
+// Returns a stop function (the background is turned off when the camera takes over).
 export function startBackground(canvas) {
   if (!canvas) return () => {}
   const ctx = canvas.getContext('2d')

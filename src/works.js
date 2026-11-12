@@ -1,27 +1,28 @@
-// « Mes créations » : musées et filtres enregistrés dans le navigateur de l'étudiant.
+// "My creations": museums and filters saved in the student's browser.
 //
-// Le lien de partage est la seule source de vérité : une création = son type + la query
-// string de son lien (?t=…&o=… pour un musée, ?scene=…&p=… pour un filtre). Tout le reste
-// (titre, nombre d'affiches, vignette) s'en déduit. Les images d'affiches, elles, sont déjà
-// stockées sur le serveur (Netlify Blobs) et référencées par identifiant dans le lien.
+// The share link is the single source of truth: a creation = its type + the query string of
+// its link (?t=…&o=… for a museum, ?scene=…&p=… for a filter). Everything else (title, number
+// of posters, thumbnail) is derived from it. Poster images are already stored on the server
+// (Netlify Blobs) and referenced by id inside the link.
 //
-// Pas de compte : les créations restent dans ce navigateur. Le lien lui-même sert de
-// sauvegarde : le coller dans « Modifier » (ou ouvrir le lien puis « Modifier ») le reprend.
+// No account: creations stay in this browser. The link itself is the backup: open it, then
+// "Edit" picks the creation up again (on any device).
 
-import { readItems, posterUrl } from './shared.js'
-import { readFilter } from './face-shared.js'
+import { readItems, posterUrl, TYPE_MUSEUM, TYPE_FILTER } from './shared.js'
+import { readFilter } from './filter-shared.js'
+import { t, tn, getLanguage } from './i18n.js'
 
-const KEY = 'spline-ar-creations'
+const STORAGE_KEY = 'spline-ar-creations' // persisted key: do not rename
 export const TYPES = {
-  musee: { label: 'Musée', editor: '/creer/musee', player: '/musee' },
-  filtre: { label: 'Filtre visage', editor: '/creer/filtre', player: '/filtre' },
+  [TYPE_MUSEUM]: { labelKey: 'types.museum', editor: '/creer/musee', player: '/musee' },
+  [TYPE_FILTER]: { labelKey: 'types.filter', editor: '/creer/filtre', player: '/filtre' },
 }
 
 function read() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]').filter(w => w && TYPES[w.type]) } catch { return [] }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]').filter(w => w && TYPES[w.type]) } catch { return [] }
 }
 function write(list) {
-  try { localStorage.setItem(KEY, JSON.stringify(list)) } catch {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)) } catch {}
   window.dispatchEvent(new CustomEvent('works-changed'))
 }
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
@@ -38,7 +39,7 @@ export function findWorkBySearch(type, search) {
   return read().find(w => w.type === type && norm(w.search) === s) || null
 }
 
-// Crée ou met à jour ; renvoie l'identifiant.
+// Creates or updates a creation; returns its id.
 export function saveWork({ id, type, search }) {
   const list = read()
   const now = Date.now()
@@ -59,32 +60,37 @@ export function deleteWork(id) {
   write(read().filter(w => w.id !== id))
 }
 
-// Infos d'affichage déduites du lien.
+// Display info derived from the link (translated in the current language).
 export function describe(work) {
   const search = '?' + norm(work.search)
-  const t = TYPES[work.type]
-  const link = `${location.origin}${t.player}${search}`
-  const edit = `${t.editor}?w=${encodeURIComponent(work.id)}`
-  if (work.type === 'musee') {
+  const type = TYPES[work.type]
+  const link = `${location.origin}${type.player}${search}`
+  const edit = `${type.editor}?w=${encodeURIComponent(work.id)}`
+  if (work.type === TYPE_MUSEUM) {
     const { title, items } = readItems(search)
-    return { title: title || 'Musée sans titre', detail: `${items.length} affiche${items.length > 1 ? 's' : ''}`,
-      thumb: posterUrl(items[0]?.target), link, edit }
+    return {
+      title: title || t('works.untitledMuseum'),
+      detail: tn('works.posterCount', items.length),
+      thumb: posterUrl(items[0]?.target), link, edit,
+    }
   }
   const f = readFilter(search)
-  return { title: f.title || 'Filtre sans titre', detail: 'Filtre visage', thumb: null, link, edit }
+  return { title: f.title || t('works.untitledFilter'), detail: '', thumb: null, link, edit }
 }
 
 export function timeAgo(ts) {
+  const lang = getLanguage()
   const s = Math.round((Date.now() - ts) / 1000)
-  if (s < 60) return 'à l\'instant'
-  if (s < 3600) return `il y a ${Math.round(s / 60)} min`
-  if (s < 86400) return `il y a ${Math.round(s / 3600)} h`
+  if (s < 60) return t('time.justNow')
+  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto', style: 'short' })
+  if (s < 3600) return rtf.format(-Math.round(s / 60), 'minute')
+  if (s < 86400) return rtf.format(-Math.round(s / 3600), 'hour')
   const d = Math.round(s / 86400)
-  return d < 30 ? `il y a ${d} j` : new Date(ts).toLocaleDateString('fr-FR')
+  return d < 30 ? rtf.format(-d, 'day') : new Date(ts).toLocaleDateString(lang)
 }
 
-// Synchronisation entre onglets (ex. réglage en direct sur /filtre → éditeur filtre).
+// Cross-tab sync (e.g. live tuning on /filtre → filter editor in another tab).
 export function onWorksChanged(fn) {
   window.addEventListener('works-changed', fn)
-  window.addEventListener('storage', e => { if (e.key === KEY) fn() })
+  window.addEventListener('storage', e => { if (e.key === STORAGE_KEY) fn() })
 }
