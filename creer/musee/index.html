@@ -32,6 +32,9 @@
     summary::before { content: '▶'; color: var(--accent); font-size: 9px; transition: transform .15s }
     details[open] summary::before { transform: rotate(90deg) }
     .row { display: grid; grid-template-columns: 112px 1fr 48px; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px }
+    .row select { width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 10px;
+      padding: 7px 10px; color: var(--text); font: 13px var(--font) }
+    .row select option { background: #14141e }
     .row output { text-align: right; font: 12px var(--mono); color: var(--muted) }
 
     #result { display: none; flex-direction: column; gap: 14px }
@@ -116,12 +119,13 @@
     </div>
     <details>
       <summary>Réglages</summary>
+      <div class="row"><label>Affiche</label><select data-k="pl" class="pl"><option value="0">Au mur (verticale)</option><option value="1">À plat (table, sol)</option></select><output hidden></output></div>
       <div class="row"><label>Taille</label><input data-k="s" type="range" min="0.1" max="2" step="0.05" /><output></output></div>
       <div class="row"><label>Gauche / droite</label><input data-k="x" type="range" min="-1" max="1" step="0.05" /><output></output></div>
       <div class="row"><label>Bas / haut</label><input data-k="y" type="range" min="-1" max="1" step="0.05" /><output></output></div>
       <div class="row"><label>Décollement</label><input data-k="z" type="range" min="0" max="1" step="0.05" /><output></output></div>
       <div class="row"><label>Rotation</label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
-      <p class="help">En largeur d'affiche (1 = toute la largeur). Modifier un réglage ne renvoie pas l'image.</p>
+      <p class="help">En largeur d'affiche (1 = toute la largeur). « À plat » : la scène se dresse au-dessus de l'image posée sur une table ; le décollement devient la hauteur et la rotation tourne autour de la verticale. Modifier un réglage ne renvoie pas l'image.</p>
     </details>
   </section>
 </template>

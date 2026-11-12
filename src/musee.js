@@ -15,7 +15,7 @@ const listEl = $('list'), tpl = $('art-tpl'), addBtn = $('add'), counterEl = $('
 const backIn = $('back')
 const titleIn = $('title'), createBtn = $('create'), createMsg = $('create-msg')
 const result = $('result'), linkIn = $('link'), qr = $('qr')
-const KEYS = ['s', 'x', 'y', 'z', 'ry']
+const KEYS = ['s', 'x', 'y', 'z', 'ry', 'pl']
 const LS_KEY = 'spline-ar-expo'
 
 /** @type {{ el: HTMLElement, bitmap?: ImageBitmap, id?: string, scene: string, s, x, y, z, ry }[]} */
@@ -58,7 +58,7 @@ function addItem(data = {}) {
     changed()
   }
   q('.scene').oninput = e => { item.scene = e.target.value; changed() }
-  KEYS.forEach(k => { q(`[data-k=${k}]`).oninput = e => { item[k] = parseFloat(e.target.value); changed() } })
+  KEYS.forEach(k => { q(`[data-k=${k}]`)[k === 'pl' ? 'onchange' : 'oninput'] = e => { item[k] = parseFloat(e.target.value); changed() } })
   q('.remove').onclick = () => {
     items = items.filter(i => i !== item)
     el.remove()
@@ -114,7 +114,7 @@ function expo() {
   return {
     title: titleIn.value.trim(),
     back: backIssue(backIn.value) ? '' : backIn.value.trim(),
-    items: items.map(i => ({ target: i.id, scene: sceneRef(i.scene), s: i.s, x: i.x, y: i.y, z: i.z, ry: i.ry })),
+    items: items.map(i => ({ target: i.id, scene: sceneRef(i.scene), s: i.s, x: i.x, y: i.y, z: i.z, ry: i.ry, pl: i.pl })),
   }
 }
 
@@ -122,7 +122,7 @@ function save() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
       workId, title: titleIn.value, back: backIn.value,
-      items: items.map(({ id, scene, s, x, y, z, ry }) => ({ id, scene, s, x, y, z, ry })),
+      items: items.map(({ id, scene, s, x, y, z, ry, pl }) => ({ id, scene, s, x, y, z, ry, pl })),
     }))
   } catch {}
 }
@@ -198,7 +198,7 @@ function loadSearch(search) {
   items = []
   titleIn.value = title
   backIn.value = back || ''
-  usable.forEach(d => addItem({ id: d.target, scene: d.scene, s: d.s, x: d.x, y: d.y, z: d.z, ry: d.ry }))
+  usable.forEach(d => addItem({ id: d.target, scene: d.scene, s: d.s, x: d.x, y: d.y, z: d.z, ry: d.ry, pl: d.pl }))
   linkReady = true
   return usable.length
 }

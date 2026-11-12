@@ -1,7 +1,7 @@
 // Utilitaires communs au player, à la page Créer et à la galerie d'affiches.
 //
 // Format du lien (sans base de données pour la collection, comme SplineXR) :
-//   /musee?o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…&t=<titre>
+//   /musee?o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…&t=<titre>
 //   - une « œuvre » par paramètre o (jusqu'à MAX_ITEMS)
 //   - <cible>  identifiant créé sur la page Créer (ou URL d'un JSON de cible, encodée)
 //   - <scène>  identifiant Spline (prod.spline.design/<id>/scene.splinecode) ou URL .glb encodée
@@ -22,8 +22,10 @@ export const EXAMPLES = [
 
 export const MAX_ITEMS = 32   // affiches cherchées par le moteur 8th Wall
 export const MAX_TRACKED = 4  // affiches suivies en même temps
-export const DEFAULTS = { s: 0.8, x: 0, y: 0, z: 0, ry: 0 }
-const KEYS = ['s', 'x', 'y', 'z', 'ry']
+// pl : affiche au mur (0, défaut) ou posée à plat sur une table / au sol (1) ; à plat, la scène
+// est redressée pour se tenir debout au-dessus de l'image.
+export const DEFAULTS = { s: 0.8, x: 0, y: 0, z: 0, ry: 0, pl: 0 }
+const KEYS = ['s', 'x', 'y', 'z', 'ry', 'pl']
 
 // Identifiant de cible créé par la page Créer (stocké sur Netlify Blobs).
 export const ID_RE = /^[a-z0-9]{6,24}$/
@@ -91,7 +93,7 @@ export function readItems(search) {
     items: [{
       target: p.get('target') || DEMO.target,
       scene: sceneRef(p.get('scene')) || DEMO.scene,
-      s: num('s'), x: num('x'), y: num('y'), z: num('z'), ry: num('ry'),
+      s: num('s'), x: num('x'), y: num('y'), z: num('z'), ry: num('ry'), pl: num('pl'),
     }],
   }
 }

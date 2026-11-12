@@ -30,7 +30,7 @@ Exemples de l'accueil : `EXAMPLES` dans `src/shared.js`.
 La collection vit dans le lien (pas de base de données pour l'expo, comme SplineXR) :
 
 ```
-https://<site>/musee?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…
+https://<site>/musee?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>*<pl>&o=…
 ```
 
 | Champ | Rôle | Défaut |
@@ -43,6 +43,7 @@ https://<site>/musee?t=<titre>&o=<cible>*<scène>*<s>*<x>*<y>*<z>*<ry>&o=…
 | `x`, `y` | décalage, en largeur d'affiche | `0` |
 | `z` | décollement de l'affiche, en largeur d'affiche | `0` |
 | `ry` | rotation autour de l'axe vertical (degrés) | `0` |
+| `pl` | `0` affiche au mur ; `1` affiche à plat (table, sol) : scène redressée de 90°, base posée sur l'image, `z` = hauteur, `ry` autour de la verticale | `0` |
 | `r` | lien de retour facultatif (https) : le bouton Quitter de l'AR y renvoie, ex. un prototype ProtoPie Cloud | — |
 
 Options : `moteur=loader` (ancien rendu three.js, scènes Spline figées), `debug=1` (cadre, axes, infos de suivi). Les liens v0.2 `?scene=…&target=…&s=…` restent lisibles. Sans paramètre : affiche et scène de démo.

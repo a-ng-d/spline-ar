@@ -160,16 +160,20 @@ class Artwork {
     }
   }
 
-  // Centre la 3D sur l'affiche, arrière posé sur le plan, largeur max = s × largeur d'affiche.
+  // Largeur max = s × largeur d'affiche, centrée sur l'affiche.
+  //   Au mur (pl = 0) : arrière de la scène posé sur l'affiche, le haut de la scène vers le haut de l'affiche.
+  //   À plat (pl = 1) : scène redressée de 90° (son haut vers le ciel, son avant vers le bas de
+  //   l'affiche), base posée sur l'image ; la rotation tourne alors autour de la verticale.
   applyFit(box) {
-    const { s, x, y, z, ry } = this.def
+    const { s, x, y, z, ry, pl } = this.def
     const size = box.getSize(new THREE.Vector3())
     const center = box.getCenter(new THREE.Vector3())
     const k = (s * this.poster.w) / (Math.max(size.x, size.y, size.z) || 1)
     this.fit.scale.setScalar(k)
-    this.fit.position.set(-center.x * k, -center.y * k, -box.min.z * k)
+    if (pl === 1) this.fit.position.set(-center.x * k, -box.min.y * k, -center.z * k)
+    else this.fit.position.set(-center.x * k, -center.y * k, -box.min.z * k)
     this.content.position.set(x * this.poster.w, y * this.poster.w, z * this.poster.w)
-    this.content.rotation.set(0, THREE.MathUtils.degToRad(ry), 0)
+    this.content.rotation.set(pl === 1 ? Math.PI / 2 : 0, THREE.MathUtils.degToRad(ry), 0)
   }
 
   // Charge la scène une seule fois, même si l'affiche est détectée en rafale.
