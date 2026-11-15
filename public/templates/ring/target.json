@@ -1,0 +1,21 @@
+{
+  "imagePath": "templates/ring/luminance.jpg",
+  "metadata": null,
+  "name": "ring",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 600,
+    "height": 800,
+    "isRotated": false,
+    "originalWidth": 600,
+    "originalHeight": 800
+  },
+  "resources": {
+    "luminanceImage": "luminance.jpg",
+    "originalImage": "affiche.jpg"
+  },
+  "created": 1794764177932,
+  "updated": 1794764177932
+}

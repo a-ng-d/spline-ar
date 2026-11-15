@@ -24,7 +24,7 @@ export const TYPE_FILTER = 'filtre'
 // Templates shown on the home page ("Get started"). The title is added per language.
 export const TEMPLATES = [
   { type: TYPE_MUSEUM, titleKey: 'templates.museum.title',
-    search: 'o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP' },
+    search: 'o=esm3jjqrrj*Jtv-UW7Z9X51jcMP&o=rrqwss29bd*Jtv-UW7Z9X51jcMP&o=tplring*MSLyuP3v20LWrIKs' },
   { type: TYPE_FILTER, titleKey: 'templates.filter.title',
     search: 'scene=IAYz8bpg0fXAopLM&p=mouth&s=0.4&y=0' },
 ]
@@ -48,14 +48,26 @@ export const DEMO = {
 }
 
 // "abc123" → "/c/abc123/target.json"; a URL is returned unchanged.
+// Posters bundled with the site (public/templates/<folder>/), used by the templates. They
+// behave like uploaded posters (same files, same short ID in links), so a template can be
+// opened in the editor and copied. IDs start with "tpl" to stay apart from generated ones.
+export const BUILTIN_TARGETS = { tplring: '/templates/ring' }
+
+function targetBase(value) {
+  if (BUILTIN_TARGETS[value]) return BUILTIN_TARGETS[value]
+  return ID_RE.test(value) ? `/c/${value}` : null
+}
+
 export function targetUrl(value) {
   if (!value) return null
-  return ID_RE.test(value) ? `/c/${value}/target.json` : value
+  const base = targetBase(value)
+  return base ? `${base}/target.json` : value
 }
 
 export function posterUrl(value) {
   if (!value) return DEMO.poster
-  return ID_RE.test(value) ? `/c/${value}/affiche.jpg` : value
+  const base = targetBase(value)
+  return base ? `${base}/affiche.jpg` : value
 }
 
 // Accepts a Spline prod URL, a bare id, or a .glb/.gltf URL.
