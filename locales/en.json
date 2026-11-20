@@ -119,7 +119,7 @@
     "copyTitle": "Open a copy in the editor",
     "createFilter": "☺ Create a face filter",
     "createMuseum": "▦ Create a poster museum",
-    "footer": "Open source · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR: <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">8th Wall engine © Niantic Spatial</a> · Not affiliated with Spline or Niantic Spatial",
+    "footer": "Made by <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> founder · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR: <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">8th Wall engine © Niantic Spatial</a> · Not affiliated with Spline or Niantic Spatial",
     "lead": "Your Spline scenes in augmented reality, in the phone's browser, with a simple link: they come out of a poster, or you wear them on your face like a filter.",
     "pageTitle": "Spline AR — your 3D out of the frame",
     "posters": "Posters",

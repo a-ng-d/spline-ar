@@ -119,7 +119,7 @@
     "copyTitle": "Ouvrir une copie dans l'éditeur",
     "createFilter": "☺ Créer un filtre visage",
     "createMuseum": "▦ Créer un musée d'affiches",
-    "footer": "Open source · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR : <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">moteur 8th Wall © Niantic Spatial</a> · Sans lien avec Spline ni Niantic Spatial",
+    "footer": "Conçu par <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, fondateur de <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">Licence MIT</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR : <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">moteur 8th Wall © Niantic Spatial</a> · Sans lien avec Spline ni Niantic Spatial",
     "lead": "Tes scènes Spline en réalité augmentée, dans le navigateur du téléphone, avec un simple lien : elles sortent d'une affiche, ou se portent sur le visage comme un filtre.",
     "pageTitle": "Spline AR — ta 3D hors du cadre",
     "posters": "Affiches",

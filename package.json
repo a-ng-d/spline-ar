@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "Open-source WebAR for students: bring Spline scenes out of posters (image targets) or wear them as face filters, with a simple link. 8th Wall engine + Spline runtime, EN/FR.",
   "license": "MIT",
-  "author": "a-ng-d",
+  "author": "Aurélien Grimaud <https://an.gd>",
   "homepage": "https://spline-ar.netlify.app",
   "repository": {
     "type": "git",
