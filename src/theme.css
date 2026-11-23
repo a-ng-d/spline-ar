@@ -208,3 +208,11 @@ input[type=range] { width: 100%; accent-color: var(--accent) }
 .debug { position: fixed; top: 8px; left: 8px; z-index: 30; display: none; max-width: 92vw;
   font: 11px/1.4 var(--mono); color: #7fff7f; background: rgba(0,0,0,.8);
   padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; pointer-events: none }
+
+/* --- Footer (author, license, credits): home and player start screens --- */
+.site-footer { text-align: center; font-size: 12px; line-height: 1.6; color: var(--muted) }
+.site-footer a { color: var(--muted) }
+/* Column: card then footer, centred while it fits, scrollable from the top when it doesn't */
+.player #start { flex-direction: column; justify-content: flex-start; gap: 16px }
+.player #start > .card { margin-top: auto }
+.player #start .site-footer { position: relative; z-index: 1; max-width: 420px; margin-bottom: auto }

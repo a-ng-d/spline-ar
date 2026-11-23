@@ -198,7 +198,8 @@
     "loading3d": "Chargement de la 3D…",
     "quit": "✕ Quitter",
     "quitTitle": "Quitter l'AR",
-    "start": "Lancer l'AR →"
+    "start": "Lancer l'AR →",
+    "author": "par Aurélien Grimaud"
   },
   "posters": {
     "fullHint": "Clique pour revenir · ← → pour changer · Échap",
