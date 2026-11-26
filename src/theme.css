@@ -99,15 +99,22 @@ input[type=text], input[type=url], select {
   outline: none; transition: border-color var(--duration-small, .15s), background var(--duration-small, .15s);
   font-family: var(--mono);
 }
+/* Selects: own caret (the native one sits against the border), drawn in the text colour */
 select { font-family: var(--input-text-font-family, var(--font));
-  background: var(--dropdown-background-color-default, var(--input-background-color-default, var(--surface)));
-  border-color: var(--dropdown-border-color-default, var(--input-border-color-default, var(--border))) }
+  -webkit-appearance: none; appearance: none; padding-right: 40px; text-overflow: ellipsis;
+  background-color: var(--dropdown-background-color-default, var(--input-background-color-default, var(--surface)));
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 20px center, right 15px center;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+  border-color: var(--dropdown-border-color-default, var(--input-border-color-default, var(--border))); cursor: pointer }
 select option { background: var(--color-background-secondary-default, var(--bg)); color: var(--text) }
 input[type=text].plain { font-family: var(--input-text-font-family, var(--font)) }
 input::placeholder { color: var(--color-text-tertiary-default, var(--muted)); opacity: .8 }
 input[type=text]:hover, input[type=url]:hover { background: var(--input-background-color-hover, var(--surface)); border-color: var(--input-border-color-hover, var(--border)) }
 select:hover { border-color: var(--dropdown-border-color-hover, var(--input-border-color-hover, var(--border))) }
-input[type=text]:focus, input[type=url]:focus, select:focus { background: var(--input-background-color-focus, var(--surface)); border-color: var(--input-border-color-focus, var(--accent)) }
+input[type=text]:focus, input[type=url]:focus { background: var(--input-background-color-focus, var(--surface)); }
+select:focus { background-color: var(--input-background-color-focus, var(--surface)) }
+input[type=text]:focus, input[type=url]:focus, select:focus { border-color: var(--input-border-color-focus, var(--accent)) }
 input.error { border-color: var(--input-border-color-error-default, var(--danger)); animation: shake .3s }
 @keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-4px) } 75% { transform: translateX(4px) } }
 input[type=range] { width: 100%; accent-color: var(--simple-slider-progress-color, var(--accent)) }
