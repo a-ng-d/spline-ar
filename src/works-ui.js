@@ -51,7 +51,7 @@ export function renderWorks(container, { currentId = null, emptyKey = 'works.emp
       del.onclick = () => {
         if (confirm(t('works.confirmDelete', { title: d.title }))) deleteWork(w.id)
       }
-      actions.append(edit, open, del)
+      actions.append(open, edit, del)
       row.append(thumb, info, actions)
       container.append(row)
     }

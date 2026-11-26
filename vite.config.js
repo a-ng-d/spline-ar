@@ -14,7 +14,7 @@ const COMPONENTS = ['Button', 'Input', 'card', 'Chip', 'SegmentedControl', 'Sema
   'Bar', 'Drawer', 'Dropzone', 'Dropdown', 'SimpleSlider', 'styles/texts/texts']
 // Yelbolt icons used by the site (see [data-icon] in src/theme.css)
 const ICONS = ['plus', 'trash', 'copy', 'back', 'forward', 'close', 'check', 'play', 'visible',
-  'image', 'smiley', 'downward', 'chevron-right']
+  'image', 'smiley', 'chevron-right']
 function unoffComponentTokens() {
   const out = fileURLToPath(new URL('./src/styles/unoff-yelbolt-components.generated.css', import.meta.url))
   const generate = () => {
