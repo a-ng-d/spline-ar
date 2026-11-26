@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="yelbolt" data-mode="yelbolt-ylb-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,15 +12,20 @@
 
     .art-head { display: flex; align-items: center; justify-content: space-between; gap: 10px }
     .art-num { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px }
-    .art-num b { width: 24px; height: 24px; border-radius: 50%; background: rgba(123,110,246,.15);
-      border: 1px solid rgba(123,110,246,.4); color: var(--accent); display: inline-flex; align-items: center;
+    .art-num b { width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint);
+      border: 1px solid var(--accent-line); color: var(--color-text-brand-default, var(--accent)); display: inline-flex; align-items: center;
       justify-content: center; font-size: 12px }
 
-    .drop { position: relative; display: flex; align-items: center; gap: 14px; border: 1px dashed var(--border);
-      border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color .15s, background .15s }
-    .drop:hover { border-color: var(--accent); background: rgba(123,110,246,.06) }
+    /* Unoff Dropzone */
+    .drop { position: relative; display: flex; align-items: center; gap: 14px;
+      background: var(--dropzone-background-color-default, transparent);
+      border: var(--dropzone-border-width-default, 1px) var(--dropzone-border-style-default, dashed) var(--dropzone-border-color-default, var(--border));
+      border-radius: var(--dropzone-radius, 10px); padding: 12px; cursor: pointer;
+      transition: border-color var(--duration-small, .15s), background var(--duration-small, .15s) }
+    .drop:hover { background: var(--dropzone-background-color-hover, var(--accent-tint));
+      border-style: var(--dropzone-border-style-hover, solid); border-color: var(--dropzone-border-color-hover, var(--accent)) }
     .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer }
-    .drop img { width: 72px; height: 96px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,.04); flex: none }
+    .drop img { width: 72px; height: 96px; object-fit: contain; border-radius: var(--thumbnail-radius, 6px); background: var(--thumbnail-background-color, var(--surface)); flex: none }
     .drop img[hidden] + .drop-text { padding: 26px 0 }
     .drop-text { font-size: 13px; line-height: 1.45 }
     .drop-text small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px }
@@ -32,9 +37,7 @@
     summary::before { content: '▶'; color: var(--accent); font-size: 9px; transition: transform .15s }
     details[open] summary::before { transform: rotate(90deg) }
     .row { display: grid; grid-template-columns: 112px 1fr 48px; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px }
-    .row select { width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 10px;
-      padding: 7px 10px; color: var(--text); font: 13px var(--font) }
-    .row select option { background: #14141e }
+    .row select { min-height: 34px; padding: 6px 10px }
     .row output { text-align: right; font: 12px var(--mono); color: var(--muted) }
 
     #result { display: none; flex-direction: column; gap: 14px }

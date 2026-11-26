@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="yelbolt" data-mode="yelbolt-ylb-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,12 +20,15 @@
     h1 { font-size: 28px }
     .ctas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
     @media (max-width: 520px) { .ctas { grid-template-columns: 1fr } }
-    .ctas .btn-face { background: rgba(62,207,207,.12); border: 1px solid rgba(62,207,207,.35); color: var(--accent2) }
-    .ctas .btn-face:hover { background: rgba(62,207,207,.2) }
+    .ctas .btn-face { background: var(--button-secondary-background-color-default, var(--surface)); border: 1px solid var(--button-secondary-border-color-default, var(--border)); color: var(--button-secondary-text-color-default, var(--text)) }
+    .ctas .btn-face:hover { background: var(--button-secondary-background-color-hover, var(--surface)) }
     .list-head { display: flex; align-items: center; justify-content: space-between; gap: 10px }
     .list-head .section-label { margin: 0 }
-    .tag { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent2);
-      background: rgba(62,207,207,.1); border: 1px solid rgba(62,207,207,.25); border-radius: 100px; padding: 2px 8px }
+    /* Tag: Unoff Chip */
+    .tag { font: var(--type-weight-600, 600) var(--type-size-01, 10px)/1 var(--font); letter-spacing: .08em; text-transform: uppercase;
+      display: inline-flex; align-items: center; min-height: var(--chip-height, 18px); padding: 0 var(--chip-padding-left, 8px);
+      color: var(--chip-text-color-default, var(--on-accent)); background: var(--chip-background-color-default, var(--accent));
+      border-radius: var(--chip-radius, 100px) }
   </style>
 </head>
 <body>

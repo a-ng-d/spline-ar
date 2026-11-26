@@ -88,7 +88,7 @@ Spline AR repose sur le travail d'autres projets — merci à eux. La liste comp
 
 - **Moteur 8th Wall** (`@8thwall/engine-binary`) de Niantic Spatial, Inc. : binaire distribué sous sa propre [licence à usage limité](https://github.com/8thwall/engine/blob/main/LICENSE). Il ne fait **pas** partie de ce dépôt ni de sa licence : il est chargé tel quel depuis jsDelivr.
 - **Runtime et loader Spline** (`@splinetool/runtime`, `@splinetool/loader`), soumis aux conditions de Spline.
-- **Tolgee** (BSD-3-Clause), **three.js / super-three**, **qrcode**, **Netlify Blobs**, **Vite** (MIT), **DM Sans** (SIL OFL 1.1).
+- **Tolgee** (BSD-3-Clause), **three.js / super-three**, **qrcode**, **Netlify Blobs**, **Vite**, **Unoff UI** (`@unoff/ui`, jetons de design Yelbolt) (MIT), **Lexend** (SIL OFL 1.1).
 
 « Spline » est une marque de Spline Design Inc. ; « 8th Wall » et « Niantic Spatial » appartiennent à Niantic Spatial, Inc. Ce projet est indépendant, **sans lien** avec Spline ni Niantic Spatial.
 

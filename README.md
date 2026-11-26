@@ -135,8 +135,9 @@ Spline AR stands on the work of others. Thank you to them.
 | [node-qrcode](https://github.com/soldair/node-qrcode) (`qrcode`) | QR codes | MIT |
 | [Netlify Blobs](https://github.com/netlify/blobs) (`@netlify/blobs`) | Storage of poster images | MIT |
 | [Vite](https://vitejs.dev) | Build | MIT |
-| [DM Sans](https://fonts.google.com/specimen/DM+Sans) via Google Fonts | Typeface | SIL Open Font License 1.1 |
-| [SplineXR](https://github.com/a-ng-d/spline-xr) | Design tokens and components (`src/theme.css`, `src/background.js`) | Same author |
+| [Unoff UI](https://github.com/yelbolt/unoff-ui) (`@unoff/ui`) | Yelbolt design tokens: colours, radii, type, and component tokens (button, input, card, chip…), CSS only | MIT |
+| [Lexend](https://fonts.google.com/specimen/Lexend) via [`@fontsource-variable/lexend`](https://fontsource.org/fonts/lexend) | Typeface (Yelbolt theme), served with the site | SIL Open Font License 1.1 |
+| [SplineXR](https://github.com/a-ng-d/spline-xr) | Shared design rules and animated background (`src/theme.css`, `src/background.js`) | Same author |
 
 "Spline" is a trademark of Spline Design Inc.; "8th Wall" and "Niantic Spatial" belong to Niantic Spatial, Inc. This project is independent and **not affiliated with, endorsed or sponsored by** Spline or Niantic Spatial. The "Made with Spline" credit shown during AR links to spline.design.
 

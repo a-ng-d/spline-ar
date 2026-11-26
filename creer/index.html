@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="yelbolt" data-mode="yelbolt-ylb-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,11 +14,11 @@
     .choice { display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: var(--text);
       background: transparent; border: 1px solid var(--border); border-radius: var(--r); padding: 20px;
       transition: background .15s, border-color .15s, transform .15s }
-    .choice:hover { background: rgba(123,110,246,.08); border-color: var(--accent); transform: translateY(-1px) }
-    .choice.face:hover { background: rgba(62,207,207,.08); border-color: var(--accent2) }
+    .choice:hover { background: var(--accent-tint); border-color: var(--accent); transform: translateY(-1px) }
+    .choice.face:hover { background: var(--accent2-tint); border-color: var(--accent2) }
     .choice-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      background: rgba(123,110,246,.15); border: 1px solid rgba(123,110,246,.4); color: var(--accent); font-size: 20px }
-    .choice.face .choice-icon { background: rgba(62,207,207,.1); border-color: rgba(62,207,207,.3); color: var(--accent2) }
+      background: var(--accent-tint); border: 1px solid var(--accent-line); color: var(--color-text-brand-default, var(--accent)); font-size: 20px }
+    .choice.face .choice-icon { background: var(--accent2-tint); border-color: var(--accent2-line); color: var(--accent2) }
     .choice h2 { font-size: 16px; font-weight: 700; letter-spacing: -.01em }
     .choice p { font-size: 13px; color: var(--muted); line-height: 1.5 }
     .choice .go { margin-top: auto; font-size: 12px; font-weight: 600; color: var(--accent) }
