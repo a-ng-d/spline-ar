@@ -37,19 +37,19 @@ License: https://github.com/8thwall/engine/blob/main/LICENSE -->
       </div>
       <div id="progress" class="progress"></div>
       <div id="error" class="error-box"></div>
-      <button id="btn-start" class="btn btn-primary btn-block" data-i18n="player.start" disabled>Start AR →</button>
+      <button id="btn-start" class="btn btn-primary btn-block" data-icon-after="forward" data-i18n="player.start" disabled>Start AR</button>
       <div class="divider" data-i18n="common.or">or</div>
-      <a id="back-link" class="btn btn-ghost btn-block" data-i18n="common.back" hidden>← Back</a>
+      <a id="back-link" class="btn btn-ghost btn-block" data-icon="back" data-i18n="common.back" hidden>Back</a>
       <a id="edit-link" class="btn btn-ghost btn-block" hidden></a>
-      <a href="/creer" class="btn btn-ghost btn-block" data-i18n="player.createLink">Create a museum or a filter</a>
-      <a href="/" class="btn btn-ghost btn-sm" style="align-self:center" data-i18n="nav.homeBack">← Home</a>
+      <a href="/creer" class="btn btn-ghost btn-block" data-icon="plus" data-i18n="player.createLink">Create a museum or a filter</a>
+      <a href="/" class="btn btn-ghost btn-sm" style="align-self:center" data-icon="back" data-i18n="nav.homeBack">Home</a>
     </div>
     <footer class="site-footer" data-i18n-html="home.footer"></footer>
   </div>
 
   <div id="hint" class="pill hint"></div>
   <div id="badge" class="pill badge"></div>
-  <button id="quit" class="pill quit" data-i18n-title="player.quitTitle"></button>
+  <button id="quit" class="pill quit" data-icon="close" data-i18n-title="player.quitTitle"></button>
   <div id="debug" class="debug"></div>
 
   <script type="module" src="/src/museum-player.js"></script>

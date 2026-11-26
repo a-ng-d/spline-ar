@@ -17,6 +17,7 @@ export function mountNav(nav = document.querySelector('.topnav')) {
 
   const back = document.createElement('a')
   back.className = 'back-btn'
+  back.dataset.icon = 'back'
   setText(back, 'nav.back')
   back.href = parent.href
   // Go back to where we came from (previous page of this site), otherwise to the parent step.

@@ -290,3 +290,29 @@ input[type=range] { width: 100%; accent-color: var(--simple-slider-progress-colo
 .player #start { flex-direction: column; justify-content: flex-start; gap: 16px }
 .player #start > .card { margin-top: auto }
 .player #start .site-footer { position: relative; z-index: 1; max-width: 420px; margin-bottom: auto }
+
+/* --- Icons: Yelbolt set from Unoff UI (masks, so they take the text colour) ---
+   data-icon="name" puts the icon before the label, data-icon-after="name" after it. */
+[data-icon]::before, [data-icon-after]::after {
+  content: ''; flex: none; width: 1.25em; height: 1.25em; background: currentColor;
+  -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat;
+}
+/* status lines show their icon only when they have a text */
+.saved-state:empty::before, .msg:empty::before { display: none }
+[data-icon=plus]::before { --ic: var(--icon-plus) }
+[data-icon=trash]::before { --ic: var(--icon-trash) }
+[data-icon=copy]::before { --ic: var(--icon-copy) }
+[data-icon=back]::before { --ic: var(--icon-back) }
+[data-icon=close]::before { --ic: var(--icon-close) }
+[data-icon=check]::before { --ic: var(--icon-check) }
+[data-icon=play]::before { --ic: var(--icon-play) }
+[data-icon=visible]::before { --ic: var(--icon-visible) }
+[data-icon=image]::before { --ic: var(--icon-image) }
+[data-icon=smiley]::before { --ic: var(--icon-smiley) }
+[data-icon=downward]::before { --ic: var(--icon-downward) }
+[data-icon=hyperlink]::before { --ic: var(--icon-hyperlink) }
+[data-icon-after=forward]::after { --ic: var(--icon-forward) }
+.icon-only { padding-left: 0; padding-right: 0; aspect-ratio: 1 }
+.saved-state[data-icon], .msg[data-icon] { display: flex; align-items: center; gap: 6px }
+.go[data-icon-after] { display: inline-flex; align-items: center; gap: 4px }
+.choice-icon[data-icon]::before, .work-thumb[data-icon]::before { width: 22px; height: 22px }

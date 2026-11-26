@@ -34,7 +34,9 @@
     summary { cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
       color: var(--muted); list-style: none; display: flex; align-items: center; gap: 8px }
     summary::-webkit-details-marker { display: none }
-    summary::before { content: '▶'; color: var(--accent); font-size: 9px; transition: transform .15s }
+    summary::before { content: ''; width: 14px; height: 14px; background: var(--accent);
+      -webkit-mask: var(--icon-chevron-right) center / contain no-repeat; mask: var(--icon-chevron-right) center / contain no-repeat;
+      transition: transform var(--duration-small, .15s) }
     details[open] summary::before { transform: rotate(90deg) }
     .row { display: grid; grid-template-columns: 112px 1fr 48px; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px }
     .row select { min-height: 34px; padding: 6px 10px }
@@ -78,23 +80,23 @@
 
   <div id="list" style="display:flex;flex-direction:column;gap:16px"></div>
 
-  <button id="add" class="btn btn-ghost btn-block" data-i18n="museum.editor.addPoster"></button>
+  <button id="add" class="btn btn-ghost btn-block" data-icon="plus" data-i18n="museum.editor.addPoster"></button>
   <div id="counter" class="counter"></div>
 
   <div class="card">
-    <button id="create" class="btn btn-primary btn-block" disabled></button>
+    <button id="create" class="btn btn-primary btn-block" data-icon-after="forward" disabled></button>
     <div id="create-msg" class="msg"></div>
-    <div id="saved-state" class="saved-state"></div>
+    <div id="saved-state" class="saved-state" data-icon="check"></div>
     <div id="result">
       <div>
         <div class="section-label" data-i18n="editor.yourLink"></div>
         <input id="link" type="text" readonly />
       </div>
       <div class="actions">
-        <button id="copy" class="btn btn-sm btn-ghost" data-i18n="actions.copy"></button>
-        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="actions.open"></a>
-        <a id="gallery" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="museum.editor.showPosters"></a>
-        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-museum-qr.png" data-i18n="editor.downloadQr"></a>
+        <button id="copy" class="btn btn-sm btn-ghost" data-icon="copy" data-i18n="actions.copy"></button>
+        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-icon="play" data-i18n="actions.open"></a>
+        <a id="gallery" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-icon="visible" data-i18n="museum.editor.showPosters"></a>
+        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-museum-qr.png" data-icon="downward" data-i18n="editor.downloadQr"></a>
       </div>
       <div id="qr-wrap"><canvas id="qr" width="220" height="220"></canvas></div>
       <p class="help" style="text-align:center" data-i18n="museum.editor.testHelp"></p>
@@ -106,7 +108,7 @@
   <section class="card art">
     <div class="art-head">
       <div class="art-num"><b></b><span data-i18n="museum.editor.poster"></span></div>
-      <button class="btn btn-sm btn-danger remove" data-i18n-title="museum.editor.removePoster">✕</button>
+      <button class="btn btn-sm btn-danger remove icon-only" data-icon="trash" data-i18n-title="museum.editor.removePoster" data-i18n-aria-label="museum.editor.removePoster"></button>
     </div>
     <label class="drop">
       <input class="file" type="file" accept="image/jpeg,image/png,image/webp" />

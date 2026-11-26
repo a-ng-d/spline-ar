@@ -341,12 +341,12 @@ function mountTuning() {
     }
   })
   const msg = panel.querySelector('.msg')
-  const dirty = () => { setText(msg, 'filter.tuning.dirty'); msg.className = 'msg' }
+  const dirty = () => { setText(msg, 'filter.tuning.dirty'); msg.className = 'msg'; delete msg.dataset.icon }
   panel.querySelector('.save').onclick = () => {
     const link = filterLink(location.origin, cfg)
     workId = saveWork({ id: workId, type: TYPE_FILTER, search: new URL(link).search })
     history.replaceState(null, '', `${new URL(link).search}&reglage=1&w=${encodeURIComponent(workId)}`)
-    setText(msg, 'filter.tuning.saved'); msg.className = 'msg ok'
+    setText(msg, 'filter.tuning.saved'); msg.className = 'msg ok'; msg.dataset.icon = 'check'
   }
   panel.querySelector('.fold').onclick = () => panel.classList.toggle('folded')
 }

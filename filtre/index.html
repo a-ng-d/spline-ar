@@ -51,18 +51,18 @@ License: https://github.com/8thwall/engine/blob/main/LICENSE -->
       </div>
       <div id="progress" class="progress"></div>
       <div id="error" class="error-box"></div>
-      <button id="btn-start" class="btn btn-primary btn-block" data-i18n="filter.player.start" disabled>Start the filter →</button>
+      <button id="btn-start" class="btn btn-primary btn-block" data-icon-after="forward" data-i18n="filter.player.start" disabled>Start the filter</button>
       <div class="divider" data-i18n="common.or">or</div>
-      <a id="back-link" class="btn btn-ghost btn-block" data-i18n="common.back" hidden>← Back</a>
+      <a id="back-link" class="btn btn-ghost btn-block" data-icon="back" data-i18n="common.back" hidden>Back</a>
       <a id="edit-link" class="btn btn-ghost btn-block" data-i18n="filter.player.edit" hidden>Edit this filter</a>
-      <a href="/creer" class="btn btn-ghost btn-block" data-i18n="player.createLink">Create a museum or a filter</a>
-      <a href="/" class="btn btn-ghost btn-sm" style="align-self:center" data-i18n="nav.homeBack">← Home</a>
+      <a href="/creer" class="btn btn-ghost btn-block" data-icon="plus" data-i18n="player.createLink">Create a museum or a filter</a>
+      <a href="/" class="btn btn-ghost btn-sm" style="align-self:center" data-icon="back" data-i18n="nav.homeBack">Home</a>
     </div>
     <footer class="site-footer" data-i18n-html="home.footer"></footer>
   </div>
 
   <div id="hint" class="pill hint" data-i18n="filter.player.hint"></div>
-  <button id="quit" class="pill quit" data-i18n-title="player.quitTitle"></button>
+  <button id="quit" class="pill quit" data-icon="close" data-i18n-title="player.quitTitle"></button>
   <div id="tuning" class="tuning" hidden>
     <div class="tuning-head">
       <div class="section-label" data-i18n="filter.tuning.title">Live tuning</div>
@@ -75,7 +75,7 @@ License: https://github.com/8thwall/engine/blob/main/LICENSE -->
       <div class="trow"><label data-i18n="settings.downUp">Down / up</label><input data-k="y" type="range" min="-1" max="1.5" step="0.02" /><output></output></div>
       <div class="trow"><label data-i18n="settings.frontBack">Front / back</label><input data-k="z" type="range" min="-1" max="1" step="0.02" /><output></output></div>
       <div class="trow"><label data-i18n="settings.rotation">Rotation</label><input data-k="ry" type="range" min="-180" max="180" step="5" /><output></output></div>
-      <div class="tuning-foot"><button class="btn btn-primary btn-sm save" data-i18n="actions.save">Save</button><div class="msg"></div></div>
+      <div class="tuning-foot"><button class="btn btn-primary btn-sm save" data-icon="check" data-i18n="actions.save">Save</button><div class="msg"></div></div>
     </div>
   </div>
   <div id="debug" class="debug"></div>

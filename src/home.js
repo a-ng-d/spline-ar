@@ -34,15 +34,15 @@ function renderTemplates() {
     const row = el('div', 'work')
     const thumb = el('div', 'work-thumb' + (tpl.type === TYPE_FILTER ? ' face' : ''))
     if (d.thumb) { const img = el('img'); img.src = d.thumb; img.alt = ''; thumb.append(img) }
-    else thumb.textContent = '☺'
+    else thumb.dataset.icon = 'smiley'
     const info = el('div', 'work-info')
     info.append(el('div', 'work-title', d.title))
     info.append(el('div', 'work-meta', [t(TYPES[tpl.type].labelKey), d.detail].filter(Boolean).join(' · ')))
     const actions = el('div', 'work-actions')
-    const play = elKey('a', 'btn btn-sm btn-ghost', 'actions.play'); play.href = d.link
+    const play = elKey('a', 'btn btn-sm btn-ghost', 'actions.play'); play.href = d.link; play.dataset.icon = 'play'
     actions.append(play)
     if (tpl.type === TYPE_MUSEUM) {
-      const posters = elKey('a', 'btn btn-sm btn-ghost', 'home.posters')
+      const posters = elKey('a', 'btn btn-sm btn-ghost', 'home.posters'); posters.dataset.icon = 'visible'
       posters.href = galleryLink(location.origin, readItems('?' + search))
       posters.dataset.i18nTitle = 'home.postersTitle'
       posters.title = t('home.postersTitle')

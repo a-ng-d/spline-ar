@@ -9,15 +9,15 @@
     "save": "Enregistrer"
   },
   "common": {
-    "back": "← Retour",
+    "back": "Retour",
     "or": "ou"
   },
   "create": {
-    "filterGo": "Créer un filtre →",
+    "filterGo": "Créer un filtre",
     "filterText": "Façon Snapchat : ta scène s'accroche au visage (front, nez, menton…) et réagit aux expressions. Caméra selfie.",
     "filterTitle": "Un filtre visage",
     "lead": "Dans les deux cas, ta 3D vient de Spline (Export → Code) et tu obtiens un lien + un QR code à partager.",
-    "museumGo": "Créer un musée →",
+    "museumGo": "Créer un musée",
     "museumText": "Une ou plusieurs affiches. Le téléphone qui vise une affiche voit sa scène 3D en sortir. Caméra arrière.",
     "museumTitle": "Un musée d'affiches",
     "pageTitle": "Spline AR — Créer",
@@ -28,14 +28,14 @@
     "backLabel": "Lien de retour (facultatif)",
     "copied": "Lien copié.",
     "copyManually": "Sélectionne le lien et copie-le.",
-    "createLink": "Créer mon lien →",
+    "createLink": "Créer mon lien",
     "downloadQr": "Télécharger le QR",
     "ready": "C'est prêt.",
-    "savedState": "✓ Enregistré dans Mes créations · {when}",
+    "savedState": "Enregistré dans Mes créations · {when}",
     "scene": "Scène",
     "sceneHelp": "Dans Spline : <b>Export → Code</b>, copie l'URL qui finit par <code>scene.splinecode</code>. Un lien <code>.glb</code> marche aussi.",
     "scenePlaceholder": "URL Spline (prod.spline.design/…) ou identifiant",
-    "updateLink": "Mettre à jour mon lien →",
+    "updateLink": "Mettre à jour mon lien",
     "yourLink": "Ton lien"
   },
   "errors": {
@@ -94,7 +94,7 @@
       "errorCamera": "Le lancement de la caméra a échoué. {detail}",
       "errorLoad": "Impossible de charger la scène. {detail}",
       "hint": "Place ton visage face à l'écran",
-      "start": "Lancer le filtre →",
+      "start": "Lancer le filtre",
       "subtitle": "Autorise la caméra, puis place ton visage face à l'écran. Ouvre la bouche, cligne de l'œil, lève les sourcils : la scène peut réagir.",
       "title": "Un filtre <span>visage</span>"
     },
@@ -111,14 +111,14 @@
     "tuning": {
       "dirty": "Modifié — pense à enregistrer.",
       "fold": "Replier",
-      "saved": "✓ Enregistré dans Mes créations",
+      "saved": "Enregistré dans Mes créations",
       "title": "Réglage en direct"
     }
   },
   "home": {
     "copyTitle": "Ouvrir une copie dans l'éditeur",
-    "createFilter": "☺ Créer un filtre visage",
-    "createMuseum": "▦ Créer un musée d'affiches",
+    "createFilter": "Créer un filtre visage",
+    "createMuseum": "Créer un musée d'affiches",
     "footer": "Conçu par <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, fondateur de <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">Licence MIT</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR : <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">moteur 8th Wall © Niantic Spatial</a> · Sans lien avec Spline ni Niantic Spatial",
     "lead": "Tes scènes Spline en réalité augmentée, dans le navigateur du téléphone, avec un simple lien : elles sortent d'une affiche, ou se portent sur le visage comme un filtre.",
     "pageTitle": "Spline AR — ta 3D hors du cadre",
@@ -135,7 +135,7 @@
   },
   "museum": {
     "editor": {
-      "addPoster": "＋ Ajouter une affiche",
+      "addPoster": "Ajouter une affiche",
       "alreadyUploaded": "Affiche déjà envoyée — choisis une autre image pour la remplacer.",
       "chooseImage": "Choisis l'image de l'affiche",
       "counter": "{n} affiches · jusqu'à {max} par musée, {tracked} visibles en même temps",
@@ -186,19 +186,19 @@
     "create": "Créer",
     "filter": "Filtre visage",
     "home": "Accueil",
-    "homeBack": "← Accueil",
+    "homeBack": "Accueil",
     "museum": "Musée",
     "posters": "Affiches"
   },
   "player": {
-    "back": "✕ Retour",
+    "back": "Retour",
     "createLink": "Créer un musée ou un filtre",
     "credit": "Made with Spline",
     "errorStart": "Le lancement de l'AR a échoué. {detail}",
     "loading3d": "Chargement de la 3D…",
-    "quit": "✕ Quitter",
+    "quit": "Quitter",
     "quitTitle": "Quitter l'AR",
-    "start": "Lancer l'AR →",
+    "start": "Lancer l'AR",
     "author": "par Aurélien Grimaud"
   },
   "posters": {
@@ -241,8 +241,8 @@
     "confirmDelete": "Supprimer « {title} » de tes créations ?\nLe lien partagé continuera de marcher.",
     "delete": "Supprimer de mes créations",
     "empty": "Rien pour l'instant. Tes musées et filtres apparaîtront ici dès que tu crées leur lien.",
-    "newFilter": "＋ Nouveau filtre",
-    "newMuseum": "＋ Nouveau musée",
+    "newFilter": "Nouveau filtre",
+    "newMuseum": "Nouveau musée",
     "note": "Enregistrées dans ce navigateur. Le lien d'une création sert aussi de sauvegarde : ouvre-le puis « Modifier ».",
     "opened": "Ouvert",
     "posterCount": {

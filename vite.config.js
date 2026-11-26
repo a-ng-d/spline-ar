@@ -5,13 +5,16 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 
 const UNOFF = fileURLToPath(new URL('./node_modules/@unoff/ui/dist/assets', import.meta.url))
 
-// Yelbolt brand (same rules as SplineXR): Unoff UI component tokens (button, input,
+// Yelbolt brand (same rules as SplineXR): Unoff UI component tokens and icons (button, input,
 // card…) for the Yelbolt theme, without the components themselves — their stylesheets
 // also hold class rules that would clash with ours (.card…). Only the custom-property
 // blocks of the Yelbolt theme are kept, in a generated file (not versioned).
 const COMPONENTS = ['Button', 'Input', 'card', 'Chip', 'SegmentedControl', 'SemanticMessage',
   'SectionTitle', 'Section', 'Thumbnail', 'Tooltip', 'Message', 'form-item', 'list', 'SimpleItem',
   'Bar', 'Drawer', 'Dropzone', 'Dropdown', 'SimpleSlider', 'styles/texts/texts']
+// Yelbolt icons used by the site (see [data-icon] in src/theme.css)
+const ICONS = ['plus', 'trash', 'copy', 'back', 'forward', 'close', 'check', 'play', 'visible',
+  'image', 'smiley', 'downward', 'chevron-right']
 function unoffComponentTokens() {
   const out = fileURLToPath(new URL('./src/styles/unoff-yelbolt-components.generated.css', import.meta.url))
   const generate = () => {
@@ -21,6 +24,15 @@ function unoffComponentTokens() {
       const blocks = src.match(/(?::root)?\[data-theme=yelbolt\]\{[^{}]*\}/g) ?? []
       for (const b of blocks) if (/^[^{]*\{\s*--/.test(b)) css += `/* ${name} */\n${b}\n`
     }
+    // Icons: the Yelbolt set holds data-URL SVGs as custom properties; keep the ones the
+    // site uses (the whole set weighs ~40 KB)
+    const icons = readFileSync(`${UNOFF}/styles/icons/icons.css`, 'utf8')
+    const start = icons.indexOf(':root[data-theme=yelbolt]{')
+    const block = icons.slice(start, icons.indexOf(':root[data-theme=', start + 1) >>> 0) // data URLs may contain '}'
+    const used = ICONS.map(n => block.match(new RegExp(`--icon-${n}: url\\("[^"]*"\\)`))?.[0])
+    const missing = ICONS.filter((n, i) => !used[i])
+    if (missing.length) throw new Error(`Unoff icons not found: ${missing.join(', ')}`)
+    css += `/* icons */\n:root[data-theme=yelbolt]{${used.join(';')}}\n`
     mkdirSync(fileURLToPath(new URL('./src/styles', import.meta.url)), { recursive: true })
     writeFileSync(out, css)
   }

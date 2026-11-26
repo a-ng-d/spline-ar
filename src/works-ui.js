@@ -33,7 +33,7 @@ export function renderWorks(container, { currentId = null, emptyKey = 'works.emp
       const row = el('div', 'work' + (w.id === cur ? ' current' : ''))
       const thumb = el('div', 'work-thumb' + (w.type === TYPE_FILTER ? ' face' : ''))
       if (d.thumb) { const img = el('img'); img.src = d.thumb; img.alt = ''; img.loading = 'lazy'; thumb.append(img) }
-      else thumb.textContent = '☺'
+      else thumb.dataset.icon = 'smiley'
       const info = el('div', 'work-info')
       info.append(el('div', 'work-title', d.title))
       const meta = [t(TYPES[w.type].labelKey), d.detail, timeAgo(w.updatedAt)].filter(Boolean).join(' · ')
@@ -42,11 +42,12 @@ export function renderWorks(container, { currentId = null, emptyKey = 'works.emp
       const edit = elKey('a', 'btn btn-sm btn-ghost', w.id === cur ? 'works.opened' : 'actions.edit')
       edit.href = d.edit
       if (w.id === cur) edit.classList.add('is-current')
-      const open = elKey('a', 'btn btn-sm btn-ghost', 'actions.play')
+      const open = elKey('a', 'btn btn-sm btn-ghost', 'actions.play'); open.dataset.icon = 'play'
       open.href = d.link; open.target = '_blank'; open.rel = 'noopener'
-      const del = el('button', 'btn btn-sm btn-danger', '✕')
-      del.dataset.i18nTitle = 'works.delete'
-      del.title = t('works.delete')
+      const del = el('button', 'btn btn-sm btn-danger icon-only')
+      del.dataset.icon = 'trash'
+      del.dataset.i18nTitle = del.dataset.i18nAriaLabel = 'works.delete'
+      del.title = t('works.delete'); del.setAttribute('aria-label', del.title)
       del.onclick = () => {
         if (confirm(t('works.confirmDelete', { title: d.title }))) deleteWork(w.id)
       }
@@ -72,12 +73,12 @@ export function mountWorksDrawer({ currentId = null } = {}) {
   const drawer = el('aside', 'drawer')
   const head = el('div', 'drawer-head')
   head.append(elKey('div', 'section-label', 'works.title'))
-  const close = elKey('button', 'btn btn-sm btn-ghost', 'actions.close')
+  const close = elKey('button', 'btn btn-sm btn-ghost', 'actions.close'); close.dataset.icon = 'close'
   head.append(close)
   const list = el('div', 'works')
   const foot = el('div', 'drawer-foot')
-  const nm = elKey('a', 'btn btn-sm btn-ghost', 'works.newMuseum'); nm.href = '/creer/musee?nouveau=1'
-  const nf = elKey('a', 'btn btn-sm btn-ghost', 'works.newFilter'); nf.href = '/creer/filtre?nouveau=1'
+  const nm = elKey('a', 'btn btn-sm btn-ghost', 'works.newMuseum'); nm.href = '/creer/musee?nouveau=1'; nm.dataset.icon = 'plus'
+  const nf = elKey('a', 'btn btn-sm btn-ghost', 'works.newFilter'); nf.href = '/creer/filtre?nouveau=1'; nf.dataset.icon = 'plus'
   foot.append(nm, nf)
   const note = elKey('p', 'help', 'works.note')
   drawer.append(head, list, foot, note)

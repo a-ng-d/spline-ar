@@ -9,15 +9,15 @@
     "save": "Save"
   },
   "common": {
-    "back": "← Back",
+    "back": "Back",
     "or": "or"
   },
   "create": {
-    "filterGo": "Create a filter →",
+    "filterGo": "Create a filter",
     "filterText": "Snapchat-style: your scene sticks to the face (forehead, nose, chin…) and reacts to expressions. Selfie camera.",
     "filterTitle": "A face filter",
     "lead": "Either way, your 3D comes from Spline (Export → Code) and you get a link + a QR code to share.",
-    "museumGo": "Create a museum →",
+    "museumGo": "Create a museum",
     "museumText": "One or more posters. The phone aiming at a poster sees its 3D scene come out. Rear camera.",
     "museumTitle": "A poster museum",
     "pageTitle": "Spline AR — Create",
@@ -28,14 +28,14 @@
     "backLabel": "Back link (optional)",
     "copied": "Link copied.",
     "copyManually": "Select the link and copy it.",
-    "createLink": "Create my link →",
+    "createLink": "Create my link",
     "downloadQr": "Download the QR",
     "ready": "It's ready.",
-    "savedState": "✓ Saved in My creations · {when}",
+    "savedState": "Saved in My creations · {when}",
     "scene": "Scene",
     "sceneHelp": "In Spline: <b>Export → Code</b>, copy the URL ending in <code>scene.splinecode</code>. A <code>.glb</code> link works too.",
     "scenePlaceholder": "Spline URL (prod.spline.design/…) or ID",
-    "updateLink": "Update my link →",
+    "updateLink": "Update my link",
     "yourLink": "Your link"
   },
   "errors": {
@@ -94,7 +94,7 @@
       "errorCamera": "Starting the camera failed. {detail}",
       "errorLoad": "Could not load the scene. {detail}",
       "hint": "Face the screen",
-      "start": "Start the filter →",
+      "start": "Start the filter",
       "subtitle": "Allow the camera, then face the screen. Open your mouth, wink, raise your eyebrows: the scene can react.",
       "title": "A face <span>filter</span>"
     },
@@ -111,14 +111,14 @@
     "tuning": {
       "dirty": "Changed — remember to save.",
       "fold": "Fold",
-      "saved": "✓ Saved in My creations",
+      "saved": "Saved in My creations",
       "title": "Live tuning"
     }
   },
   "home": {
     "copyTitle": "Open a copy in the editor",
-    "createFilter": "☺ Create a face filter",
-    "createMuseum": "▦ Create a poster museum",
+    "createFilter": "Create a face filter",
+    "createMuseum": "Create a poster museum",
     "footer": "Made by <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> founder · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR: <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">8th Wall engine © Niantic Spatial</a> · Not affiliated with Spline or Niantic Spatial",
     "lead": "Your Spline scenes in augmented reality, in the phone's browser, with a simple link: they come out of a poster, or you wear them on your face like a filter.",
     "pageTitle": "Spline AR — your 3D out of the frame",
@@ -135,7 +135,7 @@
   },
   "museum": {
     "editor": {
-      "addPoster": "＋ Add a poster",
+      "addPoster": "Add a poster",
       "alreadyUploaded": "Poster already uploaded — choose another image to replace it.",
       "chooseImage": "Choose the poster image",
       "counter": "{n} posters · up to {max} per museum, {tracked} visible at the same time",
@@ -186,19 +186,19 @@
     "create": "Create",
     "filter": "Face filter",
     "home": "Home",
-    "homeBack": "← Home",
+    "homeBack": "Home",
     "museum": "Museum",
     "posters": "Posters"
   },
   "player": {
-    "back": "✕ Back",
+    "back": "Back",
     "createLink": "Create a museum or a filter",
     "credit": "Made with Spline",
     "errorStart": "Starting AR failed. {detail}",
     "loading3d": "Loading the 3D…",
-    "quit": "✕ Quit",
+    "quit": "Quit",
     "quitTitle": "Quit AR",
-    "start": "Start AR →",
+    "start": "Start AR",
     "author": "by Aurélien Grimaud"
   },
   "posters": {
@@ -241,8 +241,8 @@
     "confirmDelete": "Remove “{title}” from your creations?\nThe shared link will keep working.",
     "delete": "Remove from my creations",
     "empty": "Nothing yet. Your museums and filters will show up here as soon as you create their link.",
-    "newFilter": "＋ New filter",
-    "newMuseum": "＋ New museum",
+    "newFilter": "New filter",
+    "newMuseum": "New museum",
     "note": "Saved in this browser. A creation's link is also its backup: open it, then “Edit”.",
     "opened": "Open",
     "posterCount": {

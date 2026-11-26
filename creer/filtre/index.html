@@ -73,18 +73,18 @@
   </div>
 
   <div class="card">
-    <button id="create" class="btn btn-primary btn-block" disabled></button>
+    <button id="create" class="btn btn-primary btn-block" data-icon-after="forward" disabled></button>
     <div id="create-msg" class="msg"></div>
-    <div id="saved-state" class="saved-state"></div>
+    <div id="saved-state" class="saved-state" data-icon="check"></div>
     <div id="result">
       <div>
         <div class="section-label" data-i18n="editor.yourLink"></div>
         <input id="link" type="text" readonly />
       </div>
       <div class="actions">
-        <button id="copy" class="btn btn-sm btn-ghost" data-i18n="actions.copy"></button>
-        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-i18n="actions.open"></a>
-        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-filter-qr.png" data-i18n="editor.downloadQr"></a>
+        <button id="copy" class="btn btn-sm btn-ghost" data-icon="copy" data-i18n="actions.copy"></button>
+        <a id="open" class="btn btn-sm btn-ghost" target="_blank" rel="noopener" data-icon="play" data-i18n="actions.open"></a>
+        <a id="qr-dl" class="btn btn-sm btn-ghost" download="spline-ar-filter-qr.png" data-icon="downward" data-i18n="editor.downloadQr"></a>
       </div>
       <div id="qr-wrap"><canvas id="qr" width="220" height="220"></canvas></div>
       <p class="help" style="text-align:center" data-i18n="filter.editor.testHelp"></p>
