@@ -20,7 +20,7 @@
     "museumGo": "Create a museum",
     "museumText": "One or more posters. The phone aiming at a poster sees its 3D scene come out. Rear camera.",
     "museumTitle": "A poster museum",
-    "pageTitle": "Spline AR — Create",
+    "pageTitle": "Spline AR – Create",
     "title": "What do you want to <span>create</span>?"
   },
   "editor": {
@@ -71,7 +71,7 @@
   "filter": {
     "editor": {
       "lead": "Your Spline scene sticks to a point of the face and follows the head, like a Snapchat filter. No image to upload.",
-      "pageTitle": "Spline AR — Create a face filter",
+      "pageTitle": "Spline AR – Create a face filter",
       "point": "Anchor point",
       "reactHelp": "In Spline, create a <b>boolean variable</b> with one of these names, then a “Variable Change” event that starts your animation or sound. It turns true during the expression.",
       "reactTitle": "Make the scene react to the face",
@@ -121,7 +121,7 @@
     "createMuseum": "Create a poster museum",
     "footer": "Made by <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> founder · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR: <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">8th Wall engine © Niantic Spatial</a> · Not affiliated with Spline or Niantic Spatial",
     "lead": "Your Spline scenes in augmented reality, in the phone's browser, with a simple link: they come out of a poster, or you wear them on your face like a filter.",
-    "pageTitle": "Spline AR — your 3D out of the frame",
+    "pageTitle": "Spline AR – your 3D out of the frame",
     "posters": "Posters",
     "postersTitle": "Show the posters to aim at",
     "templates": "Get started",
@@ -149,7 +149,7 @@
         "other": "{n} posters loaded."
       },
       "lead": "One or more posters, each with its Spline scene. One link: the phone aiming at a poster sees its 3D come out.",
-      "pageTitle": "Spline AR — Create a museum",
+      "pageTitle": "Spline AR – Create a museum",
       "poster": "Poster",
       "removePoster": "Remove this poster",
       "settingsHelp": "In poster widths (1 = the full width). “Flat”: the scene stands above the image lying on a table; lift becomes height and rotation turns around the vertical axis. Changing a setting does not re-upload the poster.",
@@ -204,7 +204,7 @@
   "posters": {
     "fullHint": "Click to go back · ← → to switch · Esc",
     "lead": "Click a poster to show it full screen, then aim at the screen with the phone.",
-    "pageTitle": "Spline AR — Posters",
+    "pageTitle": "Spline AR – Posters",
     "poster": "Poster",
     "tile": "Poster {n}",
     "title": "The <span>posters</span>"

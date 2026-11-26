@@ -57,7 +57,7 @@ if (params.has('o') || params.has('target')) {
 if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
 
 function fail(key, err) {
-  console.error('[SplineAR]', key, err || '')
+  console.error('[Spline AR]', key, err || '')
   setText(errorEl, key, { detail: err?.message ? `(${err.message})` : '' })
   errorEl.classList.add('visible')
   startEl.classList.remove('out')
@@ -185,7 +185,7 @@ class Artwork {
     if (this.overlay || this.fit.children.length) return Promise.resolve()
     if (!this.loading) {
       this.loading = this.loadScene()
-        .catch(err => { console.error('[SplineAR]', err); debug(`artwork ${this.index + 1}`, `error: ${err.message}`) })
+        .catch(err => { console.error('[Spline AR]', err); debug(`artwork ${this.index + 1}`, `error: ${err.message}`) })
         .finally(() => { this.loading = null })
     }
     return this.loading
@@ -329,7 +329,7 @@ async function prepare() {
     setText(progressEl, MANY ? 'museum.player.loadingPosters' : 'museum.player.loadingPoster')
     const results = await Promise.allSettled(artworks.map(a => a.loadTarget()))
     const failed = results.filter(r => r.status === 'rejected')
-    failed.forEach(r => console.error('[SplineAR]', r.reason))
+    failed.forEach(r => console.error('[Spline AR]', r.reason))
     if (failed.length === artworks.length) throw failed[0].reason
     const ready = artworks.filter(a => a.target)
     if (failed.length) debug('posters', `${failed.length} not found`)

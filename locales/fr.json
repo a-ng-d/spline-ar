@@ -20,7 +20,7 @@
     "museumGo": "Créer un musée",
     "museumText": "Une ou plusieurs affiches. Le téléphone qui vise une affiche voit sa scène 3D en sortir. Caméra arrière.",
     "museumTitle": "Un musée d'affiches",
-    "pageTitle": "Spline AR — Créer",
+    "pageTitle": "Spline AR – Créer",
     "title": "Que veux-tu <span>créer</span> ?"
   },
   "editor": {
@@ -71,7 +71,7 @@
   "filter": {
     "editor": {
       "lead": "Ta scène Spline s'accroche à un point du visage et suit la tête, comme un filtre Snapchat. Pas d'image à envoyer.",
-      "pageTitle": "Spline AR — Créer un filtre visage",
+      "pageTitle": "Spline AR – Créer un filtre visage",
       "point": "Point d'ancrage",
       "reactHelp": "Dans Spline, crée une <b>variable booléenne</b> avec un de ces noms, puis un événement « Variable Change » qui lance ton animation ou ton son. Elle passe à vrai pendant l'expression.",
       "reactTitle": "Faire réagir la scène au visage",
@@ -121,7 +121,7 @@
     "createMuseum": "Créer un musée d'affiches",
     "footer": "Conçu par <a href=\"https://an.gd\" target=\"_blank\" rel=\"noopener\">Aurélien Grimaud</a>, fondateur de <a href=\"https://yelbolt.co\" target=\"_blank\" rel=\"noopener\">Yelbolt</a> · <a href=\"https://github.com/a-ng-d/spline-ar/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">Licence MIT</a> · <a href=\"https://github.com/a-ng-d/spline-ar\" target=\"_blank\" rel=\"noopener\">GitHub</a> · AR : <a href=\"https://github.com/8thwall/engine/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">moteur 8th Wall © Niantic Spatial</a> · Sans lien avec Spline ni Niantic Spatial",
     "lead": "Tes scènes Spline en réalité augmentée, dans le navigateur du téléphone, avec un simple lien : elles sortent d'une affiche, ou se portent sur le visage comme un filtre.",
-    "pageTitle": "Spline AR — ta 3D hors du cadre",
+    "pageTitle": "Spline AR – ta 3D hors du cadre",
     "posters": "Affiches",
     "postersTitle": "Afficher les affiches à viser",
     "templates": "Pour commencer",
@@ -149,7 +149,7 @@
         "other": "{n} affiches chargées."
       },
       "lead": "Une ou plusieurs affiches, chacune avec sa scène Spline. Un seul lien : le téléphone qui vise une affiche voit sa 3D en sortir.",
-      "pageTitle": "Spline AR — Créer un musée",
+      "pageTitle": "Spline AR – Créer un musée",
       "poster": "Affiche",
       "removePoster": "Retirer cette affiche",
       "settingsHelp": "En largeur d'affiche (1 = toute la largeur). « À plat » : la scène se dresse au-dessus de l'image posée sur une table ; le décollement devient la hauteur et la rotation tourne autour de la verticale. Modifier un réglage ne renvoie pas l'affiche.",
@@ -204,7 +204,7 @@
   "posters": {
     "fullHint": "Clique pour revenir · ← → pour changer · Échap",
     "lead": "Clique sur une affiche pour l'afficher en plein écran, puis vise l'écran avec le téléphone.",
-    "pageTitle": "Spline AR — Affiches",
+    "pageTitle": "Spline AR – Affiches",
     "poster": "Affiche",
     "tile": "Affiche {n}",
     "title": "Les <span>affiches</span>"

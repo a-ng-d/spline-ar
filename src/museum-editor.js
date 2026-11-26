@@ -198,7 +198,7 @@ createBtn.onclick = async () => {
     await renderLink()
     say(createMsg, 'editor.ready', 'ok')
   } catch (err) {
-    console.error('[SplineAR]', err)
+    console.error('[Spline AR]', err)
     say(createMsg, uploadErrorKey(err), 'err', err.issues?.[0]?.params)
   } finally {
     changed()

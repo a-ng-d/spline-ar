@@ -55,7 +55,7 @@ if (params.has('scene')) {
 if (BACK) { const b = $('back-link'); b.href = BACK; b.hidden = false }
 
 function fail(key, err) {
-  console.error('[SplineAR]', key, err || '')
+  console.error('[Spline AR]', key, err || '')
   setText(errorEl, key, { detail: err?.message ? `(${err.message})` : '' })
   errorEl.classList.add('visible')
   startEl.classList.remove('out')
